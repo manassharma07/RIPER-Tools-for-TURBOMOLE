@@ -6,6 +6,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from pymatgen.io.ase import AseAtomsAdaptor
 from ase.calculators.emt import EMT
+from ase.calculators.singlepoint import SinglePointCalculator
 from ase.optimize import BFGS
 
 # Sidebar stuff
@@ -126,7 +127,7 @@ if compounds is not None:
     opt_geom = st.checkbox(label= 'Forcefield Optimize Geometry', value=False)
     if opt_geom:
         ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
-
+        calc = SinglePointCalculator(ase_atoms, EMT())
         ff = EMT()
         calc = BFGS(ase_atoms, trajectory='opt.traj', logfile='opt.log')
         calc.attach(ff)
