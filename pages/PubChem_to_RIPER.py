@@ -138,7 +138,7 @@ if compounds is not None:
         optimizer.run(fmax=0.05)  # Adjust fmax value as needed
 
         # Get the optimized structure as an ASE Atoms object
-        optimized_atoms = optimizer.get_atoms()
+        # optimized_atoms = optimizer.get_atoms()
 
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
 
