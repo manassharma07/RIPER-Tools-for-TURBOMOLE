@@ -127,12 +127,26 @@ if compounds is not None:
     opt_geom = st.checkbox(label= 'Forcefield Optimize Geometry', value=False)
     if opt_geom:
         ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
-        calc = SinglePointCalculator(ase_atoms, EMT())
-        ff = EMT()
-        calc = BFGS(ase_atoms, trajectory='opt.traj', logfile='opt.log')
-        calc.attach(ff)
-        calc.run(fmax=0.01)
+        # calc = SinglePointCalculator(ase_atoms, EMT())
+        # Set up the calculator for energy and forces using EMT (or other forcefield)
+        calc = EMT()
+        ase_atoms.set_calculator(calc)
+        # Set up the optimizer (BFGS in this example)
+        optimizer = BFGS(ase_atoms)
+
+        # Run the optimization
+        optimizer.run(fmax=0.05)  # Adjust fmax value as needed
+
+        # Get the optimized structure as an ASE Atoms object
+        optimized_atoms = optimizer.get_atoms()
+
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
+
+        # ff = EMT()
+        # calc = BFGS(ase_atoms, trajectory='opt.traj', logfile='opt.log')
+        # calc.attach(ff)
+        # calc.run(fmax=0.01)
+        # selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
     # Visualization
     visualize_structure(selected_molecule)
 
