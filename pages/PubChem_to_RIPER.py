@@ -4,6 +4,9 @@ from pymatgen.core.structure import Molecule
 import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
+from pymatgen.io.ase import AseAtomsAdaptor
+from ase.calculators.emt import EMT
+from ase.optimize import BFGS
 
 # Sidebar stuff
 st.sidebar.write('# About')
@@ -120,6 +123,15 @@ if compounds is not None:
                                "Y": selected_molecule.cart_coords[:, 1], "Z": selected_molecule.cart_coords[:, 2]}))
 
 
+    opt_geom = st.checkbox(label= 'Forcefield Optimize Geometry', value=False)
+    if opt_geom:
+        ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
+
+        ff = EMT()
+        calc = BFGS(ase_atoms, trajectory='opt.traj', logfile='opt.log')
+        calc.attach(ff)
+        calc.run(fmax=0.01)
+        selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
     # Visualization
     visualize_structure(selected_molecule)
 
