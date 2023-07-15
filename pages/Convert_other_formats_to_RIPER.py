@@ -5,6 +5,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.io.cif import CifParser
 from pymatgen.io.xyz import XYZ
 from pymatgen.io.vasp.inputs import Poscar
+from pymatgen.io.pwscf import PWInput
 import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
@@ -174,19 +175,28 @@ def parse_poscar(contents):
     structure = poscar_parser.structure
     return structure
 
+def parse_quantum_espresso(contents):
+    # Parse the POSCAR file using pymatgen
+    qe_parser = PWInput.from_string(contents)
+    structure = qe_parser.structure
+    return structure
+
 # return filecontents
 def read_file(filename):
     with open(filename, 'r') as file:
         return file.read()
 
 # Streamlit app
-st.write('# CIF/XYZ/POSCAR ➡️ RIPER')
+st.write('# CIF/XYZ/POSCAR/PWSCF ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from a CIF/POSCAR or XYZ (only atomic coordinates)")
 
-st.write("Please select the file format and upload the file.")
+st.write("Please select the file format")
 
 # Select file format
-file_format = st.selectbox("Select file format", ("CIF", "XYZ", "POSCAR"))
+file_format = st.selectbox("Select file format", ("CIF", "XYZ", "POSCAR", "Quantum ESPRESSO (PWSCF)"))
+
+st.write('You can either paste the source file contents below or upload the source file')
+contents = st.text_area(label='Enter the contents of the source file here', value = '', placeholder = 'Put your text here', height=400, key = 'input_text_area')
 
 # Create a file uploader widget
 file = st.file_uploader("Upload file")
@@ -203,6 +213,8 @@ if file is not None:
     # To read file as string:
     contents = stringio.read()
 
+if contents!='':
+
     # Parse the file based on the selected format
     if file_format == "CIF":
         structure = parse_cif(contents)
@@ -210,6 +222,8 @@ if file is not None:
         structure = parse_xyz(contents)
     elif file_format == "POSCAR":
         structure = parse_poscar(contents)
+    elif file_format == "Quantum ESPRESSO (PWSCF)":
+        structure = parse_quantum_espresso(contents)
 
     if file_format!="XYZ":
         # Get conventional structure
