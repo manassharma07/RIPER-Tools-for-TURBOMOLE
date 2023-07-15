@@ -5,3 +5,4 @@ numpy
 py3Dmol
 ipython
 pubchempy
+ase

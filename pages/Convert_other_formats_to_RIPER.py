@@ -10,6 +10,8 @@ import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
+from ase.io.espresso import read_espresso_in
+from pymatgen import Structure
 
 # Set page config
 st.set_page_config(page_title='CIF/POSCAR/XYZ ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -181,6 +183,18 @@ def parse_quantum_espresso(contents):
     structure = qe_parser.structure
     return structure
 
+def parse_qe_ase(string_io):
+    # Read QE input file
+    atoms = read_espresso_in(string_io)
+
+    # Convert ASE Atoms to pymatgen Structure
+    structure = Structure(
+        lattice=atoms.cell,
+        species=[atom.symbol for atom in atoms], 
+        coords=atoms.get_positions()
+    )
+    return structure
+
 # return filecontents
 def read_file(filename):
     with open(filename, 'r') as file:
@@ -199,7 +213,7 @@ st.write('You can either paste the source file contents below or upload the sour
 contents = st.text_area(label='Enter the contents of the source file here', value = '', placeholder = 'Put your text here', height=400, key = 'input_text_area')
 
 # Create a file uploader widget
-file = st.file_uploader("Upload file")
+file = st.file_uploader("or Upload the file")
 
 if file is not None:
     # If a file is uploaded, read its contents
