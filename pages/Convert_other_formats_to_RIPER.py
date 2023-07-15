@@ -11,7 +11,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
 from ase.io.espresso import read_espresso_in
-from pymatgen import Structure
+from pymatgen.io.ase import AseAtomsAdaptor
 
 # Set page config
 st.set_page_config(page_title='CIF/POSCAR/XYZ ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -188,11 +188,7 @@ def parse_qe_ase(string_io):
     atoms = read_espresso_in(string_io)
 
     # Convert ASE Atoms to pymatgen Structure
-    structure = Structure(
-        lattice=atoms.cell,
-        species=[atom.symbol for atom in atoms], 
-        coords=atoms.get_positions()
-    )
+    structure = AseAtomsAdaptor().get_structure(atoms)
     return structure
 
 # return filecontents
