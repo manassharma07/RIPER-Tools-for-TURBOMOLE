@@ -192,11 +192,12 @@ if docs is not None:
     # Download CIF files
     st.subheader("Download CIF Files")
     col1, col2 = st.columns(2)
-    if col1.button("Download Primitive Unit Cell CIF"):
-        convert_to_cif(primitive_structure, "primitive_unit_cell.cif")
-        st.success("Primitive Unit Cell CIF downloaded!")
+    convert_to_cif(primitive_structure, "primitive_unit_cell.cif")
+    st.download_button('Download Primitive Unit Cell CIF', "primitive_unit_cell.cif", file_name='primitive_unit_cell.cif', key='primitive_cif_button')
+    st.success("Primitive Unit Cell CIF downloaded!")
     if col2.button("Download Conventional Unit Cell CIF"):
         convert_to_cif(conventional_structure, "conventional_unit_cell.cif")
+        st.download_button('Download Conventional Unit Cell CIF', "conventional_unit_cell.cif.cif", file_name='conventional_unit_cell.cif.cif', key='conventional_cif_button')
         st.success("Conventional Unit Cell CIF downloaded!")
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents

@@ -233,7 +233,7 @@ if file is not None:
         st.subheader("Download CIF Files")
         
         if st.button("Download CIF"):
-            convert_to_cif(structure, "input.cif")
+            convert_to_cif(structure, "converted.cif")
             st.success("CIF downloaded!")
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
