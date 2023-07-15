@@ -183,9 +183,9 @@ def parse_quantum_espresso(contents):
     structure = qe_parser.structure
     return structure
 
-def parse_qe_ase(string_io):
+def parse_qe_ase(contents):
     # Read QE input file
-    atoms = read_espresso_in(string_io)
+    atoms = read_espresso_in(contents)
 
     # Convert ASE Atoms to pymatgen Structure
     structure = AseAtomsAdaptor().get_structure(atoms)
@@ -234,7 +234,7 @@ if contents!='':
         structure = parse_poscar(contents)
     elif file_format == "Quantum ESPRESSO (PWSCF)":
         # structure = parse_quantum_espresso(contents)
-        structure = parse_qe_ase(stringio)
+        structure = parse_qe_ase(contents)
 
     if file_format!="XYZ":
         # Get conventional structure
