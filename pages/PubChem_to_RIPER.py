@@ -135,18 +135,10 @@ if compounds is not None:
         optimizer = BFGS(ase_atoms)
 
         # Run the optimization
-        optimizer.run(fmax=0.05)  # Adjust fmax value as needed
+        optimizer.run(fmax=0.05, steps=50)  # Adjust fmax value as needed
 
-        # Get the optimized structure as an ASE Atoms object
-        # optimized_atoms = optimizer.get_atoms()
-
+        # Get the optimized structure as Pymatgen structure
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
-
-        # ff = EMT()
-        # calc = BFGS(ase_atoms, trajectory='opt.traj', logfile='opt.log')
-        # calc.attach(ff)
-        # calc.run(fmax=0.01)
-        # selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
     # Visualization
     visualize_structure(selected_molecule)
 
