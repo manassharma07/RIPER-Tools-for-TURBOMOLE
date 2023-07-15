@@ -132,6 +132,8 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+read_file
+
 # Create an instance of MPRester
 mpr = MPRester(api_key)
 

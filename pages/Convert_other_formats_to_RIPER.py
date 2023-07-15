@@ -174,6 +174,11 @@ def parse_poscar(contents):
     structure = poscar_parser.structure
     return structure
 
+# return filecontents
+def read_file(filename):
+    with open(filename, 'r') as file:
+        return file.read()
+
 # Streamlit app
 st.write('# CIF/XYZ/POSCAR ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from a CIF/POSCAR or XYZ (only atomic coordinates)")
@@ -232,9 +237,9 @@ if file is not None:
     if not file_format=='XYZ':
         st.subheader("Download CIF Files")
         
-        if st.button("Download CIF"):
-            convert_to_cif(structure, "converted.cif")
-            st.success("CIF downloaded!")
+        
+        convert_to_cif(structure, "structure.cif")
+        st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files")
