@@ -237,7 +237,8 @@ if contents!='':
     elif file_format == "POSCAR":
         structure = parse_poscar(contents)
     elif file_format == "Quantum ESPRESSO (PWSCF)":
-        structure = parse_quantum_espresso(contents)
+        # structure = parse_quantum_espresso(contents)
+        structure = parse_qe_ase(stringio)
 
     if file_format!="XYZ":
         # Get conventional structure
