@@ -124,7 +124,7 @@ if compounds is not None:
                                "Y": selected_molecule.cart_coords[:, 1], "Z": selected_molecule.cart_coords[:, 2]}))
 
 
-    opt_geom = st.checkbox(label= 'Forcefield Optimize Geometry', value=False)
+    opt_geom = st.checkbox(label= 'Forcefield Optimize Geometry (Beta - Does not work well yet)', value=False)
     if opt_geom:
         ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
         # calc = SinglePointCalculator(ase_atoms, EMT())
@@ -135,7 +135,7 @@ if compounds is not None:
         optimizer = BFGS(ase_atoms)
 
         # Run the optimization
-        optimizer.run(fmax=0.05, steps=50)  # Adjust fmax value as needed
+        optimizer.run(fmax=0.05, steps=10)  # Adjust fmax value as needed
 
         # Get the optimized structure as Pymatgen structure
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
