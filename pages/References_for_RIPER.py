@@ -21,11 +21,6 @@ st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the
 st.title("Relevant references for RIPER")
 
 
-st.write("""`riper` shares most of the relevant keywords of the `dscf` and `ridft` modules. The
-`$dft` data group and auxiliary basis sets defined using the keyword
-`$jbas` are always required.
-For periodic calculations two additional keywords are necessary:
-""")
 
 references = [
     {
