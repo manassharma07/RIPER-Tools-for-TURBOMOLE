@@ -32,49 +32,49 @@ references = [
         'Author': 'Burow, A.M.; Sierka, M.; Mohamed, F.',
         'Title': 'Resolution of identity approximation for the Coulomb term in molecular and periodic systems.',
         'Journal': 'J. Chem. Phys. 2009, 131, 214101-1-214101-6. (56)',
-        'URL': 'https://example.com/article1'
+        'URL': 'https://doi.org/10.1063/1.3267858'
     },
     {
         'Author': 'Łazarski, R.; Burow, A.M.; Sierka, M.',
         'Title': 'Density functional theory for molecular and periodic systems using density fitting and continuous fast multipole methods.',
         'Journal': 'J. Chem. Theory Comput. 2015, 11, 3029-3041. (57)',
-        'URL': 'https://example.com/article2'
+        'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.5b00252'
     },
     {
         'Author': 'Łazarski, R.; Burow, A.M.; Grajciar, L.; Sierka, M.',
         'Title': 'Density functional theory for molecular and periodic systems using density fitting and continuous fast multipole method: Analytical gradients.',
         'Journal': 'J. Comput. Chem. 2016, 37, 2518-2526. (58)',
-        'URL': 'https://example.com/article3'
+        'URL': 'https://doi.org/10.1002/jcc.24477'
     },
     {
         'Author': 'Grajciar, L.',
         'Title': 'Low-memory Iterative Density Fitting.',
         'Journal': 'J. Comput. Chem. 2015, 36, 1521-1535. (327)',
-        'URL': 'https://example.com/article4'
+        'URL': 'https://doi.org/10.1002/jcc.23961'
     },
     {
         'Author': 'Burow, A.M.; Sierka, M.',
         'Title': 'Linear scaling hierarchical integration scheme for the exchange-correlation term in molecular and periodic systems.',
         'Journal': 'J. Chem. Theory Comput. 2011, 7, 3097-3104. (328)',
-        'URL': 'https://example.com/article5'
+        'URL': 'https://pubs.acs.org/doi/10.1021/ct200412r'
     },
     {
         'Author': 'Irmler, A.; Burow, A.M.; Pauly, F.',
         'Title': 'Robust Periodic Fock Exchange with Atom-Centered Gaussian Basis Sets.',
         'Journal': 'J. Chem. Theory Comput. 2018, 14, 4567-4580.',
-        'URL': 'https://example.com/article6'
+        'URL': 'https://pubs.acs.org/doi/full/10.1021/acs.jctc.8b00122'
     },
     {
         'Author': 'Müller, C.; Sharma, M.; Sierka, M.',
         'Title': 'Real-time time-dependent density functional theory using density fitting and the continuous fast multipole method.',
         'Journal': 'J. Comput. Chem. 2020, 41, 2573-2582.',
-        'URL': 'https://example.com/article7'
+        'URL': 'https://doi.org/10.1002/jcc.26412'
     },
     {
         'Author': 'Sharma, M.; Sierka, M.',
         'Title': 'Efficient Implementation of Density Functional Theory Based Embedding for Molecular and Periodic Systems Using Gaussian Basis Functions.',
         'Journal': 'J. Chem. Theory Comput. 2022, 18, 6892-6904',
-        'URL': 'https://example.com/article8'
+        'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.2c00380'
     }
 ]
 
