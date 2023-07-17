@@ -47,6 +47,12 @@ references = [
         'URL': 'https://doi.org/10.1002/jcc.24477'
     },
     {
+        'Author': 'Becker, M.; Sierka, M.',
+        'Title': 'Density functional theory for molecular and periodic systems using density fitting and continuous fast multipole method: Stress tensor.',
+        'Journal': 'J. Comput. Chem. 2019, 40, 2563-2570.',
+        'URL': 'https://doi.org/10.1002/jcc.26033'
+    },
+    {
         'Author': 'Grajciar, L.',
         'Title': 'Low-memory Iterative Density Fitting.',
         'Journal': 'J. Comput. Chem. 2015, 36, 1521-1535. (327)',
