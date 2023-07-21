@@ -161,19 +161,19 @@ def display_structure_info(structure):
 
 def parse_cif(contents):
     # Parse the CIF file using pymatgen
-    cif_parser = CifParser.from_str(contents)
+    cif_parser = CifParser.from_string(contents)
     structure = cif_parser.get_structures()[0]  # Assuming there's only one structure in the CIF file
     return structure
 
 def parse_xyz(contents):
     # Parse the XYZ file using pymatgen
-    xyz_parser = XYZ.from_str(contents)
+    xyz_parser = XYZ.from_string(contents)
     structure = xyz_parser.molecule  # Assuming it's a molecule XYZ file
     return structure
 
 def parse_poscar(contents):
     # Parse the POSCAR file using pymatgen
-    poscar_parser = Poscar.from_str(contents)
+    poscar_parser = Poscar.from_string(contents)
     structure = poscar_parser.structure
     return structure
 
