@@ -12,6 +12,7 @@ import streamlit.components.v1 as components
 from io import StringIO
 from ase.io.espresso import read_espresso_in
 from ase.io.cif import read_cif
+from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 
 # Set page config
@@ -194,7 +195,7 @@ def parse_qe_ase(stringio):
 
 def parse_cif_ase(stringio):
     # Read CIF
-    atoms = read_cif(stringio)
+    atoms = read(stringio, format="cif")
 
     # Convert ASE Atoms to pymatgen Structure
     structure = AseAtomsAdaptor().get_structure(atoms)
@@ -214,8 +215,9 @@ st.write("Please select the file format")
 # Select file format
 file_format = st.selectbox("Select file format", ("CIF", "XYZ", "POSCAR", "Quantum ESPRESSO (PWSCF)"))
 
-cif_parser_options = ['PYMATGEN', 'ASE']
-selected_cif_parser = st.selectbox("Select a parser for CIFs", cif_parser_options)
+if file_format=='CIF':
+    cif_parser_options = ['PYMATGEN', 'ASE']
+    selected_cif_parser = st.selectbox("Select a parser for CIFs", cif_parser_options)
 
 
 st.write('You can either paste the source file contents below or upload the source file')
