@@ -163,7 +163,7 @@ def display_structure_info(structure):
 
 def parse_cif_pymatgen(contents):
     # Parse the CIF file using pymatgen
-    cif_parser = CifParser.from_string(contents)
+    cif_parser = CifParser.from_string(contents, primitive=False)
     structure = cif_parser.get_structures()[0]  # Assuming there's only one structure in the CIF file
     return structure
 
@@ -258,10 +258,10 @@ if contents!='':
         stringio_obj = StringIO(contents)
         structure = parse_qe_ase(stringio_obj)
 
-    if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
-        # Get conventional structure
-        analyzer = SpacegroupAnalyzer(structure)
-        structure = analyzer.get_conventional_standard_structure()
+    # if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
+    #     # Get conventional structure
+    #     analyzer = SpacegroupAnalyzer(structure)
+    #     structure = analyzer.get_conventional_standard_structure()
 
     st.write("Successfully parsed file!")
     # st.write("Pymatgen Structure:")
