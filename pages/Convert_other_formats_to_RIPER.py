@@ -258,10 +258,10 @@ if contents!='':
         stringio_obj = StringIO(contents)
         structure = parse_qe_ase(stringio_obj)
 
-    if file_format!="XYZ":
-        # Get conventional structure
-        analyzer = SpacegroupAnalyzer(structure)
-        structure = analyzer.get_conventional_standard_structure()
+    # if file_format!="XYZ":
+    #     # Get conventional structure
+    #     analyzer = SpacegroupAnalyzer(structure)
+    #     structure = analyzer.get_conventional_standard_structure()
 
     st.write("Successfully parsed file!")
     # st.write("Pymatgen Structure:")
