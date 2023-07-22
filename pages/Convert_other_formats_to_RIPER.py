@@ -163,8 +163,8 @@ def display_structure_info(structure):
 
 def parse_cif_pymatgen(contents):
     # Parse the CIF file using pymatgen
-    cif_parser = CifParser.from_string(contents, primitive=False)
-    structure = cif_parser.get_structures()[0]  # Assuming there's only one structure in the CIF file
+    cif_parser = CifParser.from_string(contents)
+    structure = cif_parser.get_structures(primitive=False)[0]  # Assuming there's only one structure in the CIF file
     return structure
 
 def parse_xyz(contents):
