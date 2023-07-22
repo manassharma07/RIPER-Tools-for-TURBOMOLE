@@ -11,6 +11,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
 from ase.io.espresso import read_espresso_in
+from ase.io.cif import read_cif
 from pymatgen.io.ase import AseAtomsAdaptor
 
 # Set page config
@@ -159,7 +160,7 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
-def parse_cif(contents):
+def parse_cif_pymatgen(contents):
     # Parse the CIF file using pymatgen
     cif_parser = CifParser.from_string(contents)
     structure = cif_parser.get_structures()[0]  # Assuming there's only one structure in the CIF file
@@ -191,6 +192,14 @@ def parse_qe_ase(stringio):
     structure = AseAtomsAdaptor().get_structure(atoms)
     return structure
 
+def parse_cif_ase(stringio):
+    # Read CIF
+    atoms = read_cif(stringio)
+
+    # Convert ASE Atoms to pymatgen Structure
+    structure = AseAtomsAdaptor().get_structure(atoms)
+    return structure
+
 # return filecontents
 def read_file(filename):
     with open(filename, 'r') as file:
@@ -204,6 +213,10 @@ st.write("Please select the file format")
 
 # Select file format
 file_format = st.selectbox("Select file format", ("CIF", "XYZ", "POSCAR", "Quantum ESPRESSO (PWSCF)"))
+
+cif_parser_options = ['PYMATGEN', 'ASE']
+selected_cif_parser = st.selectbox("Select a parser for CIFs", cif_parser_options)
+
 
 st.write('You can either paste the source file contents below or upload the source file')
 contents = st.text_area(label='Enter the contents of the source file here', value = '', placeholder = 'Put your text here', height=400, key = 'input_text_area')
@@ -227,7 +240,12 @@ if contents!='':
 
     # Parse the file based on the selected format
     if file_format == "CIF":
-        structure = parse_cif(contents)
+        if selected_cif_parser=='PYMATGEN':
+            structure = parse_cif_pymatgen(contents)
+        elif selected_cif_parser=='ASE':
+            # Create a StringIO object
+            stringio_obj_cif = StringIO(contents)
+            structure = parse_cif_ase(stringio_obj_cif)
     elif file_format == "XYZ":
         structure = parse_xyz(contents)
     elif file_format == "POSCAR":
