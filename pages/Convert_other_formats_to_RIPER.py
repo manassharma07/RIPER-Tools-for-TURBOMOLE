@@ -216,7 +216,7 @@ st.write("Please select the file format")
 file_format = st.selectbox("Select file format", ("CIF", "XYZ", "POSCAR", "Quantum ESPRESSO (PWSCF)"))
 
 if file_format=='CIF':
-    cif_parser_options = ['PYMATGEN', 'ASE']
+    cif_parser_options = ['ASE', 'PYMATGEN']
     selected_cif_parser = st.selectbox("Select a parser for CIFs", cif_parser_options)
 
 
@@ -258,10 +258,10 @@ if contents!='':
         stringio_obj = StringIO(contents)
         structure = parse_qe_ase(stringio_obj)
 
-    # if file_format!="XYZ":
-    #     # Get conventional structure
-    #     analyzer = SpacegroupAnalyzer(structure)
-    #     structure = analyzer.get_conventional_standard_structure()
+    if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
+        # Get conventional structure
+        analyzer = SpacegroupAnalyzer(structure)
+        structure = analyzer.get_conventional_standard_structure()
 
     st.write("Successfully parsed file!")
     # st.write("Pymatgen Structure:")
