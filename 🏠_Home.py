@@ -9,8 +9,8 @@ menu_items={
 
 # Sidebar stuff
 st.sidebar.write('# About')
-st.sidebar.write('Made By [Manas Sharma](https://manas.bragitoff.com)')
-st.sidebar.write('In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
+st.sidebar.write(' Originally Made By [Manas Sharma](https://manas.bragitoff.com)')
+st.sidebar.write(' In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
 st.sidebar.write('### *Powered by*')
 st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
 st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
