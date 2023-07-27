@@ -33,6 +33,10 @@ st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Rep
 st.sidebar.write('* [PubChempy](https://pypi.org/project/PubChemPy/1.0/) for Accessing the PubChem Database')
 st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the Materials Project Database')
 st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
+st.sidebar.write('### *Contributors*')
+st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
+st.sidebar.write('### *Source Code*')
+st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
 
 # Function to convert atomic coordinates to Bohr units

@@ -3,9 +3,9 @@ import pandas as pd
 
 # Sidebar stuff
 st.sidebar.write('# About')
-st.sidebar.write('### Originally Made By [Manas Sharma](https://manas.bragitoff.com)')
-st.sidebar.write('### In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
-st.sidebar.write('### *Powered by*')
+st.sidebar.write(' Originally Made By [Manas Sharma](https://manas.bragitoff.com).')
+st.sidebar.write(' In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de).')
+st.sidebar.write(' *Powered by*')
 st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
 st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
 st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Representations')
@@ -14,6 +14,8 @@ st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the
 st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
 st.sidebar.write('### *Contributors*')
 st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
+st.sidebar.write('### *Source Code*')
+st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
 st.write('## Unit Conversion Tool')
 st.write('This online tool allows you to inter-convert between various units mainly used in RT-TDDFT calculations via RIPER.')
