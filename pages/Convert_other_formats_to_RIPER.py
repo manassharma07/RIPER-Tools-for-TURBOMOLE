@@ -32,6 +32,7 @@ st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App
 st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Representations')
 st.sidebar.write('* [PubChempy](https://pypi.org/project/PubChemPy/1.0/) for Accessing the PubChem Database')
 st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the Materials Project Database')
+st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
 
 
 # Function to convert atomic coordinates to Bohr units
