@@ -15,6 +15,8 @@ The web app is available at [https://riper-tools.streamlit.app/](https://riper-t
 
 Hint: Use the sidebar menu on the left to navigate between different options.
 
+## Contributors
+The app was originally created by me (https://github.com/manassharma07/) but now also contains contributions from https://github.com/Lexachoc.
 
 ## About me
 I am a fourth-year PhD student in Physics at [Friedrich Schiller University Jena (FSU) Germany](https://www.uni-jena.de/), advised by [Prof. Dr. Marek Sierka](https://www.cmsg.uni-jena.de/) (CEO [TURBOMOLE](https://www.turbomole.org/)).
