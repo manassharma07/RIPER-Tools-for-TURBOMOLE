@@ -147,11 +147,26 @@ docs = None
 st.write('# Materials Project ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from Materials Project Database")
 
+# Search by material_id, formula or elements?
+input_type = st.selectbox("Select a material:", ['Formula','Material ID','Elements'])
+
+
 # Search for materials
-formula = st.text_input("Enter formula:", placeholder='NaCl')
+if input_type=='Formula':
+    formula = st.text_input("Enter formula:", placeholder='NaCl')
+elif input_type=='Material ID':
+    material_id = st.text_input("Enter material id:", placeholder='mp-22862')
+elif input_type=='Elements':
+    _elements = st.text_input("Enter elements:", placeholder='Na, Cl')
+    elements = [item.strip() for item in _elements.split(',')]
 if not formula=="":
     with st.spinner("Searching..."):
-        docs = mpr.summary.search(formula=[formula], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
+        if input_type=='Formula':
+            docs = mpr.summary.search(formula=[formula], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
+        elif input_type=='Material ID':
+            docs = mpr.summary.search(material_ids=[material_id], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
+        elif input_type=='Elements':
+            docs = mpr.summary.search(elements=elements, fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
 
         if len(docs) > 0:
             st.success(f"Matching materials found: {len(docs)}")
