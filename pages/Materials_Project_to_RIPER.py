@@ -148,7 +148,8 @@ st.write('# Materials Project ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from Materials Project Database")
 
 # Search by material_id, formula or elements?
-input_type = st.selectbox("Search by:", ['Formula','Material ID','Elements'])
+# input_type = st.selectbox("Search by:", ['Formula','Material ID','Elements'])
+input_type = st.selectbox("Search by:", ['Formula','Material ID'])
 
 
 # Search for materials
