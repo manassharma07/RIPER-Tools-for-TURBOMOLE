@@ -168,7 +168,7 @@ elif input_type=='Material ID':
         with st.spinner("Searching..."):
             docs = mpr.summary.search(material_ids=[material_id], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
 elif input_type=='Elements':
-    if not elements=="":
+    if not _elements=="":
         with st.spinner("Searching..."):
             docs = mpr.summary.search(elements=elements, fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
 
