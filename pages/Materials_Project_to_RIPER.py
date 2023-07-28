@@ -159,13 +159,17 @@ elif input_type=='Material ID':
 elif input_type=='Elements':
     _elements = st.text_input("Enter elements:", placeholder='Na, Cl')
     elements = [item.strip() for item in _elements.split(',')]
-if not formula=="":
-    with st.spinner("Searching..."):
-        if input_type=='Formula':
+if input_type=='Formula':
+    if not formula=="":
+        with st.spinner("Searching..."):
             docs = mpr.summary.search(formula=[formula], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
-        elif input_type=='Material ID':
+elif input_type=='Material ID':
+    if not material_id=="":
+        with st.spinner("Searching..."):
             docs = mpr.summary.search(material_ids=[material_id], fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
-        elif input_type=='Elements':
+elif input_type=='Elements':
+    if not elements=="":
+        with st.spinner("Searching..."):
             docs = mpr.summary.search(elements=elements, fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
 
         if len(docs) > 0:
