@@ -1,5 +1,6 @@
 import streamlit as st
 from mp_api.client import MPRester
+from pymatgen.core import Structure
 from pymatgen.io.cif import CifWriter
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.io.cif import CifParser
@@ -221,8 +222,12 @@ def parse_cif_ase(stringio):
 def parse_car_ase(stringio):
     # Read CAR
     atoms = read_dmol_car(stringio)
-    # Convert ASE Atoms to pymatgen Structure
-    structure = AseAtomsAdaptor().get_structure(atoms)
+
+    # Convert ASE Atoms to pymatgen Structure (determine if CAR file is 3D periodicity or not)
+    if all(atoms.pbc):
+        structure = AseAtomsAdaptor().get_structure(atoms)
+    else:
+        structure = AseAtomsAdaptor().get_molecule(atoms)
     return structure
 
 
@@ -280,9 +285,11 @@ if contents != '':
     elif file_format == "XYZ":
         structure = parse_xyz(contents)
     elif file_format == "CAR (Materials Studio)":
-        # structure = parse_car(contents)
         stringio_obj_car = StringIO(contents)
-        structure = parse_car_ase(stringio_obj_car)
+        try:
+            structure = parse_car_ase(stringio_obj_car)
+        except Exception:
+            raise Exception("Wrong CAR format or PBC is not set to ON or OFF (PBC=2D is not supported here).")
     elif file_format == "POSCAR":
         structure = parse_poscar(contents)
     elif file_format == "Quantum ESPRESSO (PWSCF)":
@@ -301,20 +308,29 @@ if contents != '':
     # st.write(structure)
 
     # Display structure information
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):  # type = Structure
         display_structure_info(structure)
-    else:
+    else:  # type = Molecule
         st.subheader("Atomic Coordinates")
-        # Create a dataframe with atomic symbols and atomic coordinates
+    # if not file_format == 'XYZ' :
+    #     display_structure_info(structure)
+    # elif file_format == 'CAR (Materials Studio)':
+    #     if isinstance(structure, Structure):  # type = Structure
+    #         display_structure_info(structure)
+    #     else:  # type = Molecule
+    #         st.subheader("Atomic Coordinates")
+    # else:
+    #     st.subheader("Atomic Coordinates")
+    #     # Create a dataframe with atomic symbols and atomic coordinates
 
     # Visualize the structure
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):
         visualize_structure(structure, "viz1.html")
-    else:
+    else:  # type = Molecule
         visualize_molecule(structure, "viz1.html")
 
     # Download CIF files
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):
         st.subheader("Download CIF Files")
 
         convert_to_cif(structure, "structure.cif")
@@ -329,7 +345,7 @@ if contents != '':
     coords_text = generate_coord_text(coords_bohr)
 
     # Generate the lattice parameter text
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):
         lattice_text = generate_lattice_text(structure)
 
     # Create two columns for text boxes
@@ -341,12 +357,12 @@ if contents != '':
                      key='coords_text')
         st.download_button('Download coord file', coords_text, file_name='coord', key='control_text')
 
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):
         # Display the lattice parameters text in the second column
         with col2:
             st.text_area("Add the following to your control file", value=lattice_text, height=300)
 
-    if not file_format == 'XYZ':
+    if isinstance(structure, Structure):
         # Create supercells
         # with st.expander("Model Supercell", expanded=False):
         st.subheader('Model Supercell')
