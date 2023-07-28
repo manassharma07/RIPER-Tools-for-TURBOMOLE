@@ -172,25 +172,26 @@ elif input_type=='Elements':
         with st.spinner("Searching..."):
             docs = mpr.summary.search(elements=elements, fields=["structure", "band_gap", "material_id", "is_stable", "is_metal", "symmetry", "formula_pretty"])
 
-        if len(docs) > 0:
-            st.success(f"Matching materials found: {len(docs)}")
+if docs is not None:
+    if len(docs) > 0:
+        st.success(f"Matching materials found: {len(docs)}")
 
-            # Display materials as a table
-            table_data = []
-            for doc in docs:
-                table_data.append({
-                    "Material ID": doc.material_id,
-                    "Band Gap": doc.band_gap,
-                    "Crystal System": str(doc.symmetry.crystal_system),
-                    "Symbol": str(doc.symmetry.symbol),
-                    "Group": str(doc.symmetry.point_group),
-                    "Formula": doc.formula_pretty,
-                    "Is Stable": doc.is_stable,
-                    "Is Metal": doc.is_metal
-                })
-            st.table(table_data)
-        else:
-            st.warning("No materials found for the given formula.")
+        # Display materials as a table
+        table_data = []
+        for doc in docs:
+            table_data.append({
+                "Material ID": doc.material_id,
+                "Band Gap": doc.band_gap,
+                "Crystal System": str(doc.symmetry.crystal_system),
+                "Symbol": str(doc.symmetry.symbol),
+                "Group": str(doc.symmetry.point_group),
+                "Formula": doc.formula_pretty,
+                "Is Stable": doc.is_stable,
+                "Is Metal": doc.is_metal
+            })
+        st.table(table_data)
+    else:
+        st.warning("No materials found for the given formula.")
 
 if docs is not None:
 
