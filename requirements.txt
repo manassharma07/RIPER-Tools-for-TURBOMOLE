@@ -7,3 +7,4 @@ py3Dmol
 ipython
 pubchempy
 ase
+openpyxl
