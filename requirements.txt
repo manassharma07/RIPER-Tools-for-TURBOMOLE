@@ -1,6 +1,6 @@
 streamlit
 pymatgen
-mp-api
+mp-api==34.0
 pandas
 numpy
 py3Dmol
@@ -8,5 +8,3 @@ ipython
 pubchempy
 ase
 openpyxl
-botocore
-emmet-core
