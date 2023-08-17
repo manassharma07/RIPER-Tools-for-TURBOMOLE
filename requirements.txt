@@ -1,6 +1,6 @@
 streamlit
 pymatgen
-mp-api==34.0
+mp-api==0.34.0
 pandas
 numpy
 py3Dmol
