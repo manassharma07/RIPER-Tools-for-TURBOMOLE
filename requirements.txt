@@ -9,3 +9,4 @@ pubchempy
 ase
 openpyxl
 botocore
+emmet-core
