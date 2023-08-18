@@ -1,6 +1,6 @@
 streamlit
 pymatgen
-mp-api==0.34.3
+mp-api==0.33.3
 pandas
 numpy
 py3Dmol
@@ -8,4 +8,3 @@ ipython
 pubchempy
 ase
 openpyxl
-emmet-core[all]==0.64.5
