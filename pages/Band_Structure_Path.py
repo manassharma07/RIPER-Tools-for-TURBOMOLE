@@ -140,13 +140,20 @@ def display_structure_info_ase(structure, atoms):
         "Lattice Parameters": [a, b, c, alpha, beta, gamma]
     }
     df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
-    with st.expander("Lattice Parameters", expanded=False):
+    with st.expander("Lattice Parameters (Angstroms)", expanded=False):
         st.table(df_latt_params)
 
     # Display lattice vectors
     lattice_vectors = atoms.cell[:]
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
-    with st.expander("Lattice Vectors", expanded=True):
+    with st.expander("Lattice Vectors (Angstroms)", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Display lattice vectors
+    lattice_vectors = atoms.get_reciprocal_cell()
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Reciprocal Lattice Vectors (1/Angstrom)", expanded=True):
         # st.write("Lattice Vectors:")
         st.table(df_vectors)
 
