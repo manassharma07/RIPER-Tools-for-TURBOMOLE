@@ -26,6 +26,32 @@ st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
+def create_structure_from_parameters(a, b, c, alpha, beta, gamma):
+    a_vec = [a, 0, 0]
+    b_vec = [b * np.cos(np.radians(gamma)), b * np.sin(np.radians(gamma)), 0]
+    c_x = c * np.cos(np.radians(beta))
+    c_y = c * (np.cos(np.radians(alpha)) - np.cos(np.radians(beta)) * np.cos(np.radians(gamma))) / np.sin(np.radians(gamma))
+    c_z = np.sqrt(c**2 - c_x**2 - c_y**2)
+    c_vec = [c_x, c_y, c_z]
+    
+    lattice_matrix = np.array([a_vec, b_vec, c_vec])
+    lattice = lattice_matrix.T
+    
+    return Structure(lattice, ["H"], [[0, 0, 0]])
+
+def generate_turbomole_text(bandpath_str):
+    special_points = bandpath_str.split(",")
+    kptlines = len(special_points) - 1
+    text = f"kptlines {kptlines}\n"
+    
+    for i in range(len(special_points) - 1):
+        start_point = special_points[i]
+        end_point = special_points[i + 1]
+        line = f"recipr {start_point} {end_point} 40\n"
+        text += line
+    
+    return text
+
 st.title('Band Structure Path')
 
 structure = None
@@ -58,10 +84,10 @@ else:
 if structure:
     if use_primitive:
         primitive_structure = structure.get_primitive_structure()
-        st.write("Converted to Primitive Structure! Using primitive structure from now on.")
+        st.success("Converted to Primitive Structure! Using primitive structure from now on.")
         atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
     else:
-        st.write("Using Conventional Structure:")
+        st.warning("Using Conventional Structure. May result in Band Folding")
         atoms = AseAtomsAdaptor.get_atoms(structure)
 
     lat = atoms.cell.get_bravais_lattice()
@@ -80,29 +106,5 @@ if structure:
     text_area_content = generate_turbomole_text(bandpath_str)
     turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
 
-def create_structure_from_parameters(a, b, c, alpha, beta, gamma):
-    a_vec = [a, 0, 0]
-    b_vec = [b * np.cos(np.radians(gamma)), b * np.sin(np.radians(gamma)), 0]
-    c_x = c * np.cos(np.radians(beta))
-    c_y = c * (np.cos(np.radians(alpha)) - np.cos(np.radians(beta)) * np.cos(np.radians(gamma))) / np.sin(np.radians(gamma))
-    c_z = np.sqrt(c**2 - c_x**2 - c_y**2)
-    c_vec = [c_x, c_y, c_z]
-    
-    lattice_matrix = np.array([a_vec, b_vec, c_vec])
-    lattice = lattice_matrix.T
-    
-    return Structure(lattice, ["H"], [[0, 0, 0]])
 
-def generate_turbomole_text(bandpath_str):
-    special_points = bandpath_str.split(",")
-    kptlines = len(special_points) - 1
-    text = f"kptlines {kptlines}\n"
-    
-    for i in range(len(special_points) - 1):
-        start_point = special_points[i]
-        end_point = special_points[i + 1]
-        line = f"recipr {start_point} {end_point} 40\n"
-        text += line
-    
-    return text
 
