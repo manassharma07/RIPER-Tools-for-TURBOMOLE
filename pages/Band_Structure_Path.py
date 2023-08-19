@@ -60,11 +60,93 @@ def generate_turbomole_text(nlines, bandpath_str, special_points):
             end_point = special_points[substring[i + 1]]
             start_point_str = format_coordinate(start_point)
             end_point_str = format_coordinate(end_point)
-            line = f"  recipr    {start_point_str}    {end_point_str}    40\n"
+            line = f"    recipr    {start_point_str}    {end_point_str}    40\n"
             text += line
 
-    text = f"$kpoints \n  kptlines {nlines}\n" + text
+    text = f"$kpoints \n    kptlines {nlines}\n" + text
     return text
+
+# Function to generate lattice parameter text
+def generate_lattice_text(structure):
+    lattice_params = structure.lattice.abc
+    angles = structure.lattice.angles
+    lattice_text = "$cell angs\n"
+    lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    lattice_text += "$periodic 3\n"
+    lattice_text += "$kpoints\n"
+    lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
+    return lattice_text
+
+# Function to display structure information
+def display_structure_info(structure):
+    st.subheader("Structure Information")
+    st.write("Formula: ", structure.composition.reduced_formula)
+
+    # Display lattice parameters
+    a, b, c = structure.lattice.abc
+    alpha, beta, gamma = structure.lattice.angles
+
+    # Create a DataFrame for the lattice parameters and angles
+    data = {
+        "Lattice Parameters": [a, b, c, alpha, beta, gamma]
+    }
+    df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
+
+    # Display lattice vectors
+    lattice_vectors = structure.lattice.matrix
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Create a list of atomic coordinates
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        if coord_type == 'Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
+
+# Function to visualize the structure using py3Dmol
+def visualize_structure(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="cif")
+    view.addModel(cif_for_visualization, 'cif')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.addUnitCell()
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
+
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=900)
+    HtmlFile.close()
 
 st.title('Band Structure Path')
 
@@ -98,10 +180,14 @@ else:
 if structure:
     if use_primitive:
         primitive_structure = structure.get_primitive_structure()
+        visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
+        display_structure_info(primitive_structure)
         atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
+        visualize_structure(structure, "viz1.html")
+        display_structure_info(structure)
         atoms = AseAtomsAdaptor.get_atoms(structure)
 
     lat = atoms.cell.get_bravais_lattice()
@@ -119,8 +205,9 @@ if structure:
     st.write("#### Number of lines (paths) in band structure:", nlines)
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
-    text_area_content = generate_turbomole_text(nlines, bandpath_str, special_points)
-    turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
+    bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points)
+    # lattice_info_input = generate_lattice_text(structure)
+    turbomole_text = st.text_area("`control` file text", value=bandstructure_input, height=200)
 
 
 
