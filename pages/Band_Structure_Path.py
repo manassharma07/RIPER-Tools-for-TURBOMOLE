@@ -125,7 +125,7 @@ if structure:
     st.write("#### Number of lines (paths) in band structure:", nlines)
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
-    text_area_content = generate_turbomole_text(bandpath_str)
+    text_area_content = generate_turbomole_text(bandpath_str, special_points)
     turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
 
 
