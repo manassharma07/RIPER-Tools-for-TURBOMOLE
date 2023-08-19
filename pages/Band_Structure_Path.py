@@ -28,6 +28,8 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 
 st.title('Band Structure Path')
 
+structure = None
+
 cif_file = st.file_uploader("Upload CIF file")
 cif_contents = st.text_area("Or paste CIF contents here")
 
