@@ -46,7 +46,7 @@ def calculate_nlines(bandpath_str):
     return nlines
 
 def format_coordinate(coord):
-    return " ".join(f"{c:.6f}" for c in coord)
+    return "    ".join(f"{c:.6f}" for c in coord)
 
 def generate_turbomole_text(nlines, bandpath_str, special_points):
     substrings = bandpath_str.split(",")
@@ -60,7 +60,7 @@ def generate_turbomole_text(nlines, bandpath_str, special_points):
             end_point = special_points[substring[i + 1]]
             start_point_str = format_coordinate(start_point)
             end_point_str = format_coordinate(end_point)
-            line = f"  recipr    {start_point_str}    {end_point_str} 40\n"
+            line = f"  recipr    {start_point_str}    {end_point_str}    40\n"
             text += line
 
     text = f"$kpoints \n  kptlines {nlines}\n" + text
