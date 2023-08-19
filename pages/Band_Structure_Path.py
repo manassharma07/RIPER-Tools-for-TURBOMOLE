@@ -132,8 +132,8 @@ def display_structure_info_ase(structure, atoms):
     # Display lattice parameters
     # a, b, c = structure.lattice.abc
     # alpha, beta, gamma = structure.lattice.angles
-    a, b, c = atoms.cell.lengths.tolist()
-    alpha, beta, gamma = atoms.cell.angles.tolist()
+    a, b, c = atoms.cell.lengths()
+    alpha, beta, gamma = atoms.cell.angles()
 
     # Create a DataFrame for the lattice parameters and angles
     data = {
