@@ -53,31 +53,32 @@ else:
     else:
         st.write("Please upload a CIF file or paste its contents.")
 
-if use_primitive:
-    primitive_structure = structure.get_primitive_structure()
-    st.write("Primitive structure:")
-    st.write(primitive_structure)
-    atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
-else:
-    st.write("Conventional structure:")
-    st.write(structure)
-    atoms = AseAtomsAdaptor.get_atoms(structure)
+if structure:
+    if use_primitive:
+        primitive_structure = structure.get_primitive_structure()
+        st.write("Primitive structure:")
+        st.write(primitive_structure)
+        atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
+    else:
+        st.write("Conventional structure:")
+        st.write(structure)
+        atoms = AseAtomsAdaptor.get_atoms(structure)
 
-lat = atoms.cell.get_bravais_lattice()
-special_points = lat.get_special_points()
+    lat = atoms.cell.get_bravais_lattice()
+    special_points = lat.get_special_points()
 
-st.write("Special k-points:")
-st.write(special_points)
+    st.write("Special k-points:")
+    st.write(special_points)
 
-bandpath = atoms.cell.bandpath()
-bandpath_str = bandpath.path
-nlines = bandpath_str.count(",") + 1
+    bandpath = atoms.cell.bandpath()
+    bandpath_str = bandpath.path
+    nlines = bandpath_str.count(",") + 1
 
-st.write("Number of lines (paths) in band structure:", nlines)
+    st.write("Number of lines (paths) in band structure:", nlines)
 
-st.write("Generate TURBOMOLE band structure calculation text:")
-text_area_content = generate_turbomole_text(bandpath_str)
-turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
+    st.write("Generate TURBOMOLE band structure calculation text:")
+    text_area_content = generate_turbomole_text(bandpath_str)
+    turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
 
 def create_structure_from_parameters(a, b, c, alpha, beta, gamma):
     a_vec = [a, 0, 0]
