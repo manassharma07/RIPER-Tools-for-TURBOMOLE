@@ -149,21 +149,21 @@ def display_structure_info_ase(structure, atoms):
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
     with st.expander("Lattice Vectors (Angstroms)", expanded=True):
         # st.write("Lattice Vectors:")
-        st.table(df_vectors)
+        st.table(df_vectors.style.format('{:.8f}'))
 
     # Display lattice vectors in aotmic units
     lattice_vectors = atoms.cell[:]*1.8897268777744
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
     with st.expander("Lattice Vectors (Atomic Units)", expanded=False):
         # st.write("Lattice Vectors:")
-        st.table(df_vectors)
+        st.table(df_vectors.style.format('{:.8f}'))
 
     # Display reciprocal lattice vectors
     lattice_vectors = atoms.get_reciprocal_cell()
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
     with st.expander("Reciprocal Lattice Vectors (1/Angstrom) [Also without a 2pi factor]", expanded=False):
         # st.write("Lattice Vectors:")
-        st.table(df_vectors)
+        st.table(df_vectors.style.format('{:.8f}'))
 
     # Create a list of atomic coordinates
     with st.expander("Atomic Coordinates", expanded=False):
@@ -182,7 +182,7 @@ def display_structure_info_ase(structure, atoms):
 
         # Display the atomic coordinates as a table
         # st.write("Atomic Coordinates:")
-        st.table(df_coords)
+        st.table(df_coords.style.format('{:.8f}'))
 
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
