@@ -182,7 +182,7 @@ def display_structure_info_ase(structure, atoms):
 
         # Display the atomic coordinates as a table
         # st.write("Atomic Coordinates:")
-        st.table(df_coords.style.format('{:.8f}'))
+        st.table(df_coords)
 
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
