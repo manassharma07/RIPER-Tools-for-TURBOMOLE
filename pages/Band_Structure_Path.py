@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-from pymatgen import Structure
+from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 
