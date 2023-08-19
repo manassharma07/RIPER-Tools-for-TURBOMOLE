@@ -152,7 +152,7 @@ def display_structure_info_ase(structure, atoms):
         st.table(df_vectors.style.format('{:.8f}'))
 
     # Display lattice vectors in aotmic units
-    lattice_vectors = atoms.cell[:]*1.8897268777744
+    lattice_vectors = atoms.cell[:]*(1/0.52917721092)
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
     with st.expander("Lattice Vectors (Atomic Units)", expanded=False):
         # st.write("Lattice Vectors:")
