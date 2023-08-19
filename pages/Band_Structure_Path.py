@@ -233,8 +233,8 @@ if structure:
         primitive_structure = structure.get_primitive_structure()
         visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
-        display_structure_info(primitive_structure)
-        # atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
+        # display_structure_info(primitive_structure)
+        atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
         display_structure_info_ase(primitive_structure, atoms)
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
