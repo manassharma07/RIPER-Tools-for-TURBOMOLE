@@ -2,6 +2,10 @@ import streamlit as st
 import numpy as np
 from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
+import py3Dmol
+import pandas as pd
+import streamlit.components.v1 as components
+from io import StringIO
 
 
 # Set page config
