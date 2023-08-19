@@ -163,7 +163,9 @@ use_primitive = st.checkbox("Convert to primitive cell?", value=True)
 if not use_primitive:
     st.warning("Warning: Band structure might be affected by band folding if not using primitive cell.")
 
-lattice_parameters_manual = st.checkbox("Enter lattice parameters manually")
+# lattice_parameters_manual = st.checkbox("Enter lattice parameters manually")
+lattice_parameters_manual = False
+
 if lattice_parameters_manual:
     a = st.number_input("a", value=1.0)
     b = st.number_input("b", value=1.0)
