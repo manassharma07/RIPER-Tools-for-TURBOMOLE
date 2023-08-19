@@ -165,6 +165,13 @@ def display_structure_info_ase(structure, atoms):
         # st.write("Lattice Vectors:")
         st.table(df_vectors.style.format('{:.8f}'))
 
+    # Display reciprocal lattice vectors
+    lattice_vectors = atoms.get_reciprocal_cell()*(0.52917721092)*2*np.pi
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Reciprocal Lattice Vectors (1/Bohr) [With a 2pi factor]", expanded=False):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors.style.format('{:.8f}'))
+
     # Create a list of atomic coordinates
     with st.expander("Atomic Coordinates", expanded=False):
         coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
