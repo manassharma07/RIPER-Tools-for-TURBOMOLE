@@ -235,13 +235,13 @@ if structure:
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
         display_structure_info(primitive_structure)
         # atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
-        display_structure_info_ase(atoms)
+        display_structure_info_ase(primitive_structure, atoms)
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
         visualize_structure(structure, "viz1.html")
         # display_structure_info(structure)
         atoms = AseAtomsAdaptor.get_atoms(structure)
-        display_structure_info_ase(atoms)
+        display_structure_info_ase(structure, atoms)
 
     lat = atoms.cell.get_bravais_lattice()
     special_points = lat.get_special_points()
