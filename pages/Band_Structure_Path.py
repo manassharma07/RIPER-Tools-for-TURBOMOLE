@@ -150,10 +150,17 @@ def display_structure_info_ase(structure, atoms):
         # st.write("Lattice Vectors:")
         st.table(df_vectors)
 
-    # Display lattice vectors
+    # Display lattice vectors in aotmic units
+    lattice_vectors = atoms.cell[:]*1.8897268777744
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors (Atomic Units)", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Display reciprocal lattice vectors
     lattice_vectors = atoms.get_reciprocal_cell()
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
-    with st.expander("Reciprocal Lattice Vectors (1/Angstrom)", expanded=True):
+    with st.expander("Reciprocal Lattice Vectors (1/Angstrom) [Also without a 2pi factor]", expanded=True):
         # st.write("Lattice Vectors:")
         st.table(df_vectors)
 
