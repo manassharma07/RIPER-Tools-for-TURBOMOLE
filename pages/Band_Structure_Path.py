@@ -39,22 +39,30 @@ def create_structure_from_parameters(a, b, c, alpha, beta, gamma):
     
     return Structure(lattice, ["H"], [[0, 0, 0]])
 
-# def generate_turbomole_text(bandpath_str):
-#     special_points = bandpath_str.split(",")
-#     kptlines = len(special_points) - 1
-#     text = f"kptlines {kptlines}\n"
-    
-#     for i in range(len(special_points) - 1):
-#         start_point = special_points[i]
-#         end_point = special_points[i + 1]
-#         line = f"recipr {start_point} {end_point} 40\n"
-#         text += line
-    
-#     return text
+
 def calculate_nlines(bandpath_str):
     substrings = bandpath_str.split(",")
     nlines = sum(len(substring) - 1 for substring in substrings)
     return nlines
+
+# def generate_turbomole_text(bandpath_str, special_points):
+#     substrings = bandpath_str.split(",")
+#     text = ""
+
+#     for substring in substrings:
+#         n_chars = len(substring)
+
+#         for i in range(n_chars - 1):
+#             start_point = special_points[substring[i]]
+#             end_point = special_points[substring[i + 1]]
+#             line = f"recipr {start_point} {end_point} 40\n"
+#             text += line
+
+#     text = f"kptlines {calculate_nlines(bandpath_str)}\n" + text
+#     return text
+
+def format_coordinate(coord):
+    return " ".join(f"{c:.6f}" for c in coord)
 
 def generate_turbomole_text(bandpath_str, special_points):
     substrings = bandpath_str.split(",")
@@ -66,7 +74,9 @@ def generate_turbomole_text(bandpath_str, special_points):
         for i in range(n_chars - 1):
             start_point = special_points[substring[i]]
             end_point = special_points[substring[i + 1]]
-            line = f"recipr {start_point} {end_point} 40\n"
+            start_point_str = format_coordinate(start_point)
+            end_point_str = format_coordinate(end_point)
+            line = f"recipr {start_point_str} {end_point_str} 40\n"
             text += line
 
     text = f"kptlines {calculate_nlines(bandpath_str)}\n" + text
@@ -77,7 +87,7 @@ st.title('Band Structure Path')
 structure = None
 
 cif_file = st.file_uploader("Upload CIF file")
-cif_contents = st.text_area("Or paste CIF contents here")
+cif_contents = st.text_area("Or paste CIF contents here", height=300)
 
 use_primitive = st.checkbox("Convert to primitive cell?", value=True)
 if not use_primitive:
