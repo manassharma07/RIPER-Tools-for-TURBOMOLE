@@ -45,26 +45,10 @@ def calculate_nlines(bandpath_str):
     nlines = sum(len(substring) - 1 for substring in substrings)
     return nlines
 
-# def generate_turbomole_text(bandpath_str, special_points):
-#     substrings = bandpath_str.split(",")
-#     text = ""
-
-#     for substring in substrings:
-#         n_chars = len(substring)
-
-#         for i in range(n_chars - 1):
-#             start_point = special_points[substring[i]]
-#             end_point = special_points[substring[i + 1]]
-#             line = f"recipr {start_point} {end_point} 40\n"
-#             text += line
-
-#     text = f"kptlines {calculate_nlines(bandpath_str)}\n" + text
-#     return text
-
 def format_coordinate(coord):
     return " ".join(f"{c:.6f}" for c in coord)
 
-def generate_turbomole_text(bandpath_str, special_points):
+def generate_turbomole_text(nlines, bandpath_str, special_points):
     substrings = bandpath_str.split(",")
     text = ""
 
@@ -76,10 +60,10 @@ def generate_turbomole_text(bandpath_str, special_points):
             end_point = special_points[substring[i + 1]]
             start_point_str = format_coordinate(start_point)
             end_point_str = format_coordinate(end_point)
-            line = f"recipr {start_point_str} {end_point_str} 40\n"
+            line = f"  recipr    {start_point_str}    {end_point_str} 40\n"
             text += line
 
-    text = f"kptlines {calculate_nlines(bandpath_str)}\n" + text
+    text = f"$kpoints \n  kptlines {nlines}\n" + text
     return text
 
 st.title('Band Structure Path')
@@ -135,7 +119,7 @@ if structure:
     st.write("#### Number of lines (paths) in band structure:", nlines)
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
-    text_area_content = generate_turbomole_text(bandpath_str, special_points)
+    text_area_content = generate_turbomole_text(nlines, bandpath_str, special_points)
     turbomole_text = st.text_area("TURBOMOLE input text", value=text_area_content, height=200)
 
 
