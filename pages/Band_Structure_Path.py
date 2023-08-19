@@ -124,6 +124,51 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+# Function to display structure information
+def display_structure_info_ase(structure, atoms):
+    st.subheader("Structure Information")
+    st.write("Formula: ", structure.composition.reduced_formula)
+
+    # Display lattice parameters
+    # a, b, c = structure.lattice.abc
+    # alpha, beta, gamma = structure.lattice.angles
+    a, b, c = atoms.cell.lengths
+    alpha, beta, gamma = atoms.cell.angles
+
+    # Create a DataFrame for the lattice parameters and angles
+    data = {
+        "Lattice Parameters": [a, b, c, alpha, beta, gamma]
+    }
+    df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
+
+    # Display lattice vectors
+    lattice_vectors = atoms.cell[:]
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Create a list of atomic coordinates
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        if coord_type == 'Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
+
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
     spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
@@ -189,12 +234,14 @@ if structure:
         visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
         display_structure_info(primitive_structure)
-        atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
+        # atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
+        display_structure_info_ase(atoms)
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
         visualize_structure(structure, "viz1.html")
-        display_structure_info(structure)
+        # display_structure_info(structure)
         atoms = AseAtomsAdaptor.get_atoms(structure)
+        display_structure_info_ase(atoms)
 
     lat = atoms.cell.get_bravais_lattice()
     special_points = lat.get_special_points()
