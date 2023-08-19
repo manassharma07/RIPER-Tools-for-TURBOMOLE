@@ -142,7 +142,7 @@ def display_structure_info_ase(structure, atoms):
     }
     df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
     with st.expander("Lattice Parameters (Angstroms)", expanded=False):
-        st.table(df_latt_params)
+        st.write(df_latt_params)
 
     # Display lattice vectors
     lattice_vectors = atoms.cell[:]
