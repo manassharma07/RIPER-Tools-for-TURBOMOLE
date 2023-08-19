@@ -208,12 +208,14 @@ if structure:
     st.write(bandpath_str)
     nlines = calculate_nlines(bandpath_str)
 
-    st.write("#### Number of lines (paths) in band structure:", nlines)
+    st.write("### Number of lines (paths) in band structure:", nlines)
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
     bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points)
     # lattice_info_input = generate_lattice_text(structure)
     turbomole_text = st.text_area("`control` file text", value=bandstructure_input, height=200)
+    st.warning('Please also make sure that the `Direct space cell vectors` in the `riper` output file have the same sign as\\
+        the lattice vectors of the parsed structure (shown above).')
 
 
 
