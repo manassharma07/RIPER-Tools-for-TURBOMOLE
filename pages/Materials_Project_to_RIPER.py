@@ -207,7 +207,7 @@ if docs is not None:
     primitive_structure = analyzer.get_primitive_standard_structure()
 
     # Choose between primitive or conventional
-    selected_structure_type = st.selectbox("Unit cell type:", ['Primitve Cell','Conventional Unit Cell'])
+    selected_structure_type = st.selectbox("Unit cell type:", ['Primitive Cell','Conventional Unit Cell'])
 
     # Display structure information
     if selected_structure_type=='Primitive Cell':
