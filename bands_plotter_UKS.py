@@ -4,18 +4,18 @@ import matplotlib.pyplot as plt
 
 ######### INPUT STUFF
 # Define the filename
-filename = "C:/Users/manas/Documents/LK99/github/LK99/TURBOMOLE_DFT_Calculations/bands_TPSS.xyz"
+filename = "C:/Users/manas/Documents/LK99/github/LK99/TURBOMOLE_DFT_Calculations/bands_PBE_new.xyz"
 
 # Define the energy range for plotting (in eV)
 energy_range_min = -1  # Modify this according to your desired range
 energy_range_max = 0.1   # Modify this according to your desired range
 # User-provided energy shift value
-energy_shift =  -0.088521#-0.094143#-0.035363#-0.09
+energy_shift =  -0.090019#-0.088521#-0.094143#-0.035363#-0.09
 # Num k-points for each band
 num_k_points = 360
 # K-point labels
 kpoint_labels_plot = ['Γ', 'M', 'K', 'Γ', 'A', 'L', 'H', 'A|L', 'M|K', 'H']
-kpoint_ticks = [0.0000000, 0.1944399225, 0.3709054431, 0.7182621428, 0.9516852395, 1.1518848865, 1.3283504070, 1.6757071068, 1.9091302034, 2.1395191840]
+kpoint_ticks = [0.0000000, 0.1944399225, 0.3116854872, 0.5390837981, 0.7694699734, 0.9696696205, 1.0869151852, 1.3143134960, 1.5446996714, 1.7750886520]
 
 
 

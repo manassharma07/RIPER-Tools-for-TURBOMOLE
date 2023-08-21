@@ -77,8 +77,8 @@ def generate_lattice_text(structure):
     lattice_text = "$cell angs\n"
     lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
     lattice_text += "$periodic 3\n"
-    lattice_text += "$kpoints\n"
-    lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
+    # lattice_text += "$kpoints\n"
+    # lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
     return lattice_text
 
 # Function to display structure information
@@ -281,8 +281,8 @@ if structure:
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
     bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points)
-    # lattice_info_input = generate_lattice_text(structure)
-    turbomole_text = st.text_area("`control` file text", value=bandstructure_input, height=200)
+    lattice_info_input = generate_lattice_text(structure)
+    turbomole_text = st.text_area("`control` file text", value=lattice_info_input + bandstructure_input, height=200)
     st.warning('Please also make sure that the `Direct space cell vectors` in the `riper` output file have the same sign as the lattice vectors of the parsed structure (shown above).')
 
 
