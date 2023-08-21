@@ -308,8 +308,8 @@ if structure:
         lattice_info_input = generate_lattice_text(primitive_structure)
     else:
         lattice_info_input = generate_lattice_text(structure)
-    turbomole_text = st.text_area("`control` file text", value=lattice_info_input + bandstructure_input, height=200)
+    turbomole_text = st.text_area("`control` file text", value=lattice_info_input + bandstructure_input, height=300)
     st.warning('Please also make sure that the `Direct space cell vectors` in the `riper` output file have the same sign as the lattice vectors of the parsed structure (shown above).')
-
+    st.text_area("`coords` file text", value=coords_text, height=500)
 
 
