@@ -70,6 +70,20 @@ def generate_turbomole_text(nlines, bandpath_str, special_points):
     text = f"$kpoints \n    kptlines {nlines}\n" + text
     return text
 
+# Function to convert atomic coordinates to Bohr units
+def convert_to_bohr(structure):
+    coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
+    return [(x * 1.8897259886, y * 1.8897259886, z * 1.8897259886, element.lower()) for x, y, z, element in coords]
+
+
+# Function to generate coordinate text
+def generate_coord_text(coords_bohr):
+    coord_text = "$coord\n"
+    for coord in coords_bohr:
+        coord_text += f"{coord[0]:>20.14f}  {coord[1]:>20.14f}  {coord[2]:>20.14f}  {coord[3]:<2s}\n"
+    coord_text += "$end"
+    return coord_text
+
 # Function to generate lattice parameter text
 def generate_lattice_text(structure):
     lattice_params = structure.lattice.abc
@@ -281,7 +295,19 @@ if structure:
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
     bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points)
-    lattice_info_input = generate_lattice_text(structure)
+    # Convert the atomic coordinates to Bohr units
+    if use_primitive:
+        coords_bohr = convert_to_bohr(primitive_structure)
+    else:
+        coords_bohr = convert_to_bohr(structure)
+    # Generate the coordinate text
+    coords_text = generate_coord_text(coords_bohr)
+    
+    # Generate the lattice parameter text
+    if use_primitive:
+        lattice_info_input = generate_lattice_text(primitive_structure)
+    else:
+        lattice_info_input = generate_lattice_text(structure)
     turbomole_text = st.text_area("`control` file text", value=lattice_info_input + bandstructure_input, height=200)
     st.warning('Please also make sure that the `Direct space cell vectors` in the `riper` output file have the same sign as the lattice vectors of the parsed structure (shown above).')
 
