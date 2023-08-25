@@ -1,6 +1,6 @@
 [server]
 # Default: true
-enableCORS = false
+enableCORS = true
 
 # Enables support for Cross-Site Request Forgery (XSRF) protection, for added
 # security.
@@ -10,7 +10,7 @@ enableCORS = false
 # `server.enableXsrfProtection`.
 
 # Default: true
-enableXsrfProtection = false
+enableXsrfProtection = true
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 
