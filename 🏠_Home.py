@@ -35,7 +35,7 @@ text_intro = """
 This app allows you to create RIPER input files for a material in the [materialsproject.org](https://next-gen.materialsproject.org/) database or a molecule in the [PubChem database](https://pubchem.ncbi.nlm.nih.gov/). 
 Additionally it allows to convert CIFs, XYZs and POSCARs to RIPER format as well.
 You can also use it to get help with RIPER related examples, keywords, references, and tutorials. 
-You can also do things like band structure path generator for band structure calculations, plot density of states and unit conversions.
+You can also do things like band structure path generation for band structure calculations, plot density of states and unit conversions.
 
 You can select from a variety of options from the menu in the left sidebar."""
 st.write(text_intro)
