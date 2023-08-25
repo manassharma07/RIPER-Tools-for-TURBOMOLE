@@ -10,7 +10,7 @@ enableCORS = true
 # `server.enableXsrfProtection`.
 
 # Default: true
-enableXsrfProtection = true
+enableXsrfProtection = false
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 
