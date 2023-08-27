@@ -146,7 +146,9 @@ if contents != '':
     }
     df = pd.DataFrame(data)
     # Format large numbers without exponents in the DataFrame
-    df['Converted Value'] = df['Converted Value'].apply('{:.12g}'.format)
+    df['Kinetic Energy'] = df['Kinetic Energy'].apply('{:.12g}'.format)
+    df['Coulomb Energy'] = df['Coulomb Energy'].apply('{:.12g}'.format)
+    df['Total Energy'] = df['Total Energy'].apply('{:.12g}'.format)
 
     st.dataframe(df)
 
