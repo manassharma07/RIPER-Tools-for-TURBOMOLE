@@ -32,7 +32,7 @@ def parse_energies(text):
     return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy
 
 
-st.title("`RIPER` OUTPUT PARSER")
+st.title("`RIPER` Output Parser")
 
 st.write('You can either paste the output file contents below or upload the source file')
 contents = st.text_area(label='Enter the contents of the output file here', value='', placeholder='Put your text here',
@@ -78,7 +78,7 @@ if contents != '':
 
 
     # Find periodicity and lattice parameters
-    lines = file_contents.decode('utf-8').split('\n')
+    lines = file_contents.split('\n')
     cell_params_line = find_line_with_text(lines, "Cell parameters (au,deg.)")
     
     if cell_params_line is not None:
