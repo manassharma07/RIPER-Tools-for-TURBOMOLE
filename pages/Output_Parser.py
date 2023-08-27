@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
-from pymatgen.core import Structure, Lattice, Element
+from pymatgen.core import Structure, Lattice, Site, Element
+# from pymatgen.core.periodic_table import Element
 
 def find_line_with_text(lines, text):
     for line in lines:
@@ -140,13 +141,14 @@ if contents != '':
             lattice_vectors = []
             for line in lattice_lines:
                 lattice_vectors.append(list(map(float, line.split()[1:4])))
-            st.write(lattice_vectors)
             lattice = Lattice(lattice_vectors)
 
             # Create the sites using atomic coordinates
             sites = []
             for element, coords in atomic_coords:
-                site = (Element(element), coords)
+                species = Element(element)
+                fractional_coords = coords
+                site = Site(species, fractional_coords)
                 sites.append(site)
 
             # Create the Structure object
