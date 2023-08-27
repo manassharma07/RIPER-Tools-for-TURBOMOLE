@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
 from pymatgen.core import Structure, Lattice, Site, Element
+import py3Dmol
 # from pymatgen.core.periodic_table import Element
 
 def find_line_with_text(lines, text):
@@ -32,6 +33,76 @@ def parse_energies(text):
     
     return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy
 
+# Function to display structure information
+def display_structure_info(structure):
+    st.subheader("Structure Information")
+    st.write("Formula: ", structure.composition.reduced_formula)
+
+    # Display lattice parameters
+    a, b, c = structure.lattice.abc
+    alpha, beta, gamma = structure.lattice.angles
+
+    # Create a DataFrame for the lattice parameters and angles
+    data = {
+        "Lattice Parameters": [a, b, c, alpha, beta, gamma]
+    }
+    df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
+
+    # Display lattice vectors
+    lattice_vectors = structure.lattice.matrix
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Create a list of atomic coordinates
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        if coord_type == 'Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
+
+# Function to visualize the structure using py3Dmol
+def visualize_structure(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="cif")
+    view.addModel(cif_for_visualization, 'cif')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.addUnitCell()
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
+
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=900)
+    HtmlFile.close()
 
 st.title("`RIPER` Output Parser")
 
@@ -154,6 +225,11 @@ if contents != '':
                 species=[site["species"] for site in sites],
                 coords=[site["xyz"] for site in sites]
             )
+            # Display structure information
+            if isinstance(structure, Structure):  # type = Structure
+                display_structure_info(structure)
+                visualize_structure(structure, "viz1.html")
+
     else:
         st.error("Only output files of periodic DFT calculations can be visualized for now!")
 
