@@ -137,6 +137,7 @@ if contents != '':
             lattice_vectors = []
             for line in lattice_lines:
                 lattice_vectors.append(list(map(float, line.split()[1:4])))
+            st.write(lattice_vectors)
             lattice = Lattice(lattice_vectors)
 
             # Create the sites using atomic coordinates
