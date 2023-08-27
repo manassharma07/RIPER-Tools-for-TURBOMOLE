@@ -279,7 +279,11 @@ if docs is not None:
     else:
         supercell_structure = conventional_structure.copy()
         supercell_structure.make_supercell([int(nx), int(ny), int(nz)])
-    visualize_structure(supercell_structure, 'viz2.html')
+    # Get the number of atoms
+    num_atoms_supercell = supercell_structure.num_sites
+    if num_atoms_supercell<500:
+        visualize_structure(supercell_structure, 'viz2.html')
+    st.warning("We can't visualize your supercell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files for the Supercell")
