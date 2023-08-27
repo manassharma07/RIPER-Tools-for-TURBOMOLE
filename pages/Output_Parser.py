@@ -150,7 +150,7 @@ if contents != '':
                 fractional_coords = coords
                 site = Site(species, fractional_coords)
                 sites.append(site)
-
+            st.write(sites)
             # Create the Structure object
             structure = Structure(lattice, sites)
     else:
