@@ -89,6 +89,7 @@ if contents != '':
     cell_params_line = find_line_with_text(lines, "Cell parameters (au,deg.)")
     
     if cell_params_line is not None:
+        st.success("The output file indicates a periodic DFT calculation and the structure can be visualized!")
         fourth_line = lines[lines.index(cell_params_line) + 3]
         num_elements = len(fourth_line.split())
         
@@ -98,6 +99,8 @@ if contents != '':
             periodicity = 2
         elif num_elements == 1:
             periodicity = 1
+
+        st.write('#### Periodicity: '+str(periodicity))
 
         if periodicity==1:
             latt_param_a = fourth_line.split()[0]
