@@ -90,7 +90,7 @@ if contents != '':
     
     if cell_params_line is not None:
         st.success("The output file indicates a periodic DFT calculation and the structure can be visualized!")
-        fourth_line = lines[lines.index(cell_params_line) + 3]
+        fourth_line = lines[lines.index(cell_params_line) + 4]
         num_elements = len(fourth_line.split())
         
         if num_elements == 6:
@@ -151,4 +151,6 @@ if contents != '':
 
             # Create the Structure object
             structure = Structure(lattice, sites)
+    else:
+        st.error("Only output files of periodic DFT calculations can be visualized for now!")
 
