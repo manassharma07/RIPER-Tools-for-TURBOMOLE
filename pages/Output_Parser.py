@@ -34,6 +34,13 @@ def parse_energies(text):
 
 st.title("`RIPER` Output Parser")
 
+latt_param_a = None
+latt_param_b = None
+latt_param_c = None
+latt_param_alpha = None
+latt_param_beta = None
+latt_param_gamma = None
+
 st.write('You can either paste the output file contents below or upload the source file')
 contents = st.text_area(label='Enter the contents of the output file here', value='', placeholder='Put your text here',
                         height=400, key='input_text_area')
@@ -91,6 +98,20 @@ if contents != '':
             periodicity = 2
         elif num_elements == 1:
             periodicity = 1
+
+        if periodicity==1:
+            latt_param_a = fourth_line.split()[0]
+        if periodicity==2:
+            latt_param_a = fourth_line.split()[0]
+            latt_param_b = fourth_line.split()[1]
+            latt_param_gamma = fourth_line.split()[2]
+        if periodicity==3:
+            latt_param_a = fourth_line.split()[0]
+            latt_param_b = fourth_line.split()[1]
+            latt_param_c = fourth_line.split()[2]
+            latt_param_alpha = fourth_line.split()[3]
+            latt_param_beta = fourth_line.split()[4]
+            latt_param_gamma = fourth_line.split()[5]
             
         lattice_lines = []
         direct_space_line = find_line_with_text(lines, "Direct space cell vectors (au):")
@@ -115,7 +136,7 @@ if contents != '':
             # Create the lattice using the lattice vectors
             lattice_vectors = []
             for line in lattice_lines:
-                lattice_vectors.append(list(map(float, line.split()[:3])))
+                lattice_vectors.append(list(map(float, line.split()[1:4])))
             lattice = Lattice(lattice_vectors)
 
             # Create the sites using atomic coordinates
