@@ -146,13 +146,14 @@ if contents != '':
             # Create the sites using atomic coordinates
             sites = []
             for element, coords in atomic_coords:
-                species = Element(element)
-                fractional_coords = coords
-                site = Site(species, fractional_coords)
-                sites.append(site)
-            st.write(sites)
+                sites.append({"species": element, "xyz": coords})
+
             # Create the Structure object
-            structure = Structure(lattice, sites=sites)
+            structure = Structure(
+                lattice=lattice,
+                species=[site["species"] for site in sites],
+                coords=[site["xyz"] for site in sites]
+            )
     else:
         st.error("Only output files of periodic DFT calculations can be visualized for now!")
 
