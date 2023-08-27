@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
-from pymatgen.core import Structure, Lattice, Site, Element
+from pymatgen.core import Structure, Lattice
 import py3Dmol
-# from pymatgen.core.periodic_table import Element
+import streamlit.components.v1 as components
 
 def find_line_with_text(lines, text):
     for line in lines:
