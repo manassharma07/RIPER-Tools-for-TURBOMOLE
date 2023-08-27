@@ -45,7 +45,7 @@ if file is not None:
     contents = stringio.read()
 
 if contents != '':
-    file_contents = upload_file.read()
+    file_contents = contents#upload_file.read()
     energies = parse_energies(file_contents)
     
     st.subheader("Parsed Energies")
