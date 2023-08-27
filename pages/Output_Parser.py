@@ -152,7 +152,7 @@ if contents != '':
                 sites.append(site)
             st.write(sites)
             # Create the Structure object
-            structure = Structure(lattice, sites)
+            structure = Structure(lattice, sites=sites)
     else:
         st.error("Only output files of periodic DFT calculations can be visualized for now!")
 
