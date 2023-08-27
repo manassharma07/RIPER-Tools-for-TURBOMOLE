@@ -17,7 +17,7 @@ def parse_energies(text):
         elif "COULOMB ENERGY" in line:
             coulomb_energy.append(float(line.split()[4]))
         elif "EXCH. & CORR. ENERGY" in line:
-            exchange_corr_energy.append(float(line.split()[4]))
+            exchange_corr_energy.append(float(line.split()[6]))
         elif "TOTAL ENERGY" in line:
             total_energy.append(float(line.split()[4]))
     
