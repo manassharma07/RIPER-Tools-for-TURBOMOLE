@@ -13,13 +13,13 @@ def parse_energies(text):
     lines = text.split('\n')
     for line in lines:
         if "KINETIC ENERGY" in line:
-            kinetic_energy.append(float(line.split('=')[1]))
+            kinetic_energy.append(float(line.split()[4]))
         elif "COULOMB ENERGY" in line:
-            coulomb_energy.append(float(line.split('=')[1]))
+            coulomb_energy.append(float(line.split()[4]))
         elif "EXCH. & CORR. ENERGY" in line:
-            exchange_corr_energy.append(float(line.split('=')[1]))
+            exchange_corr_energy.append(float(line.split()[4]))
         elif "TOTAL ENERGY" in line:
-            total_energy.append(float(line.split('=')[1]))
+            total_energy.append(float(line.split()[4]))
     
     return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy
 
