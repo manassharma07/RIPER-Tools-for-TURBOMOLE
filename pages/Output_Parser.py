@@ -105,6 +105,7 @@ def visualize_structure(structure, html_file_name='viz.html'):
     HtmlFile.close()
 
 st.title("`RIPER` Output Parser")
+st.write('This tool lets you parse the output files from a RIPER calculation and show convergence plot, structure, etc.')
 
 latt_param_a = None
 latt_param_b = None
@@ -144,6 +145,9 @@ if contents != '':
         "Total Energy": energies[3]
     }
     df = pd.DataFrame(data)
+    # Format large numbers without exponents in the DataFrame
+    df['Converted Value'] = df['Converted Value'].apply('{:.12g}'.format)
+
     st.dataframe(df)
 
     st.subheader("Convergence (Energy vs SCF Iteration)")
@@ -231,5 +235,5 @@ if contents != '':
                 visualize_structure(structure, "viz1.html")
 
     else:
-        st.error("Only output files of periodic DFT calculations can be visualized for now!")
+        st.error("Only structures from periodic DFT calculations can be visualized for now!")
 
