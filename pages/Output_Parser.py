@@ -66,6 +66,6 @@ if contents != '':
     plt.ylabel("Energy")
     plt.title("Energy vs SCF Iteration")
     plt.legend()
-    st.pyplot()
+    st.pyplot(plt)
 
 
