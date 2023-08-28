@@ -21,6 +21,9 @@ tzero = None
 width = None
 sigma = None
 omega = None
+phase_x = None
+phase_y = None
+phase_z = None
 
 col1, col2, col3 = st.columns(3)
 amplitude_x = col1.text_input(label = 'Amplitude along x (a.u.)', value='2.0E-5',key='Ex')
