@@ -40,8 +40,8 @@ catUnitDict = {'energy': energyUnits, 'length': distUnits, 'frequency': freqUnit
 energy2au = {'ev': 0.036749405469679, 'au': 1.0, 'ha': 1.0, 'ryd': 0.5, 'kj/mol': 3.8088E-4, 'kcal/mol': 1.5936E-3,
             'kcal': 9.5968937625695E+20, 'joule': 2.2937126583579E+17, 'kj': 2.2937126583579E+20}
 # Conversion factor from arbitrary unit to au for Distance
-dist2au = {'bohr': 1.0, 'au': 1.0, 'angs': 1.8897268777744, 'um': 18897.268777744, 'nm': 18.897268777744,
-        'pm': 0.018897268777744, 'fm': 1.8897268777744E-5}
+dist2au = {'bohr': 1.0, 'au': 1.0, 'angs': 1/0.52917721092, 'um': 1/0.52917721092*1E4, 'nm': 1/0.52917721092*10,
+        'pm': 1/0.52917721092*1E-2, 'fm': 1/0.52917721092*1E-5}
 # Conversion factor from arbitrary unit to au for Time
 time2au = {'au': 1.0, 'fs': 41.341374575751, 'ps': 41341.374575751, 'as': 0.041341374575751, 's': 4.1341374575751E+16}
 # Conversion factor from arbitrary unit to au for Frequency
