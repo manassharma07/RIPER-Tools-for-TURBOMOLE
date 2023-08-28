@@ -13,6 +13,8 @@ def generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero,
 
 st.title("Input Creation for RT-TDDFT Simulation")
 
+st.write('## Set Electric Field Parameters')
+
 field_types = ["Static", "Gaussian", "Laser"]
 selected_field = st.selectbox("Select Field Type", field_types)
 
@@ -43,7 +45,7 @@ if selected_field == "Laser":
     phase_y = col2.text_input("Phase y (radians)", value='0.0')
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
-st.write('#### Input Text')
+st.write('## Input Text')
 st.write("Add the following to the `control` file:")
 st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
 
