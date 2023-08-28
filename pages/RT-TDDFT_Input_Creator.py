@@ -25,8 +25,8 @@ amplitude_z = col3.text_input(label = 'Amplitude along z (a.u.)', value='2.0E-5'
 
 if selected_field == "Gaussian":
     col1_gaussian, col2_gaussian = st.columns(2)
-    tzero = col1_gaussian.number_input("Peak Position (tzero)", value=0.0)
-    width = col2_gaussian.number_input("Peak Width (width)", value=0.0)
+    tzero = col1_gaussian.text_input("Peak Position (tzero in a.u.)", value='3.0')
+    width = col2_gaussian.text_input("Peak Width (width in a.u.)", value='0.2')
 
 if selected_field == "Laser":
     omega = st.number_input("Frequency (omega)", value=0.0)
