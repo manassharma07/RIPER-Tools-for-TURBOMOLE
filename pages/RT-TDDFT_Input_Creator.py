@@ -38,10 +38,10 @@ if selected_field == "Gaussian":
 if selected_field == "Laser":
     col1_laser, col2_laser = st.columns(2)
     omega = col1_laser.text_input("Frequency/a.u. (omega)", value='0.04556916') # 1.24 eV
-    sigma = col2_laser.text_input("FWHM/a.u. (sigma)", value='1379')
-    phase_x = col1.text_input("Phase x", value=0.0)
-    phase_y = col2.text_input("Phase y", value=0.0)
-    phase_z = col3.text_input("Phase z", value=0.0)
+    sigma = col2_laser.text_input("FWHM/a.u. (sigma)", value='1379.0')
+    phase_x = col1.text_input("Phase x (radians)", value='0.0')
+    phase_y = col2.text_input("Phase y (radians)", value='0.0')
+    phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
 st.write("Generated Electric Field Input:")
 st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
