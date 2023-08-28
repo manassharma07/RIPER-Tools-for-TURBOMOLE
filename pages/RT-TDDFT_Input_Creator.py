@@ -18,9 +18,10 @@ selected_field = st.selectbox("Select Field Type", field_types)
 
 st.write("Enter Electric Field Parameters:")
 
-amplitude_x = st.number_input("Amplitude x", value=0.0)
-amplitude_y = st.number_input("Amplitude y", value=0.0)
-amplitude_z = st.number_input("Amplitude z", value=0.0)
+col1, col2, col3 = st.columns(3)
+amplitude_x = col1.number_input("Amplitude x", value=0.0)
+amplitude_y = col2.number_input("Amplitude y", value=0.0)
+amplitude_z = col3.number_input("Amplitude z", value=0.0)
 
 if selected_field == "Gaussian":
     tzero = st.number_input("Peak Position (tzero)", value=0.0)
@@ -30,9 +31,9 @@ if selected_field == "Gaussian":
 if selected_field == "Laser":
     omega = st.number_input("Frequency (omega)", value=0.0)
     sigma = st.number_input("FWHM (sigma)", value=0.0)
-    phase_x = st.number_input("Phase x", value=0.0)
-    phase_y = st.number_input("Phase y", value=0.0)
-    phase_z = st.number_input("Phase z", value=0.0)
+    phase_x = col1.number_input("Phase x", value=0.0)
+    phase_y = col2.number_input("Phase y", value=0.0)
+    phase_z = col3.number_input("Phase z", value=0.0)
 
 st.write("Generated Electric Field Input:")
 st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
