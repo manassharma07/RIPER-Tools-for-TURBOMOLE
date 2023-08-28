@@ -11,7 +11,7 @@ def generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero,
 
 
 
-st.title("Laser Field Parameters for RT-TDDFT Simulation")
+st.title("Input Creation for RT-TDDFT Simulation")
 
 field_types = ["Static", "Gaussian", "Laser"]
 selected_field = st.selectbox("Select Field Type", field_types)
