@@ -2,11 +2,11 @@ import streamlit as st
 
 def generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
     if selected_field == "Static":
-        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\nstatic"
+        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\nstatic"
     elif selected_field == "Gaussian":
-        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\ngaussian tzero={tzero} width={width}"
+        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\n  gaussian tzero={tzero} width={width}"
     elif selected_field == "Laser":
-        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\nphase x={phase_x} y={phase_y} z={phase_z}\nlaser omega={omega} sigma={sigma}"
+        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\n  phase x={phase_x} y={phase_y} z={phase_z}\n  laser omega={omega} sigma={sigma}"
 
 
 
