@@ -46,6 +46,5 @@ if selected_field == "Laser":
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
 st.write('## Input Text')
-st.write("Add the following to the `control` file:")
-st.text_area(value=generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
+st.text_area(label="Add the following to the `control` file:", value=generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
