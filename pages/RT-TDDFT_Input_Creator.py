@@ -17,6 +17,10 @@ field_types = ["Static", "Gaussian", "Laser"]
 selected_field = st.selectbox("Select Field Type", field_types)
 
 st.write("Enter Electric Field Parameters:")
+tzero = None
+width = None
+sigma = None
+omega = None
 
 col1, col2, col3 = st.columns(3)
 amplitude_x = col1.text_input(label = 'Amplitude along x (a.u.)', value='2.0E-5',key='Ex')
@@ -29,11 +33,12 @@ if selected_field == "Gaussian":
     width = col2_gaussian.text_input("Peak Width (width in a.u.)", value='0.2')
 
 if selected_field == "Laser":
-    omega = st.number_input("Frequency (omega)", value=0.0)
-    sigma = st.number_input("FWHM (sigma)", value=0.0)
-    phase_x = col1.number_input("Phase x", value=0.0)
-    phase_y = col2.number_input("Phase y", value=0.0)
-    phase_z = col3.number_input("Phase z", value=0.0)
+    col1_laser, col2_laser = st.columns(2)
+    omega = col1_laser.text_input("Frequency/a.u. (omega)", value='0.04556916') # 1.24 eV
+    sigma = col2_laser.text_input("FWHM/a.u. (sigma)", value='1379')
+    phase_x = col1.text_input("Phase x", value=0.0)
+    phase_y = col2.text_input("Phase y", value=0.0)
+    phase_z = col3.text_input("Phase z", value=0.0)
 
 st.write("Generated Electric Field Input:")
 st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
