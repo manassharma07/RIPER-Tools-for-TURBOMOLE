@@ -24,9 +24,9 @@ amplitude_y = col2.text_input(label = 'Amplitude along y (a.u.)', value='2.0E-5'
 amplitude_z = col3.text_input(label = 'Amplitude along z (a.u.)', value='2.0E-5',key='Ez')
 
 if selected_field == "Gaussian":
-    tzero = st.number_input("Peak Position (tzero)", value=0.0)
-    width = st.number_input("Peak Width (width)", value=0.0)
-    st.write("Static field selected")
+    col1_gaussian, col2_gaussian = st.columns(2)
+    tzero = col1_gaussian.number_input("Peak Position (tzero)", value=0.0)
+    width = col2_gaussian.number_input("Peak Width (width)", value=0.0)
 
 if selected_field == "Laser":
     omega = st.number_input("Frequency (omega)", value=0.0)
