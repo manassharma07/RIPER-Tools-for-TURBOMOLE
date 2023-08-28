@@ -47,5 +47,5 @@ if selected_field == "Laser":
 
 st.write('## Input Text')
 st.write("Add the following to the `control` file:")
-st.text_area(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
+st.text_area(value=generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
