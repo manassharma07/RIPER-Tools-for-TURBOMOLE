@@ -219,7 +219,8 @@ if contents != '':
             lattice_vectors = []
             for line in lattice_lines:
                 lattice_vectors.append(list(map(float, line.split()[1:4])))
-            lattice = Lattice(float(lattice_vectors)/0.52917721092)
+            lattice = Lattice(float(lattice_vectors))
+            lattice = lattice/0.52917721092
 
             # Create the sites using atomic coordinates
             sites = []
