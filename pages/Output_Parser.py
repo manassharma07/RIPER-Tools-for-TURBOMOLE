@@ -182,15 +182,15 @@ if contents != '':
         st.write('#### Periodicity: '+str(periodicity))
 
         if periodicity==1:
-            latt_param_a = float(fourth_line.split()[0])/0.52917721092
+            latt_param_a = float(fourth_line.split()[0])*0.52917721092
         if periodicity==2:
-            latt_param_a = float(fourth_line.split()[0])/0.52917721092
-            latt_param_b = float(fourth_line.split()[1])/0.52917721092
+            latt_param_a = float(fourth_line.split()[0])*0.52917721092
+            latt_param_b = float(fourth_line.split()[1])*0.52917721092
             latt_param_gamma = float(fourth_line.split()[2])
         if periodicity==3:
-            latt_param_a = float(fourth_line.split()[0])/0.52917721092
-            latt_param_b = float(fourth_line.split()[1])/0.52917721092
-            latt_param_c = float(fourth_line.split()[2])/0.52917721092
+            latt_param_a = float(fourth_line.split()[0])*0.52917721092
+            latt_param_b = float(fourth_line.split()[1])*0.52917721092
+            latt_param_c = float(fourth_line.split()[2])*0.52917721092
             latt_param_alpha = float(fourth_line.split()[3])
             latt_param_beta = float(fourth_line.split()[4])
             latt_param_gamma = float(fourth_line.split()[5])
@@ -220,7 +220,7 @@ if contents != '':
             for line in lattice_lines:
                 lattice_vectors.append(list(map(float, line.split()[1:4])))
             lattice = Lattice(lattice_vectors)
-            lattice = lattice.matrix/0.52917721092
+            lattice = lattice.matrix*0.52917721092
 
             # Create the sites using atomic coordinates
             sites = []
