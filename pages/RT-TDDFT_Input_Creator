@@ -1,0 +1,39 @@
+import streamlit as st
+
+def generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
+    if selected_field == "Static":
+        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\nstatic"
+    elif selected_field == "Gaussian":
+        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\ngaussian tzero={tzero} width={width}"
+    elif selected_field == "Laser":
+        return f"$fields\nelectric on\n$electric field\namplitude x={amplitude_x} y={amplitude_y} z={amplitude_z}\nphase x={phase_x} y={phase_y} z={phase_z}\nlaser omega={omega} sigma={sigma}"
+
+
+
+
+st.title("Laser Field Parameters for RT-TDDFT Simulation")
+
+field_types = ["Static", "Gaussian", "Laser"]
+selected_field = st.selectbox("Select Field Type", field_types)
+
+st.write("Enter Electric Field Parameters:")
+
+amplitude_x = st.number_input("Amplitude x", value=0.0)
+amplitude_y = st.number_input("Amplitude y", value=0.0)
+amplitude_z = st.number_input("Amplitude z", value=0.0)
+
+if selected_field == "Gaussian":
+    tzero = st.number_input("Peak Position (tzero)", value=0.0)
+    width = st.number_input("Peak Width (width)", value=0.0)
+    st.write("Static field selected")
+
+if selected_field == "Laser":
+    omega = st.number_input("Frequency (omega)", value=0.0)
+    sigma = st.number_input("FWHM (sigma)", value=0.0)
+    phase_x = st.number_input("Phase x", value=0.0)
+    phase_y = st.number_input("Phase y", value=0.0)
+    phase_z = st.number_input("Phase z", value=0.0)
+
+st.write("Generated Electric Field Input:")
+st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
+
