@@ -19,9 +19,9 @@ selected_field = st.selectbox("Select Field Type", field_types)
 st.write("Enter Electric Field Parameters:")
 
 col1, col2, col3 = st.columns(3)
-amplitude_x = col1.number_input("Amplitude x", value=0.0)
-amplitude_y = col2.number_input("Amplitude y", value=0.0)
-amplitude_z = col3.number_input("Amplitude z", value=0.0)
+amplitude_x = col1.number_input("Amplitude x", value=2.0E-5)
+amplitude_y = col2.number_input("Amplitude y", value=2.0E-5)
+amplitude_z = col3.number_input("Amplitude z", value=2.0E-5)
 
 if selected_field == "Gaussian":
     tzero = st.number_input("Peak Position (tzero)", value=0.0)
