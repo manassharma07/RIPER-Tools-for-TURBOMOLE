@@ -43,6 +43,6 @@ if selected_field == "Laser":
     phase_y = col2.text_input("Phase y (radians)", value='0.0')
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
-st.write("Generated Electric Field Input:")
+st.write("Add the following to the `control` file:")
 st.code(generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z))
 
