@@ -62,7 +62,7 @@ print_dipole = col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time ste
 print_density = col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
 
 magnus = col1_rt.selectbox("Magnus Expansion Order", [2, 4], index=0)
-scf = col2_rt.radio("Use SCF Procedure for Time-Integration?", ["on", "off (Use Predictor Corrector Scheme)"], index=1)
+scf = col2_rt.radio("Use SCF Procedure for Time-Integration?", ["on", "off #(Use Predictor Corrector Scheme)"], index=1)
 iterlim = col3_rt.number_input("Max SCF Cycles", value=15)
 time = col1_rt.number_input("Evolution Time (au)", value=1000.0)
 tstep = col2_rt.number_input("Time Step (au)", value=0.1)
