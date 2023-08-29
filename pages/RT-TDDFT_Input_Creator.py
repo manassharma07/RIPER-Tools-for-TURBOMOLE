@@ -45,12 +45,13 @@ if selected_field == "Laser":
     phase_y = col2.text_input("Phase y (radians)", value='0.0')
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
-st.write('## Input Text')
+st.write('## Input Text for Field')
 st.text_area(label="Add the following to the `control` file:", value=generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
 st.write('## RT-TDDFT parameters')
 col1_rt, col2_rt, col3_rt = st.columns(3)
-col1_rt.checkbox('Print energy (`rtenrgy`) at each time step?')
-col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step?')
-col3_rt.checkbox('Print density at each time step? (Will take up some disk space)')
-st.checkbox('Calculate and save dipole moment to `rtspec` file?')
+col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
+col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step for post-processing?', value=True)
+col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
+if selected_field=='Gaussian':
+    st.checkbox('Calculate and save dipole moment to `rtspec` file?')
