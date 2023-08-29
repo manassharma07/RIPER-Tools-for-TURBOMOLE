@@ -2,15 +2,15 @@ import streamlit as st
 
 def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
     if selected_field == "Static":
-        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n  static"
+        return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    static"
     elif selected_field == "Gaussian":
-        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n  gaussian  tzero={tzero}  width={width}"
+        return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    gaussian  tzero={tzero}  width={width}"
     elif selected_field == "Laser":
-        return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n  phase x={phase_x}  y={phase_y}  z={phase_z}\n  laser  omega={omega}  sigma={sigma}"
+        return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    phase x={phase_x}  y={phase_y}  z={phase_z}\n  laser  omega={omega}  sigma={sigma}"
 
 def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step):
-    rttddft_input = f"$rttddft\nmagnus {magnus}\nscf {scf}\niterlim {iterlim}\ntime {time}d0\ntstep {tstep}d0\nprint step {print_step}\n"
-    rttddft_input += f"damping {damping}d0\nmin energy = {min_energy}d0\nmax energy = {max_energy}d0\nenergy step {energy_step}d0"
+    rttddft_input = f"$rttddft\n    magnus {magnus}\n    scf {scf}\n    iterlim {iterlim}\n    time {time}d0\n    tstep {tstep}d0\n    print step {print_step}\n"
+    rttddft_input += f"    damping {damping}d0\n    min energy = {min_energy}d0\n    max energy = {max_energy}d0\n    energy step {energy_step}d0"
     return rttddft_input
 
 
