@@ -74,4 +74,4 @@ damping = col1_rt.number_input("Damping Factor", value=0.004)
 
 st.write("## Generated RT-TDDFT Input:")
 rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step)
-st.text_area(label="Add the following to the `control` file:", value=rttddft_input, height=200)
+st.text_area(label="Add the following to the `control` file:", value=rttddft_input, height=400)
