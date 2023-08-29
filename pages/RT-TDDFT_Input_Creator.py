@@ -1,6 +1,6 @@
 import streamlit as st
 
-def generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
+def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
     if selected_field == "Static":
         return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n  static"
     elif selected_field == "Gaussian":
@@ -46,5 +46,10 @@ if selected_field == "Laser":
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
 st.write('## Input Text')
-st.text_area(label="Add the following to the `control` file:", value=generate_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
+st.text_area(label="Add the following to the `control` file:", value=generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
+st.write('## RT-TDDFT parameters')
+col1.checkbox('Print energy (`rtenrgy`) at each time step?')
+col2.checkbox('Print dipole moment (`rtdipo`) at each time step?')
+col3.checkbox('Print density at each time step? (Will take up some disk space)')
+st.checkbox('Calculate and save dipole moment to `rtspec` file?')
