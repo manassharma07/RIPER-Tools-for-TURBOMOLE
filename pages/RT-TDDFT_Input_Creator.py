@@ -51,23 +51,26 @@ if selected_field == "Laser":
 st.write('## Input Text for Electric Field')
 st.text_area(label="Add the following to the `control` file:", value=generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
-st.write('## RT-TDDFT Option')
+st.write('## RT-TDDFT Options')
+
+if selected_field=='Gaussian':
+    st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)')
+
 col1_rt, col2_rt, col3_rt = st.columns(3)
 print_energy = col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
 print_dipole = col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step for post-processing?', value=True)
 print_density = col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
-if selected_field=='Gaussian':
-    st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)')
-magnus = st.selectbox("Magnus Expansion Order", [2, 4], index=0)
-scf = st.radio("Use SCF Procedure?", ["on", "off"], index=1)
-iterlim = st.number_input("Max SCF Cycles", value=15)
-time = st.number_input("Evolution Time (au)", value=1000.0)
-tstep = st.number_input("Time Step (au)", value=0.1)
-print_step = st.number_input("Print Step", value=1)
-damping = st.number_input("Damping Factor", value=0.004)
-min_energy = st.number_input("Min Energy (au)", value=0.15)
-max_energy = st.number_input("Max Energy (au)", value=0.625)
-energy_step = st.number_input("Energy Step (au)", value=0.005)
+
+magnus = col1_rt.selectbox("Magnus Expansion Order", [2, 4], index=0)
+scf = col2_rt.radio("Use SCF Procedure?", ["on", "off"], index=1)
+iterlim = col3_rt.number_input("Max SCF Cycles", value=15)
+time = col1_rt.number_input("Evolution Time (au)", value=1000.0)
+tstep = col2_rt.number_input("Time Step (au)", value=0.1)
+print_step = col3_rt.number_input("Print Step", value=1)
+damping = col1_rt.number_input("Damping Factor", value=0.004)
+min_energy = col1_rt.number_input("Min Energy (au)", value=0.15)
+max_energy = col2_rt.number_input("Max Energy (au)", value=0.625)
+energy_step = col3_rt.number_input("Energy Step (au)", value=0.005)
 
 st.write("## Generated RT-TDDFT Input:")
 rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step)
