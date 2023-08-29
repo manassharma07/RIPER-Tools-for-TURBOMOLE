@@ -8,7 +8,10 @@ def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, 
     elif selected_field == "Laser":
         return f"$fields\n  electric on\n$electric field\n  amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n  phase x={phase_x}  y={phase_y}  z={phase_z}\n  laser  omega={omega}  sigma={sigma}"
 
-
+def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step):
+    rttddft_input = f"$rttddft\nmagnus {magnus}\nscf {scf}\niterlim {iterlim}\ntime {time}d0\ntstep {tstep}d0\nprint step {print_step}\n"
+    rttddft_input += f"damping {damping}d0\nmin energy = {min_energy}d0\nmax energy = {max_energy}d0\nenergy step {energy_step}d0"
+    return rttddft_input
 
 
 st.title("Input Creation for RT-TDDFT Simulation")
@@ -45,13 +48,27 @@ if selected_field == "Laser":
     phase_y = col2.text_input("Phase y (radians)", value='0.0')
     phase_z = col3.text_input("Phase z (radians)", value='0.0')
 
-st.write('## Input Text for Field')
+st.write('## Input Text for Electric Field')
 st.text_area(label="Add the following to the `control` file:", value=generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z), height=200)
 
-st.write('## RT-TDDFT parameters')
+st.write('## RT-TDDFT Option')
 col1_rt, col2_rt, col3_rt = st.columns(3)
-col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
-col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step for post-processing?', value=True)
-col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
+print_energy = col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
+print_dipole = col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step for post-processing?', value=True)
+print_density = col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
 if selected_field=='Gaussian':
-    st.checkbox('Calculate and save dipole moment to `rtspec` file?')
+    st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)')
+magnus = st.selectbox("Magnus Expansion Order", [2, 4], index=0)
+scf = st.radio("Use SCF Procedure?", ["on", "off"], index=1)
+iterlim = st.number_input("Max SCF Cycles", value=15)
+time = st.number_input("Evolution Time (au)", value=1000.0)
+tstep = st.number_input("Time Step (au)", value=0.1)
+print_step = st.number_input("Print Step", value=1)
+damping = st.number_input("Damping Factor", value=0.004)
+min_energy = st.number_input("Min Energy (au)", value=0.15)
+max_energy = st.number_input("Max Energy (au)", value=0.625)
+energy_step = st.number_input("Energy Step (au)", value=0.005)
+
+st.write("## Generated RT-TDDFT Input:")
+rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step)
+st.code(rttddft_input)
