@@ -14,13 +14,13 @@ def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, dampin
         rttddft_input += f"    iterlim {iterlim}"
     rttddft_input += f"    damping {damping}d0\n    min energy = {min_energy}d0\n    max energy = {max_energy}d0\n    energy step {energy_step}d0"
     if print_density:
-        rttddft_input += f"$rtdens\n$pointvalper  fmt=cub\n    dens"
+        rttddft_input += f"\n$rtdens\n$pointvalper  fmt=cub\n    dens"
     if print_energy:
-        rttddft_input += f"$rtenergy"
+        rttddft_input += f"\n$rtenergy"
     if print_dipole:
-        rttddft_input += f"$rtdipol"
+        rttddft_input += f"\n$rtdipol"
     if selected_field=="Gaussian" and print_spectrum:
-        rttddft_input += f"$rtspec  eV"
+        rttddft_input += f"\n$rtspec  eV"
     return rttddft_input
 
 
