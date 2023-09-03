@@ -21,7 +21,7 @@ def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, dampin
     if print_dipole:
         rttddft_input += f"\n$rtdipol"
     if selected_field=="Gaussian" and print_spectrum:
-        rttddft_input += f"\n$rtspec  eV"
+        rttddft_input += f"\n$rtspectrum  eV"
     return rttddft_input
 
 
@@ -117,3 +117,24 @@ st.write("## Useful Hints")
 
 # Display the hints table
 st.table(hints_df)
+
+st.write('## Keywords and their Meanings')
+keywords = {
+    "Keyword": ["magnus", "scf", "iterlim", "time", "tstep", "print step", "damping", "min energy", "max energy", "energy step"],
+    "Meaning": [
+        "Can take values 2 or 4. '2' for second order Magnus expansion and '4' for fourth order Magnus expansion. Default value is 2.",
+        "If on, then SCF procedure is used for the time integration. If off then Predictor-Corrector scheme is used instead.",
+        "Max SCF cycles if scf is on. Default value is 15.",
+        "Specifies the evolution time in au. (1 au= 0.02419 fs)",
+        "The time step for the time evolution in au. 0.1 au is usually a good starting point.",
+        "Specifies the number of steps n after which the dipole moments and energies are printed out if requested. Default value is 100. That means the quantities are printed out at every 100 steps. To have all the information for post-processing, a value of 1 is recommended.",
+        "Only valid for absorption spectrum calculation. It is the factor gamma in the equation to calculate the complex polarizability tensor. Default value is 0.004 au. Recommended values in the range of 0.003 au to 0.005 au.",
+        "Only valid for absorption spectrum calculation. Specifies the minimum value of the energy range used to perform the Fourier transform from time to frequency space. Units: au. Default value is 0.15 au.",
+        "Only valid for absorption spectrum calculation. Specifies the maximum value of the energy range used to perform the Fourier transform from time to frequency space. Units: au. Default value is 0.625 au.",
+        "Only valid for absorption spectrum calculation. Specifies the step value or energy interval dE at which to sample the energy values for Fourier transform and absorption spectrum plotting. Units: au. Default value is 0.005 au."
+    ]
+}
+
+keywords_df = pd.DataFrame(keywords)
+# Display the keywords table
+st.table(keywords_df)
