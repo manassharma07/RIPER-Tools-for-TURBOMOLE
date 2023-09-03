@@ -141,10 +141,10 @@ st.table(keywords_df)
 
 st.warning('## Implementation Paper')
 st.write('Please cite the following paper if you use the RT-TDDFT feature')
-citation_text = "Carolin Müller, Manas Sharma, Marek Sierka,\n*Real-time time-dependent density functional theory using density fitting and the continuous fast multipole method*,\n J Comput Chem. 2020; 41: 2573–258"
+st.write("Carolin Müller, Manas Sharma, Marek Sierka,\n*Real-time time-dependent density functional theory using density fitting and the continuous fast multipole method*,\n J Comput Chem. 2020; 41: 2573–258")
 
 # Create a hyperlink for the citation
 citation_link = "[Read the paper](https://onlinelibrary.wiley.com/doi/full/10.1002/jcc.26412)"
 
 # Display the citation with the hyperlink
-st.markdown(citation_text + "\n" + citation_link, unsafe_allow_html=True)
+st.markdown(citation_link, unsafe_allow_html=True)
