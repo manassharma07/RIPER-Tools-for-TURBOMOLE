@@ -37,22 +37,15 @@ st.write('## Set Electric Field Parameters')
 field_types = ["Gaussian", "Laser", "Static"]
 selected_field = st.selectbox("Select Field Type", field_types)
 
-st.write("Enter Electric Field Parameters:")
-tzero = None
-width = None
-sigma = None
-omega = None
-phase_x = None
-phase_y = None
-phase_z = None
 
 
-if selected_field=="Gaussian":
+
+if selected_field == "Gaussian":
     st.write("Chosen electric field is of the following mathematical form:")
     st.latex(r'''
     \mathbf{E}(t)=(A_x\mathbf{n_x}+A_y\mathbf{n_y}+A_z\mathbf{n_z}) \mathrm{exp}\left({-\frac{\left(t-t_0\right)^2}{2 w^2}}\right)
     ''')
-if selected_field=="Laser":
+if selected_field == "Laser":
     st.write("Chosen electric field is of the following mathematical form:")
     st.latex(r'''
     \mathbf{E}(t)=f(t)\left(E_x \sin \left(\omega_0 t+\phi_x\right) \mathbf{n}_{\mathbf{x}}+E_y \sin \left(\omega_0 t+\phi_y\right) \mathbf{n}_{\mathbf{y}}+E_z \sin \left(\omega_0 t+\phi_z\right) \mathbf{n}_{\mathbf{z}}\right)
@@ -72,6 +65,15 @@ if selected_field=="Laser":
     where $\varepsilon$ is the permittivity of vacuum, $|E|^2=E_x^2+E_y^2+E_z^2$, and $c$ is the velocity of light.
     '''
     st.write(latext)
+
+st.write("Enter Electric Field Parameters:")
+tzero = None
+width = None
+sigma = None
+omega = None
+phase_x = None
+phase_y = None
+phase_z = None
 
 col1, col2, col3 = st.columns(3)
 amplitude_x = col1.text_input(label = 'Amplitude along x (a.u.)', value='2.0E-5',key='Ex')
