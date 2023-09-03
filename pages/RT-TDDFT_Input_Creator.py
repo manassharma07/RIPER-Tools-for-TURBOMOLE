@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 
 def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
     if selected_field == "Static":
@@ -95,3 +96,24 @@ damping = col1_rt.number_input("Damping Factor", value=0.004)
 st.write("## Generated RT-TDDFT Input:")
 rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, print_spectrum)
 st.text_area(label="Add the following to the `control` file:", value=rttddft_input, height=400)
+
+
+# Provide some hints
+hints_data = [
+    "1: The absorption spectrum can only be calculated with the Gaussian Fields.",
+    "2: The defaults when you launch this web app should be suitable for calculating the absorption spectrum of a molecule. The spectrum is saved to the `rtspec` file in the calculation directory.",
+    "3: In some cases you may need to increase the amplitudes of the Gaussian pulse very slightly.",
+    "4: A higher evolution time means sharper absorption spectrum.",
+    "5: In tests it was found that the time step for RT-TDDFT could be safely increased to 0.5 a.u. to accelerate simulations. But you will need to test this on a case-by-case basis. The default 0.1 a.u. is a bit conservative.",
+    "6: You should always use the `$rtenergy` keyword as it helps you monitor your RT-TDDFT simulation more closely. You can use it to see if the energies are diverging which can happen when using the Predictor-Corrector scheme for time-integration. ",
+    "7: Predictor-Corrector (PC) scheme (`scf off`) requires less KS matrix builds and should be faster than SCF scheme (`scf on`). However, for a larger time-step PC can become unstable.",
+
+]
+
+# Create a DataFrame from the hints data
+hints_df = pd.DataFrame(hints_data, columns=["Hints"])
+
+st.write("## Useful Hints")
+
+# Display the hints table
+st.dataframe(hints_df)
