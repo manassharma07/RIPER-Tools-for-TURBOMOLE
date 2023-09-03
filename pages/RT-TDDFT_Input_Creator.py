@@ -100,14 +100,14 @@ st.text_area(label="Add the following to the `control` file:", value=rttddft_inp
 
 # Provide some hints
 hints_data = [
-    "The absorption spectrum can only be calculated with the Gaussian Fields.",
+    "The absorption spectrum can only be calculated with the Gaussian Field.",
     "The defaults when you launch this web app should be suitable for calculating the absorption spectrum of a molecule. The spectrum is saved to the `rtspec` file in the calculation directory.",
     "In some cases you may need to increase the amplitudes of the Gaussian pulse very slightly.",
-    "A higher evolution time means sharper absorption spectrum.",
-    "In tests it was found that the time step for RT-TDDFT could be safely increased to 0.5 a.u. to accelerate simulations. But you will need to test this on a case-by-case basis. The default 0.1 a.u. is a bit conservative.",
-    "You should always use the `$rtenergy` keyword as it helps you monitor your RT-TDDFT simulation more closely. You can use it to see if the energies are diverging which can happen when using the Predictor-Corrector scheme for time-integration. ",
+    "A higher evolution time means a sharper absorption spectrum with more pronounced peaks.",
+    "You should always use the `$rtenergy` keyword as it helps you monitor your RT-TDDFT simulation more closely. You can use it to see if the energies are diverging, which can happen when using the Predictor-Corrector scheme for time-integration. ",
     "Predictor-Corrector (PC) scheme (`scf off`) requires less KS matrix builds and should be faster than SCF scheme (`scf on`). However, for a larger time-step PC can become unstable.",
-
+    "In tests it was found that the time step for RT-TDDFT could be safely increased to 0.5 a.u. to accelerate simulations with the PC scheme. But you will need to test this on a case-by-case basis. The default 0.1 a.u. is a bit conservative.",
+    "In tests it was found that a time step that is 20% of the theoretical maximum time step (\pi / \omega_{max}) should be a safe choice. Here, \omega_{max} is the maximum frequency upto which the absorption spectrum would be plotted."
 ]
 
 # Create a DataFrame from the hints data
