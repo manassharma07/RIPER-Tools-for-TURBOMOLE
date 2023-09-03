@@ -28,7 +28,7 @@ st.title("Input Creation for RT-TDDFT Simulation")
 
 st.write('## Set Electric Field Parameters')
 
-field_types = ["Static", "Gaussian", "Laser"]
+field_types = ["Gaussian", "Laser", "Static"]
 selected_field = st.selectbox("Select Field Type", field_types)
 
 st.write("Enter Electric Field Parameters:")
