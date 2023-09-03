@@ -8,7 +8,7 @@ def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, 
     elif selected_field == "Laser":
         return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    phase x={phase_x}  y={phase_y}  z={phase_z}\n  laser  omega={omega}  sigma={sigma}"
 
-def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field):
+def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, print_spectrum):
     rttddft_input = f"$rttddft\n    magnus {magnus}\n    scf {scf}\n    time {time}d0\n    tstep {tstep}d0\n    print step {print_step}\n"
     if scf=="on":
         rttddft_input += f"    iterlim {iterlim}"
@@ -19,8 +19,8 @@ def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, dampin
         rttddft_input += f"$rtenergy"
     if print_dipole:
         rttddft_input += f"$rtdipol"
-    if selected_field=="Gaussian":
-        rttddft_input += f"$rtspec"
+    if selected_field=="Gaussian" and print_spectrum:
+        rttddft_input += f"$rtspec  eV"
     return rttddft_input
 
 
@@ -64,7 +64,9 @@ st.text_area(label="Add the following to the `control` file:", value=generate_fi
 st.write('## RT-TDDFT Options')
 
 if selected_field=='Gaussian':
-    st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)')
+    print_spectrum = st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)', value=True)
+else 
+    print_spectrum = False
 
 col1_rt, col2_rt, col3_rt = st.columns(3)
 print_energy = col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
@@ -75,6 +77,8 @@ magnus = col1_rt.selectbox("Magnus Expansion Order", [2, 4], index=0)
 scf = col2_rt.radio("Use SCF Procedure for Time-Integration?", ["on", "off #(Use Predictor Corrector Scheme)"], index=1)
 if scf=="on":
     iterlim = col3_rt.number_input("Max SCF Cycles", value=15)
+else:
+    iterlim = None
 time = col1_rt.number_input("Evolution Time (au)", value=1000.0)
 tstep = col2_rt.number_input("Time Step (au)", value=0.1)
 print_step = col3_rt.number_input("Print Step", value=1)
@@ -84,5 +88,5 @@ energy_step = col3_rt.number_input("Energy Step (au)", value=0.005)
 damping = col1_rt.number_input("Damping Factor", value=0.004)
 
 st.write("## Generated RT-TDDFT Input:")
-rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, selected_field)
+rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, print_spectrum)
 st.text_area(label="Add the following to the `control` file:", value=rttddft_input, height=400)
