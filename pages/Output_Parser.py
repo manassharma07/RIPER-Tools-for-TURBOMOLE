@@ -4,8 +4,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import StringIO
 from pymatgen.core import Structure, Lattice
+from pymatgen.io.cif import CifWriter
 import py3Dmol
 import streamlit.components.v1 as components
+
+# return filecontents
+def read_file(filename):
+    with open(filename, 'r') as file:
+        return file.read()
+
+# Function to convert a structure to CIF
+def convert_to_cif(structure, filename):
+    cif_writer = CifWriter(structure)
+    cif_writer.write_file(filename)
 
 def find_line_with_text(lines, text):
     for line in lines:
@@ -237,6 +248,10 @@ if contents != '':
             if isinstance(structure, Structure):  # type = Structure
                 display_structure_info(structure)
                 visualize_structure(structure, "viz1.html")
+                # Download CIF files
+                st.subheader("Download CIF Files")
+                convert_to_cif(structure, "structure.cif")
+                st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
 
     else:
         st.error("Only structures from periodic DFT calculations can be visualized for now!")
