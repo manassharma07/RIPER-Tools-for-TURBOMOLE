@@ -51,8 +51,6 @@ if selected_field == "Laser":
     \mathbf{E}(t)=f(t)\left(E_x \sin \left(\omega_0 t+\phi_x\right) \mathbf{n}_{\mathbf{x}}+E_y \sin \left(\omega_0 t+\phi_y\right) \mathbf{n}_{\mathbf{y}}+E_z \sin \left(\omega_0 t+\phi_z\right) \mathbf{n}_{\mathbf{z}}\right)
     ''')
     latext = r'''
-    ### inline
-    Assume $\frac{a}{b}=1$ and $\sigma=0$...  
     where $E_{x,y,z}$ are the amplitudes along $x$, $y$, $z$ axes, $\omega_0$ is the carrier frequency, $\phi_{x,y,z}$ are the
     carrier-envelope phases, and $f(t)$ is an envelope/shape function given as
     $$
