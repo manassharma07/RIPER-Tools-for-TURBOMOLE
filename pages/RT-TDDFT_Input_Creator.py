@@ -12,7 +12,7 @@ def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, 
 def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, print_spectrum):
     rttddft_input = f"$rttddft\n    magnus {magnus}\n    scf {scf}\n    time {time}d0\n    tstep {tstep}d0\n    print step {print_step}\n"
     if scf=="on":
-        rttddft_input += f"    iterlim {iterlim}"
+        rttddft_input += f"    iterlim {iterlim}\n"
     rttddft_input += f"    damping {damping}d0\n    min energy = {min_energy}d0\n    max energy = {max_energy}d0\n    energy step {energy_step}d0"
     if print_density:
         rttddft_input += f"\n$rtdens\n$pointvalper  fmt=cub\n    dens"
