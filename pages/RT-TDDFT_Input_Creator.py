@@ -122,9 +122,9 @@ st.write('## Keywords and their Meanings')
 keywords = {
     "Keyword": ["magnus", "scf", "iterlim", "time", "tstep", "print step", "damping", "min energy", "max energy", "energy step"],
     "Meaning": [
-        "Can take values 2 or 4. '2' for second order Magnus expansion and '4' for fourth order Magnus expansion. Default value is 2.",
-        "If on, then SCF procedure is used for the time integration. If off then Predictor-Corrector scheme is used instead.",
-        "Max SCF cycles if scf is on. Default value is 15.",
+        "Can take values 2 or 4. '2' for second order Magnus expansion and '4' for fourth order Magnus expansion. Default value is 2 and good enough for most applications.",
+        "If `on`, then SCF procedure is used for the time integration. If off then Predictor-Corrector scheme is used instead.",
+        "Max SCF cycles if scf is `on`. Default value is 15.",
         "Specifies the evolution time in au. (1 au= 0.02419 fs)",
         "The time step for the time evolution in au. 0.1 au is usually a good starting point.",
         "Specifies the number of steps n after which the dipole moments and energies are printed out if requested. Default value is 100. That means the quantities are printed out at every 100 steps. To have all the information for post-processing, a value of 1 is recommended.",
