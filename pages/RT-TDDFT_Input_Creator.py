@@ -8,9 +8,19 @@ def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, 
     elif selected_field == "Laser":
         return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    phase x={phase_x}  y={phase_y}  z={phase_z}\n  laser  omega={omega}  sigma={sigma}"
 
-def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step):
-    rttddft_input = f"$rttddft\n    magnus {magnus}\n    scf {scf}\n    iterlim {iterlim}\n    time {time}d0\n    tstep {tstep}d0\n    print step {print_step}\n"
+def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field):
+    rttddft_input = f"$rttddft\n    magnus {magnus}\n    scf {scf}\n    time {time}d0\n    tstep {tstep}d0\n    print step {print_step}\n"
+    if scf=="on":
+        rttddft_input += f"    iterlim {iterlim}"
     rttddft_input += f"    damping {damping}d0\n    min energy = {min_energy}d0\n    max energy = {max_energy}d0\n    energy step {energy_step}d0"
+    if print_density:
+        rttddft_input += f"$rtdens\n$pointvalper  fmt=cub\n    dens"
+    if print_energy:
+        rttddft_input += f"$rtenergy"
+    if print_dipole:
+        rttddft_input += f"$rtdipol"
+    if selected_field=="Gaussian":
+        rttddft_input += f"$rtspec"
     return rttddft_input
 
 
@@ -63,15 +73,16 @@ print_density = col3_rt.checkbox('Print density at each time step for post-proce
 
 magnus = col1_rt.selectbox("Magnus Expansion Order", [2, 4], index=0)
 scf = col2_rt.radio("Use SCF Procedure for Time-Integration?", ["on", "off #(Use Predictor Corrector Scheme)"], index=1)
-iterlim = col3_rt.number_input("Max SCF Cycles", value=15)
+if scf=="on":
+    iterlim = col3_rt.number_input("Max SCF Cycles", value=15)
 time = col1_rt.number_input("Evolution Time (au)", value=1000.0)
 tstep = col2_rt.number_input("Time Step (au)", value=0.1)
 print_step = col3_rt.number_input("Print Step", value=1)
-min_energy = col1_rt.number_input("Min Energy (au)", value=0.15)
-max_energy = col2_rt.number_input("Max Energy (au)", value=0.625)
+min_energy = col1_rt.number_input("Min Energy (au)", value=0.00)
+max_energy = col2_rt.number_input("Max Energy (au)", value=0.75)
 energy_step = col3_rt.number_input("Energy Step (au)", value=0.005)
 damping = col1_rt.number_input("Damping Factor", value=0.004)
 
 st.write("## Generated RT-TDDFT Input:")
-rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step)
+rttddft_input = generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, damping, min_energy, max_energy, energy_step, print_density, print_energy, print_dipole, selected_field, selected_field)
 st.text_area(label="Add the following to the `control` file:", value=rttddft_input, height=400)
