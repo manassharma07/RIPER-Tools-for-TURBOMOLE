@@ -65,7 +65,7 @@ st.write('## RT-TDDFT Options')
 
 if selected_field=='Gaussian':
     print_spectrum = st.checkbox('Calculate and save absorption sepctrum to `rtspec` file? (only possible for Gaussian field)', value=True)
-else 
+else:
     print_spectrum = False
 
 col1_rt, col2_rt, col3_rt = st.columns(3)
