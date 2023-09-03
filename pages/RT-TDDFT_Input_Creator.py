@@ -100,13 +100,13 @@ st.text_area(label="Add the following to the `control` file:", value=rttddft_inp
 
 # Provide some hints
 hints_data = [
-    "1: The absorption spectrum can only be calculated with the Gaussian Fields.",
-    "2: The defaults when you launch this web app should be suitable for calculating the absorption spectrum of a molecule. The spectrum is saved to the `rtspec` file in the calculation directory.",
-    "3: In some cases you may need to increase the amplitudes of the Gaussian pulse very slightly.",
-    "4: A higher evolution time means sharper absorption spectrum.",
-    "5: In tests it was found that the time step for RT-TDDFT could be safely increased to 0.5 a.u. to accelerate simulations. But you will need to test this on a case-by-case basis. The default 0.1 a.u. is a bit conservative.",
-    "6: You should always use the `$rtenergy` keyword as it helps you monitor your RT-TDDFT simulation more closely. You can use it to see if the energies are diverging which can happen when using the Predictor-Corrector scheme for time-integration. ",
-    "7: Predictor-Corrector (PC) scheme (`scf off`) requires less KS matrix builds and should be faster than SCF scheme (`scf on`). However, for a larger time-step PC can become unstable.",
+    "The absorption spectrum can only be calculated with the Gaussian Fields.",
+    "The defaults when you launch this web app should be suitable for calculating the absorption spectrum of a molecule. The spectrum is saved to the `rtspec` file in the calculation directory.",
+    "In some cases you may need to increase the amplitudes of the Gaussian pulse very slightly.",
+    "A higher evolution time means sharper absorption spectrum.",
+    "In tests it was found that the time step for RT-TDDFT could be safely increased to 0.5 a.u. to accelerate simulations. But you will need to test this on a case-by-case basis. The default 0.1 a.u. is a bit conservative.",
+    "You should always use the `$rtenergy` keyword as it helps you monitor your RT-TDDFT simulation more closely. You can use it to see if the energies are diverging which can happen when using the Predictor-Corrector scheme for time-integration. ",
+    "Predictor-Corrector (PC) scheme (`scf off`) requires less KS matrix builds and should be faster than SCF scheme (`scf on`). However, for a larger time-step PC can become unstable.",
 
 ]
 
@@ -116,4 +116,4 @@ hints_df = pd.DataFrame(hints_data, columns=["Hints"])
 st.write("## Useful Hints")
 
 # Display the hints table
-st.dataframe(hints_df)
+st.table(hints_df)
