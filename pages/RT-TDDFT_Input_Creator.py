@@ -26,6 +26,11 @@ def generate_rttddft_input(magnus, scf, iterlim, time, tstep, print_step, dampin
 
 st.title("Input Creation for RT-TDDFT Simulation")
 
+st.write('Using this tool you can create input for running an RT-TDDFT calculation using the `RIPER` module.')
+st.write('First you need to specify some parameters for the Electric Field and paste the resulting output to your `control` file.')
+st.write('Next, you need to specify the RT-TDDFT parameters and paste the resulting output to the `control` file.')
+st.warning('Please Note: The current defaults when you load the page are suitable for performing an RT-TDDFT calculation with the goal of calculating the absorption spectrum. The Gaussian field perturbs the molecule in all three directions and the density is evolved for 24.18 fs.')
+
 st.write('## Set Electric Field Parameters')
 
 field_types = ["Gaussian", "Laser", "Static"]
@@ -71,7 +76,7 @@ else:
 col1_rt, col2_rt, col3_rt = st.columns(3)
 print_energy = col1_rt.checkbox('Print energy (`rtenrgy`) at each time step for post-processing?', value=True)
 print_dipole = col2_rt.checkbox('Print dipole moment (`rtdipo`) at each time step for post-processing?', value=True)
-print_density = col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=True)
+print_density = col3_rt.checkbox('Print density at each time step for post-processing? (Will take up some disk space)', value=False)
 
 magnus = col1_rt.selectbox("Magnus Expansion Order", [2, 4], index=0)
 scf = col2_rt.radio("Use SCF Procedure for Time-Integration?", ["on", "off #(Use Predictor Corrector Scheme)"], index=1)
