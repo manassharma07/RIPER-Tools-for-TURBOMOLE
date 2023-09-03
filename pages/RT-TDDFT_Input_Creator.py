@@ -47,12 +47,12 @@ phase_y = None
 phase_z = None
 
 
-if field_types=="Gaussian":
+if selected_field=="Gaussian":
     st.write("Chosen electric field is of the following mathematical form:")
     st.latex(r'''
     \mathbf{E}(t)=(A_x\mathbf{n_x}+A_y\mathbf{n_y}+A_z\mathbf{n_z}) \mathrm{exp}\left({-\frac{\left(t-t_0\right)^2}{2 w^2}}\right)
     ''')
-if field_types=="Laser":
+if selected_field=="Laser":
     st.write("Chosen electric field is of the following mathematical form:")
     st.latex(r'''
     \mathbf{E}(t)=f(t)\left(E_x \sin \left(\omega_0 t+\phi_x\right) \mathbf{n}_{\mathbf{x}}+E_y \sin \left(\omega_0 t+\phi_y\right) \mathbf{n}_{\mathbf{y}}+E_z \sin \left(\omega_0 t+\phi_z\right) \mathbf{n}_{\mathbf{z}}\right)
