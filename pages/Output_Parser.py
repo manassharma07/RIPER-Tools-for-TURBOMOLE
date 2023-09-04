@@ -227,11 +227,18 @@ if contents != '':
                 atomic_coords.append((element, coords))
 
             # Create the lattice using the lattice vectors
-            lattice_vectors = []
-            for line in lattice_lines:
-                lattice_vectors.append(list(map(float, line.split()[1:4])))
-            lattice = Lattice(lattice_vectors)
-            lattice = lattice.matrix*0.52917721092
+            if periodicity==3:
+                lattice_vectors = []
+                for line in lattice_lines:
+                    lattice_vectors.append(list(map(float, line.split()[1:4])))
+                lattice = Lattice(lattice_vectors, pbc=[True, True, True])
+                lattice = lattice.matrix*0.52917721092
+            if periodicity==2:
+                lattice_vectors = []
+                for line in lattice_lines:
+                    lattice_vectors.append(list(map(float, line.split()[1:4])))
+                lattice = Lattice(lattice_vectors, pbc=[True, True, False])
+                lattice = lattice.matrix*0.52917721092
 
             # Create the sites using atomic coordinates
             sites = []
