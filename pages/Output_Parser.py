@@ -237,7 +237,7 @@ if contents != '':
                 lattice_vectors = []
                 for line in lattice_lines:
                     lattice_vectors.append(list(map(float, line.split()[1:4])))
-                lattice_vectors.append([0.0, 0.0, 50])
+                lattice_vectors.append([0.0, 0.0, 1.88972612456506])
                 lattice = Lattice(lattice_vectors, pbc=[True, True, False])
                 lattice = lattice.matrix*0.52917721092
 
