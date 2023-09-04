@@ -33,7 +33,7 @@ st.write('''The riper module is an implementation of Kohn-Sham DFT with Gaussian
 # "You can also parse the output of the RIPER program for further analysis."
 text_intro = """
 This app allows you to create `RIPER` input files for a material in the [materialsproject.org](https://next-gen.materialsproject.org/) database or a molecule in the [PubChem database](https://pubchem.ncbi.nlm.nih.gov/). 
-Additionally it allows to convert `CIF`s, `XYZ`s, `POSCAR`s and other popular formats to `RIPER` format.
+Additionally it allows to convert `CIF`, `XYZ`, `POSCAR` and other popular formats to `RIPER` format.
 You can also use it to get help with `RIPER` related examples, keywords, references, and tutorials. 
 The web app can also do things like band structure path generation for band structure calculations, plot density of states, generate input for RT-TDDFT simulations, parse output of `RIPER` calculations, and perform unit conversions.
 
