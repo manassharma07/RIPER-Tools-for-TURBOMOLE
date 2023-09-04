@@ -319,12 +319,12 @@ if contents != '':
 
                 # Display the coordinate text in the first column
                 with col1:
-                    st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key='coords_text')
-                    st.download_button('Download coord file', coords_text, file_name='coord', key='control_text')
+                    st.text_area("`coord` file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key='coords_text')
+                    st.download_button('Download `coord` file', coords_text, file_name='coord', key='control_text')
 
                 # Display the lattice parameters text in the second column
                 with col2:
-                    st.text_area("Add the following to your control file", value=lattice_text, height=300)
+                    st.text_area("Add the following to your `control` file", value=lattice_text, height=300)
 
     else:
         st.error("Only structures from periodic DFT calculations can be visualized for now!")
