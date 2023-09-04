@@ -237,8 +237,16 @@ if contents != '':
                 lattice_vectors = []
                 for line in lattice_lines:
                     lattice_vectors.append(list(map(float, line.split()[1:4])))
-                lattice_vectors.append([0.0, 0.0, 1.88972612456506])
-                lattice = Lattice(lattice_vectors, pbc=[True, True, False])
+                lattice_vectors.append([0.0, 0.0, 1.88972612456506]) # 1 Angstrom = 1.88972612456506 bohr
+                lattice = Lattice(lattice_vectors, pbc=[True, True, True])
+                lattice = lattice.matrix*0.52917721092
+            if periodicity==1:
+                lattice_vectors = []
+                for line in lattice_lines:
+                    lattice_vectors.append(list(map(float, line.split()[1:4])))
+                    lattice_vectors.append([0.0, 1.88972612456506, 0.0]) # 1 Angstrom = 1.88972612456506 bohr
+                lattice_vectors.append([0.0, 0.0, 1.88972612456506]) # 1 Angstrom = 1.88972612456506 bohr
+                lattice = Lattice(lattice_vectors, pbc=[True, False, False])
                 lattice = lattice.matrix*0.52917721092
 
             # Create the sites using atomic coordinates
