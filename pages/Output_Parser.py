@@ -8,6 +8,41 @@ from pymatgen.io.cif import CifWriter
 import py3Dmol
 import streamlit.components.v1 as components
 
+# Function to convert atomic coordinates to Bohr units
+def convert_to_bohr(structure):
+    coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
+    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
+
+# Function to generate coordinate text
+def generate_coord_text(coords_bohr):
+    coord_text = "$coord\n"
+    for coord in coords_bohr:
+        coord_text += f"    {coord[0]:.8f}   {coord[1]:.8f}   {coord[2]:.8f}    {coord[3]}\n"
+    coord_text += "$end"
+    return coord_text
+
+# Function to generate lattice parameter text
+def generate_lattice_text(structure, periodicity):
+    lattice_params = structure.lattice.abc
+    angles = structure.lattice.angles
+    lattice_text = "$cell angs\n"
+    if periodicity==3:
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+        lattice_text += "$periodic 3\n"
+        lattice_text += "$kpoints\n"
+        lattice_text += "    nkpoints <nx> <ny> <nz> "
+    if periodicity==2:
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[0]}  \n"
+        lattice_text += "$periodic 2\n"
+        lattice_text += "$kpoints\n"
+        lattice_text += "    nkpoints <nx> <ny> "
+    if periodicity==1:
+        lattice_text += f"  {lattice_params[0]:.8f}    \n"
+        lattice_text += "$periodic 1\n"
+        lattice_text += "$kpoints\n"
+        lattice_text += "    nkpoints <nx> "
+    return lattice_text
+
 # return filecontents
 def read_file(filename):
     with open(filename, 'r') as file:
@@ -269,6 +304,27 @@ if contents != '':
                 convert_to_cif(structure, "structure.cif")
                 st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
                 st.warning('Please note, that a CIF generated for 2D and 1D structures would be probematic. This is because the CIF stores the atomic positions in fractional coordinates and RIPER assigns a lattice parameter of 1 Angstrom for the non-periodic direction. This will lead to problems when trying to visualize or post-process the CIF in some external software.')
+                # Get TURBOMOLE (RIPER) Coord file and Control file contents
+                st.subheader("RIPER Files")
+                # Convert the atomic coordinates to Bohr units
+                coords_bohr = convert_to_bohr(structure)
+
+                # Generate the coordinate text
+                coords_text = generate_coord_text(coords_bohr)
+                # Generate the lattice parameter text
+                lattice_text = generate_lattice_text(structure, periodicity)
+
+                # Create two columns for text boxes
+                col1, col2 = st.columns(2)
+
+                # Display the coordinate text in the first column
+                with col1:
+                    st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key='coords_text')
+                    st.download_button('Download coord file', coords_text, file_name='coord', key='control_text')
+
+                # Display the lattice parameters text in the second column
+                with col2:
+                    st.text_area("Add the following to your control file", value=lattice_text, height=300)
 
     else:
         st.error("Only structures from periodic DFT calculations can be visualized for now!")
