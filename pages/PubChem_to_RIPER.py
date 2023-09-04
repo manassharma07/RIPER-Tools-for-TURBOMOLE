@@ -90,7 +90,7 @@ def format_coord(molecule):
     coord = ['$coord']
     for site in molecule:
         coord.append(
-            f"   {site.x* 1.8897259886:.6f}   {site.y* 1.8897259886:.6f}   {site.z* 1.8897259886:.6f}       {site.specie.symbol.lower()}"
+            f"   {site.x* 1.88972612456506:.6f}   {site.y* 1.88972612456506:.6f}   {site.z* 1.88972612456506:.6f}       {site.specie.symbol.lower()}"
         )
     coord.append('$end')
     return "\n".join(coord)

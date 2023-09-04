@@ -34,7 +34,7 @@ api_key = st.secrets["MP_API"]
 # Function to convert atomic coordinates to Bohr units
 def convert_to_bohr(structure):
     coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
-    return [(x * 1.8897259886, y * 1.8897259886, z * 1.8897259886, element.lower()) for x, y, z, element in coords]
+    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
 
 # Function to generate coordinate text
 def generate_coord_text(coords_bohr):
