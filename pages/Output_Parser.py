@@ -268,6 +268,7 @@ if contents != '':
                 st.subheader("Download CIF Files")
                 convert_to_cif(structure, "structure.cif")
                 st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
+                st.warning('Please note, that a CIF generated ford 2D and 1D structures would be probematic. This is because the CIF stores the atomic positions in fractional coordinates and RIPER assigns a lattice parameter of 1 Angstrom for the non-periodic direction. This will lead to problems when trying to visualize or post-process the CIF in some external software.')
 
     else:
         st.error("Only structures from periodic DFT calculations can be visualized for now!")
