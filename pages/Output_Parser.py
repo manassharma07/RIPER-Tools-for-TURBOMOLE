@@ -315,6 +315,8 @@ if contents != '':
                 st.write("Interatomic Distances:")
                 st.write(distances_df)
 
+                # Exclude diagonal elements
+                distances_df.values[[range(len(structure))]*2] = float('nan')
                 # Calculate statistics
                 smallest_distance = distances_df.values[~pd.isna(distances_df.values)].min()
                 largest_distance = distances_df.values[~pd.isna(distances_df.values)].max()
