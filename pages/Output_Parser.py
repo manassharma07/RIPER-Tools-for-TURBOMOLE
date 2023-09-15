@@ -317,7 +317,7 @@ if contents != '':
 
                 # Exclude diagonal elements
                 interatomic_distances[range(len(structure)), range(len(structure))] = float('nan')
-                
+
                 # Calculate statistics
                 smallest_distance = interatomic_distances[~pd.isna(interatomic_distances)].min()
                 largest_distance = interatomic_distances[~pd.isna(interatomic_distances)].max()
@@ -326,9 +326,9 @@ if contents != '':
 
 
                 # Display statistics
-                st.write(f"Smallest Interatomic Distance: {smallest_distance}")
-                st.write(f"Largest Interatomic Distance: {largest_distance}")
-                st.write(f"Mean Interatomic Distance: {mean_distance}")
+                st.write(f"Smallest Interatomic Distance: {smallest_distance} Angstroms")
+                st.write(f"Largest Interatomic Distance: {largest_distance} Angstroms")
+                st.write(f"Mean Interatomic Distance: {mean_distance} Angstroms")
                 # Download CIF files
                 st.subheader("Download CIF Files")
                 convert_to_cif(structure, "structure.cif")
