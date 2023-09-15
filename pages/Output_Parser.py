@@ -311,7 +311,7 @@ if contents != '':
                     # import pandas as pd
                     distances_df = pd.DataFrame(interatomic_distances, columns=atom_indices, index=atom_indices)
                     # Display DataFrame
-                    st.write("Interatomic Distances:")
+                    # st.write("Interatomic Distances:")
                     st.write(distances_df)
 
                     # Exclude diagonal elements
