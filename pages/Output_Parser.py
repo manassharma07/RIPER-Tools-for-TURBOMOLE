@@ -299,6 +299,26 @@ if contents != '':
             if isinstance(structure, Structure):  # type = Structure
                 display_structure_info(structure)
                 visualize_structure(structure, "viz1.html")
+                # Show bonds information
+                # Calculate interatomic distances
+                interatomic_distances = structure.distance_matrix
+
+                # Display as DataFrame
+                distances_df = pd.DataFrame(interatomic_distances, columns=structure.species, index=structure.species)
+
+                # Display DataFrame
+                st.write("Interatomic Distances:")
+                st.write(distances_df)
+
+                # Calculate statistics
+                smallest_distance = distances_df.min().min()
+                largest_distance = distances_df.max().max()
+                mean_distance = distances_df.mean().mean()
+
+                # Display statistics
+                st.write(f"Smallest Interatomic Distance: {smallest_distance}")
+                st.write(f"Largest Interatomic Distance: {largest_distance}")
+                st.write(f"Mean Interatomic Distance: {mean_distance}")
                 # Download CIF files
                 st.subheader("Download CIF Files")
                 convert_to_cif(structure, "structure.cif")
