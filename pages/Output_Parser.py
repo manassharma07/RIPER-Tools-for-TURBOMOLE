@@ -316,11 +316,13 @@ if contents != '':
                 st.write(distances_df)
 
                 # Exclude diagonal elements
-                distances_df.values[[range(len(structure))]*2] = float('nan')
+                interatomic_distances[range(len(structure)), range(len(structure))] = float('nan')
+                
                 # Calculate statistics
-                smallest_distance = distances_df.values[~pd.isna(distances_df.values)].min()
-                largest_distance = distances_df.values[~pd.isna(distances_df.values)].max()
-                mean_distance = distances_df.values[~pd.isna(distances_df.values)].mean()
+                smallest_distance = interatomic_distances[~pd.isna(interatomic_distances)].min()
+                largest_distance = interatomic_distances[~pd.isna(interatomic_distances)].max()
+                mean_distance = interatomic_distances[~pd.isna(interatomic_distances)].mean()
+
 
 
                 # Display statistics
