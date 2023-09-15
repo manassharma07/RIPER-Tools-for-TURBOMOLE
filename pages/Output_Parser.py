@@ -299,36 +299,34 @@ if contents != '':
             if isinstance(structure, Structure):  # type = Structure
                 display_structure_info(structure)
                 visualize_structure(structure, "viz1.html")
+
                 # Show bonds information
-                # Calculate interatomic distances
-                interatomic_distances = structure.distance_matrix
-                # Get atomic symbols and indices
-                atomic_symbols = [site.species_string for site in structure]
-                atom_indices = [f"{i}_{site.species_string}" for i, site in enumerate(structure)]
+                with st.expander(label='Interatomic Distances', expanded=True):
+                    # Calculate interatomic distances
+                    interatomic_distances = structure.distance_matrix
+                    # Get atomic symbols and indices
+                    atomic_symbols = [site.species_string for site in structure]
+                    atom_indices = [f"{i}_{site.species_string}" for i, site in enumerate(structure)]
+                    # Display as DataFrame
+                    # import pandas as pd
+                    distances_df = pd.DataFrame(interatomic_distances, columns=atom_indices, index=atom_indices)
+                    # Display DataFrame
+                    st.write("Interatomic Distances:")
+                    st.write(distances_df)
 
-                # Display as DataFrame
-                # import pandas as pd
-                distances_df = pd.DataFrame(interatomic_distances, columns=atom_indices, index=atom_indices)
+                    # Exclude diagonal elements
+                    interatomic_distances[range(len(structure)), range(len(structure))] = float('nan')
 
+                    # Calculate statistics
+                    smallest_distance = interatomic_distances[~pd.isna(interatomic_distances)].min()
+                    largest_distance = interatomic_distances[~pd.isna(interatomic_distances)].max()
+                    mean_distance = interatomic_distances[~pd.isna(interatomic_distances)].mean()
 
-                # Display DataFrame
-                st.write("Interatomic Distances:")
-                st.write(distances_df)
+                    # Display statistics
+                    st.write(f"Smallest Interatomic Distance: {smallest_distance} Angstroms")
+                    st.write(f"Largest Interatomic Distance: {largest_distance} Angstroms")
+                    st.write(f"Mean Interatomic Distance: {mean_distance} Angstroms")
 
-                # Exclude diagonal elements
-                interatomic_distances[range(len(structure)), range(len(structure))] = float('nan')
-
-                # Calculate statistics
-                smallest_distance = interatomic_distances[~pd.isna(interatomic_distances)].min()
-                largest_distance = interatomic_distances[~pd.isna(interatomic_distances)].max()
-                mean_distance = interatomic_distances[~pd.isna(interatomic_distances)].mean()
-
-
-
-                # Display statistics
-                st.write(f"Smallest Interatomic Distance: {smallest_distance} Angstroms")
-                st.write(f"Largest Interatomic Distance: {largest_distance} Angstroms")
-                st.write(f"Mean Interatomic Distance: {mean_distance} Angstroms")
                 # Download CIF files
                 st.subheader("Download CIF Files")
                 convert_to_cif(structure, "structure.cif")
