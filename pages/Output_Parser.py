@@ -302,7 +302,8 @@ if contents != '':
                 # Show bonds information
                 # Calculate interatomic distances
                 interatomic_distances = structure.distance_matrix
-
+                # Get atomic symbols
+                atomic_symbols = [site.species_string for site in structure]
                 # Display as DataFrame
                 distances_df = pd.DataFrame(interatomic_distances, columns=atomic_symbols, index=atomic_symbols)
 
