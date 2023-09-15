@@ -304,7 +304,7 @@ if contents != '':
                 interatomic_distances = structure.distance_matrix
 
                 # Display as DataFrame
-                distances_df = pd.DataFrame(interatomic_distances, columns=structure.species, index=structure.species)
+                distances_df = pd.DataFrame(interatomic_distances, columns=atomic_symbols, index=atomic_symbols)
 
                 # Display DataFrame
                 st.write("Interatomic Distances:")
