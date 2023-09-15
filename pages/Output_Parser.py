@@ -316,9 +316,10 @@ if contents != '':
                 st.write(distances_df)
 
                 # Calculate statistics
-                smallest_distance = distances_df.min().min()
-                largest_distance = distances_df.max().max()
-                mean_distance = distances_df.mean().mean()
+                smallest_distance = distances_df.values[~pd.isna(distances_df.values)].min()
+                largest_distance = distances_df.values[~pd.isna(distances_df.values)].max()
+                mean_distance = distances_df.values[~pd.isna(distances_df.values)].mean()
+
 
                 # Display statistics
                 st.write(f"Smallest Interatomic Distance: {smallest_distance}")
