@@ -279,13 +279,22 @@ if structure:
         atoms = AseAtomsAdaptor.get_atoms(structure)
         display_structure_info_ase(structure, atoms)
 
-    lat = atoms.cell.get_bravais_lattice()
+    pbc = st.selectbox('PBC: ', ['3D', '2D'])
+    if pbc=='3D':
+        pbc_arr = [1,1,1]
+    if pbc=='2D':
+        pbc_arr = [1,1,0]
+
+    lat = atoms.cell.get_bravais_lattice(pbc=pbc_arr)
     special_points = lat.get_special_points()
+
+    
 
     st.write("### Special High-Symmetry k-points:")
     st.write(special_points)
 
-    bandpath = atoms.cell.bandpath()
+    bandpath = atoms.cell.bandpath(pbc=pbc_arr)
+    # bandpath.s
     bandpath_str = bandpath.path
     st.write("### Special High-Symmetry path for Band Structure Calculation:")
     st.write(bandpath_str)
