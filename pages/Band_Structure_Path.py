@@ -279,7 +279,7 @@ if structure:
         atoms = AseAtomsAdaptor.get_atoms(structure)
         display_structure_info_ase(structure, atoms)
 
-    pbc = st.selectbox('PBC: ', ['3D', '2D'])
+    pbc = st.selectbox('Specify PBC (EXPERIMENTAL FEATURE IN TESTING): ', ['3D', '2D'])
     if pbc=='3D':
         pbc_arr = [1,1,1]
     if pbc=='2D':
