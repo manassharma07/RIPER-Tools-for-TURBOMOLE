@@ -52,7 +52,7 @@ def calculate_nlines(bandpath_str):
 def format_coordinate(coord):
     return "    ".join(f"{c:.6f}" for c in coord)
 
-def generate_turbomole_text(nlines, bandpath_str, special_points):
+def generate_turbomole_text(nlines, bandpath_str, special_points, pbc):
     substrings = bandpath_str.split(",")
     text = ""
 
@@ -62,8 +62,12 @@ def generate_turbomole_text(nlines, bandpath_str, special_points):
         for i in range(n_chars - 1):
             start_point = special_points[substring[i]]
             end_point = special_points[substring[i + 1]]
-            start_point_str = format_coordinate(start_point)
-            end_point_str = format_coordinate(end_point)
+            if pbc=='3D':
+                start_point_str = format_coordinate(start_point)
+                end_point_str = format_coordinate(end_point)
+            elif pbc=='2D':
+                start_point_str = format_coordinate(start_point[0:2])
+                end_point_str = format_coordinate(end_point[0:2])
             line = f"    recipr    {start_point_str}    {end_point_str}    40\n"
             text += line
 
@@ -303,7 +307,7 @@ if structure:
     st.write("### Number of lines (paths) in band structure:", nlines)
 
     st.write("### Input text for RIPER band structure calculation (Add it to your `control` file)")
-    bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points)
+    bandstructure_input = generate_turbomole_text(nlines, bandpath_str, special_points, pbc)
     # Convert the atomic coordinates to Bohr units
     if use_primitive:
         coords_bohr = convert_to_bohr(primitive_structure)
