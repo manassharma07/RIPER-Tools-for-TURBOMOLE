@@ -89,12 +89,18 @@ def generate_coord_text(coords_bohr):
     return coord_text
 
 # Function to generate lattice parameter text
-def generate_lattice_text(structure):
+def generate_lattice_text(structure, pbc):
     lattice_params = structure.lattice.abc
     angles = structure.lattice.angles
     lattice_text = "$cell angs\n"
-    lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
-    lattice_text += "$periodic 3\n"
+    if pbc=='3D':
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    elif pbc=='2D':
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[0]}\n"
+    if pbc=='3D':
+        lattice_text += "$periodic 3\n"
+    elif pbc=='2D':
+        lattice_text += "$periodic 2\n"
     # lattice_text += "$kpoints\n"
     # lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
     return lattice_text
