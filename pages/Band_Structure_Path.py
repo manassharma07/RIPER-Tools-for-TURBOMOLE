@@ -89,7 +89,7 @@ def generate_coord_text(coords_bohr):
     return coord_text
 
 # Function to generate lattice parameter text
-def generate_lattice_text(structure, pbc):
+def generate_lattice_text(structure, pbc='3D'):
     lattice_params = structure.lattice.abc
     angles = structure.lattice.angles
     lattice_text = "$cell angs\n"
@@ -324,9 +324,9 @@ if structure:
     
     # Generate the lattice parameter text
     if use_primitive:
-        lattice_info_input = generate_lattice_text(primitive_structure)
+        lattice_info_input = generate_lattice_text(primitive_structure, pbc=pbc)
     else:
-        lattice_info_input = generate_lattice_text(structure)
+        lattice_info_input = generate_lattice_text(structure, pbc=pbc)
     turbomole_text = st.text_area("`control` file text", value=lattice_info_input + bandstructure_input, height=300)
     st.warning('Please also make sure that the `Direct space cell vectors` in the `riper` output file have the same sign as the lattice vectors of the parsed structure (shown above).')
     st.text_area("`coords` file text", value=coords_text, height=500)
