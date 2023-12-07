@@ -288,7 +288,7 @@ else:
         contents = stringio.read()
         # Create a StringIO object
         stringio_obj_cif = StringIO(contents)
-        structure = parse_cif_ase(stringio_obj_cif)
+        structure = parse_cif_ase(stringio)
     elif cif_contents:
         structure = Structure.from_str(cif_contents, fmt="cif")
     else:
