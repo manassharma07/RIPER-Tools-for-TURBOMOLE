@@ -74,14 +74,6 @@ def parse_cif_ase(stringio):
 def convert_pymatgen_to_ase_to_pymatgen(structure):
     convert_to_cif(structure, "temp.cif")
     file = open("temp.cif", 'r')
-    # To read file as bytes:
-    # bytes_data = file.getvalue()
-    # To convert to a string based IO:
-    # stringio = StringIO(file.getvalue().decode("utf-8"))
-    # # To read file as string:
-    # contents = stringio.read()
-    # # Create a StringIO object
-    # stringio_obj_cif = StringIO(contents)
     return parse_cif_ase(file)
 
 

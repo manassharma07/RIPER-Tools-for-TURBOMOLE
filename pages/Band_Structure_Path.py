@@ -6,6 +6,7 @@ import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
+from ase.io import read
 
 
 # Set page config
@@ -42,6 +43,15 @@ def create_structure_from_parameters(a, b, c, alpha, beta, gamma):
     lattice = lattice_matrix.T
     
     return Structure(lattice, ["H"], [[0, 0, 0]])
+
+
+def parse_cif_ase(stringio):
+    # Read CIF
+    atoms = read(stringio, format="cif")
+
+    # Convert ASE Atoms to pymatgen Structure
+    structure = AseAtomsAdaptor().get_structure(atoms)
+    return structure
 
 
 def calculate_nlines(bandpath_str):
@@ -267,8 +277,18 @@ if lattice_parameters_manual:
     structure = create_structure_from_parameters(a, b, c, alpha, beta, gamma)
 else:
     if cif_file:
-        cif_text = cif_file.read().decode("utf-8")
-        structure = Structure.from_str(cif_text, fmt="cif")
+        # cif_text = cif_file.read().decode("utf-8")
+        # structure = Structure.from_str(cif_text, fmt="cif")
+
+        # Use ASE to read the CIF instead as it follows the convention of keeping the lattice vector a along x-axis
+        # If a file is uploaded, read its contents
+        # To convert to a string based IO:
+        stringio = StringIO(cif_file.getvalue().decode("utf-8"))
+        # To read file as string:
+        contents = stringio.read()
+        # Create a StringIO object
+        stringio_obj_cif = StringIO(contents)
+        structure = parse_cif_ase(stringio_obj_cif)
     elif cif_contents:
         structure = Structure.from_str(cif_contents, fmt="cif")
     else:
