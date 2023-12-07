@@ -7,6 +7,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
 from ase.io import read
+from pymatgen.io.cif import CifWriter
 
 
 # Set page config
@@ -52,6 +53,16 @@ def parse_cif_ase(stringio):
     # Convert ASE Atoms to pymatgen Structure
     structure = AseAtomsAdaptor().get_structure(atoms)
     return structure
+
+# Function to convert a structure to CIF
+def convert_to_cif(structure, filename):
+    cif_writer = CifWriter(structure)
+    cif_writer.write_file(filename)
+
+def convert_pymatgen_to_ase_to_pymatgen(structure):
+    convert_to_cif(structure, "temp.cif")
+    file = open("temp.cif", 'r')
+    return parse_cif_ase(file)
 
 
 def calculate_nlines(bandpath_str):
@@ -297,6 +308,7 @@ else:
 if structure:
     if use_primitive:
         primitive_structure = structure.get_primitive_structure()
+        primitive_structure = convert_pymatgen_to_ase_to_pymatgen(primitive_structure)
         visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
         # display_structure_info(primitive_structure)
