@@ -5,6 +5,9 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
+from ase.io import read
+from pymatgen.io.ase import AseAtomsAdaptor
+from io import StringIO
 
 # Set page config
 st.set_page_config(page_title='Materials Project ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -59,6 +62,28 @@ def generate_lattice_text(structure):
 def convert_to_cif(structure, filename):
     cif_writer = CifWriter(structure)
     cif_writer.write_file(filename)
+
+def parse_cif_ase(stringio):
+    # Read CIF
+    atoms = read(stringio, format="cif")
+
+    # Convert ASE Atoms to pymatgen Structure
+    structure = AseAtomsAdaptor().get_structure(atoms)
+    return structure
+
+def convert_pymatgen_to_ase_to_pymatgen(structure):
+    convert_to_cif(structure, "temp.cif")
+    file = open("temp.cif", 'r')
+    # To read file as bytes:
+    bytes_data = file.getvalue()
+    # To convert to a string based IO:
+    stringio = StringIO(file.getvalue().decode("utf-8"))
+    # To read file as string:
+    contents = stringio.read()
+    # Create a StringIO object
+    stringio_obj_cif = StringIO(contents)
+    return parse_cif_ase(stringio_obj_cif)
+
 
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
@@ -203,8 +228,20 @@ if docs is not None:
     # Get conventional structure
     analyzer = SpacegroupAnalyzer(structure)
     conventional_structure = analyzer.get_conventional_standard_structure()
+    # The structure returned by pymatgen doesn't necessarily have the lattice vector a parallel to the x-axis. 
+    # See for example Ru (Hexagonal) mp-33
+    # A trick could be to convert it to CIF and then use ASE to read that CIF (as ASE seems to be following the convention)
+    # Then convert the ASE structure to pymatgen
+    conventional_structure = convert_pymatgen_to_ase_to_pymatgen(conventional_structure)
+
+
     # Get primitive structure
     primitive_structure = analyzer.get_primitive_standard_structure()
+    # The structure returned by pymatgen doesn't necessarily have the lattice vector a parallel to the x-axis. 
+    # See for example Ru (Hexagonal) mp-33
+    # A trick could be to convert it to CIF and then use ASE to read that CIF (as ASE seems to be following the convention)
+    # Then convert the ASE structure to pymatgen
+    primitive_structure = convert_pymatgen_to_ase_to_pymatgen(primitive_structure)
 
     # Choose between primitive or conventional
     selected_structure_type = st.selectbox("Unit cell type:", ['Primitive Cell','Conventional Unit Cell'])
