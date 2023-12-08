@@ -5,7 +5,7 @@
  Copyright (C) 2023 TURBOMOLE GmbH, Karlsruhe
 
 
-    2023-12-07 17:34:32.481 
+    2023-12-08 23:44:18.054 
 
  Number of MKL threads:      8
     
@@ -134,15 +134,15 @@
 
    type   atoms  prim   cont   basis
    ---------------------------------------------------------------------------
-    si       2     43     22   pob-TZVP   [5s4p1d|14s8p1d]
+    si       2     63     37   def2-TZVP   [5s5p2d1f|14s9p3d1f]
    ---------------------------------------------------------------------------
-   total:    2     86     44
+   total:    2    126     74
    ---------------------------------------------------------------------------
 
-   total number of primitive shells          :   23
-   total number of contracted shells         :   20
-   total number of cartesian basis functions :   46
-   total number of SCF-basis functions       :   44
+   total number of primitive shells          :   27
+   total number of contracted shells         :   26
+   total number of cartesian basis functions :   84
+   total number of SCF-basis functions       :   74
 
 
    * AUXILIARY RI-J BASIS SET information:
@@ -216,32 +216,32 @@
               |      SCREENING OF BASIS FUNCTION PRODUCTS        |
               +--------------------------------------------------+
                
-         Threshold for shell products neglect:          0.7E-11
+         Threshold for shell products neglect:          0.4E-11
          Tolerance for shell products extents:          0.1E-07
          The biggest integral is expected to be:        0.3E+01
-         Number of {mu,nu,L} shell products:               4770
-         Number of direct lattice vectors:                  174
+         Number of {mu,nu,L} shell products:              19874
+         Number of direct lattice vectors:                  372
         
                
               +--------------------------------------------------+
               |             INITIAL ORBITALS/BANDS               |
               +--------------------------------------------------+
                
-  Bands restarted from             RIPER.BANDS
-  Bands occupations restarted from RIPER.BANDS.OCCUPATIONS
-  Bands energies restarted from    RIPER.BANDS.ENERGIES
+
+ reading orbital data $scfmo  from file mos
+ orbital characterization : expanded
 
   Diagonalization of the overlap matrix requested 
     Threshold for eigenvalues:    0.1000E-05
-    Total number of vectors:          44
-    Largest eigenvalue:          0.4492E+01
-    - for the k-point:                6
-    Smallest eigenvalue:         0.6614E-02
-    - for the k-point:              257
-    Largest number of vectors:       44
+    Total number of vectors:          74
+    Largest eigenvalue:          0.8872E+01
+    - for the k-point:              184
+    Smallest eigenvalue:         0.9908E-06
+    - for the k-point:                2
+    Largest number of vectors:       74
     - for the k-point:                1
-    Smallest number of vectors:      44
-    - for the k-point:                1
+    Smallest number of vectors:      73
+    - for the k-point:                2
 
   BANDS have been orthonormalized
                
@@ -278,44 +278,44 @@
      well-separateness criterion:         3.0000
      local multipole expansions switched on
      local expansions incremented by:        2
-     total number of centers:             4806
+     total number of centers:            19910
      number of octree levels:                6
-     number of boxes at all levels:        424
-     max. number of NF boxes per box:      337
-     length of the lowest level box:      3.5753
-     length of the highest level box:   114.4100
+     number of boxes at all levels:       1244
+     max. number of NF boxes per box:      800
+     length of the lowest level box:      3.0663
+     length of the highest level box:    98.1215
  
    Periodic boundary conditions - crystal field construction:
      extent of the nuclei:              7.2741
      extent of dipole correction:       3.6370
-     extent of electron density:       26.5040
+     extent of electron density:       31.8798
      extent of auxiliary density:      21.5760
-     final crystal field radius:       86.2033
-     number of lattice vectors:         9909
+     final crystal field radius:       97.3630
+     number of lattice vectors:        14243
  
    RI core memory information
-     core memory allocated for RI integrals:          30 MB
-     maximum memory needed for RI integrals:          30 MB
+     core memory allocated for RI integrals:         197 MB
+     maximum memory needed for RI integrals:         197 MB
  
                
               +--------------------------------------------------+
               |                SCF iteration    1                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    27.99999999999996
+          Number of electrons from P*S  =    27.99999999999998
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00008034021261
+          Number of electrons          =    27.99999486410778
            
-          SCF energy change             = -5.784D+02
+          SCF energy change             = -5.774D+02
           new damping factor            =      0.300
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         579.6630784973    |
-              | COULOMB ENERGY       =       -1116.3938330172    |
-              | EXCH. & CORR. ENERGY =         -41.7158916543    |
+              | KINETIC ENERGY       =         581.3497514934    |
+              | COULOMB ENERGY       =       -1116.9194184766    |
+              | EXCH. & CORR. ENERGY =         -41.8352656304    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.4466461742    |
+              | TOTAL ENERGY         =        -577.4049326136    |
               +--------------------------------------------------+
   
                
@@ -323,22 +323,22 @@
               |                SCF iteration    2                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    27.99999999999997
+          Number of electrons from P*S  =    27.99999999999994
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00008436844232
+          Number of electrons          =    28.00005629537653
            
-          Norm of current diis error    =  2.179D-01
-          RMS of difference density     =  4.506D-04
-          SCF energy change             = -2.644D-01
+          Norm of current diis error    =  4.983D-01
+          RMS of difference density     =  3.876D-03
+          SCF energy change             = -1.027D+00
           new damping factor            =      0.250
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         577.6878555210    |
-              | COULOMB ENERGY       =       -1114.8438436087    |
-              | EXCH. & CORR. ENERGY =         -41.5550722367    |
+              | KINETIC ENERGY       =         577.8716151999    |
+              | COULOMB ENERGY       =       -1114.7047036331    |
+              | EXCH. & CORR. ENERGY =         -41.5984084694    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7110603244    |
+              | TOTAL ENERGY         =        -578.4314969026    |
               +--------------------------------------------------+
   
                
@@ -346,22 +346,22 @@
               |                SCF iteration    3                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    28.00000000000004
+          Number of electrons from P*S  =    27.99999999999995
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007949800423
+          Number of electrons          =    28.00005467413242
            
-          Norm of current diis error    =  4.972D-02
-          RMS of difference density     =  1.203D-04
-          SCF energy change             = -1.544D-02
+          Norm of current diis error    =  1.293D-01
+          RMS of difference density     =  1.481D-04
+          SCF energy change             = -2.616D-01
           new damping factor            =      0.150
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.6623368196    |
-              | COULOMB ENERGY       =       -1115.7631312064    |
-              | EXCH. & CORR. ENERGY =         -41.6257098650    |
+              | KINETIC ENERGY       =         577.8451755948    |
+              | COULOMB ENERGY       =       -1114.9089336745    |
+              | EXCH. & CORR. ENERGY =         -41.6293155819    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7265042517    |
+              | TOTAL ENERGY         =        -578.6930736616    |
               +--------------------------------------------------+
   
                
@@ -369,22 +369,22 @@
               |                SCF iteration    4                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    28.00000000000002
+          Number of electrons from P*S  =    28.00000000000011
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007936934983
+          Number of electrons          =    28.00005194000105
            
-          Norm of current diis error    =  8.619D-03
-          RMS of difference density     =  4.129D-05
-          SCF energy change             = -1.806D-03
+          Norm of current diis error    =  3.345D-02
+          RMS of difference density     =  7.948D-05
+          SCF energy change             = -8.160D-02
           new damping factor            =      0.100
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.3927239963    |
-              | COULOMB ENERGY       =       -1115.5137546139    |
-              | EXCH. & CORR. ENERGY =         -41.6072797430    |
+              | KINETIC ENERGY       =         577.6531558916    |
+              | COULOMB ENERGY       =       -1114.7868198992    |
+              | EXCH. & CORR. ENERGY =         -41.6410107748    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7283103606    |
+              | TOTAL ENERGY         =        -578.7746747824    |
               +--------------------------------------------------+
   
                
@@ -395,19 +395,19 @@
           Number of electrons from P*S  =    27.99999999999999
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007931976463
+          Number of electrons          =    28.00005161011798
            
-          Norm of current diis error    =  1.141D-03
-          RMS of difference density     =  3.107D-05
-          SCF energy change             = -2.696D-04
+          Norm of current diis error    =  7.857D-03
+          RMS of difference density     =  2.475D-05
+          SCF energy change             = -9.576D-03
           new damping factor            =      0.100
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4070579053    |
-              | COULOMB ENERGY       =       -1115.5276862183    |
-              | EXCH. & CORR. ENERGY =         -41.6079516953    |
+              | KINETIC ENERGY       =         577.5704811888    |
+              | COULOMB ENERGY       =       -1114.7146435362    |
+              | EXCH. & CORR. ENERGY =         -41.6400884800    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7285800083    |
+              | TOTAL ENERGY         =        -578.7842508274    |
               +--------------------------------------------------+
   
                
@@ -415,22 +415,22 @@
               |                SCF iteration    6                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    28.00000000000005
+          Number of electrons from P*S  =    27.99999999999994
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007934646660
+          Number of electrons          =    28.00005191011905
            
-          Norm of current diis error    =  3.223D-04
-          RMS of difference density     =  2.704D-05
-          SCF energy change             = -1.890D-05
+          Norm of current diis error    =  6.930D-04
+          RMS of difference density     =  6.724D-06
+          SCF energy change             = -3.983D-04
           new damping factor            =      0.100
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4092787643    |
-              | COULOMB ENERGY       =       -1115.5297181994    |
-              | EXCH. & CORR. ENERGY =         -41.6081594684    |
+              | KINETIC ENERGY       =         577.5688141963    |
+              | COULOMB ENERGY       =       -1114.7134878919    |
+              | EXCH. & CORR. ENERGY =         -41.6399754524    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7285989035    |
+              | TOTAL ENERGY         =        -578.7846491480    |
               +--------------------------------------------------+
   
                
@@ -438,22 +438,22 @@
               |                SCF iteration    7                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    27.99999999999998
+          Number of electrons from P*S  =    28.00000000000006
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007930915898
+          Number of electrons          =    28.00005190324123
            
-          Norm of current diis error    =  2.347D-04
-          RMS of difference density     =  2.705D-05
-          SCF energy change             = -6.498D-06
+          Norm of current diis error    =  2.402D-04
+          RMS of difference density     =  6.486D-07
+          SCF energy change             = -1.554D-05
           new damping factor            =      0.100
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4088695023    |
-              | COULOMB ENERGY       =       -1115.5293744393    |
-              | EXCH. & CORR. ENERGY =         -41.6081004649    |
+              | KINETIC ENERGY       =         577.5657146913    |
+              | COULOMB ENERGY       =       -1114.7104898956    |
+              | EXCH. & CORR. ENERGY =         -41.6398894859    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7286054019    |
+              | TOTAL ENERGY         =        -578.7846646902    |
               +--------------------------------------------------+
   
                
@@ -461,22 +461,22 @@
               |                SCF iteration    8                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    27.99999999999999
+          Number of electrons from P*S  =    27.99999999999992
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007925203323
+          Number of electrons          =    28.00005190821500
            
-          Norm of current diis error    =  2.211D-04
-          RMS of difference density     =  1.223D-05
-          SCF energy change             = -3.364D-04
+          Norm of current diis error    =  2.263D-05
+          RMS of difference density     =  9.827D-08
+          SCF energy change             = -1.113D-07
           new damping factor            =      0.100
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4079563300    |
-              | COULOMB ENERGY       =       -1115.5287269606    |
-              | EXCH. & CORR. ENERGY =         -41.6081711282    |
+              | KINETIC ENERGY       =         577.5662581680    |
+              | COULOMB ENERGY       =       -1114.7110010925    |
+              | EXCH. & CORR. ENERGY =         -41.6399218771    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7289417588    |
+              | TOTAL ENERGY         =        -578.7846648015    |
               +--------------------------------------------------+
   
                
@@ -484,91 +484,22 @@
               |                SCF iteration    9                |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    28.00000000000001
+          Number of electrons from P*S  =    28.00000000000004
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007922646044
+          Number of electrons          =    28.00005190964043
            
-          Norm of current diis error    =  3.320D-04
-          RMS of difference density     =  1.164D-05
-          SCF energy change             = -2.332D-04
-          new damping factor            =      0.100
-  
-              +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4073547149    |
-              | COULOMB ENERGY       =       -1115.5283065663    |
-              | EXCH. & CORR. ENERGY =         -41.6082231564    |
-              |==================================================|
-              | TOTAL ENERGY         =        -578.7291750078    |
-              +--------------------------------------------------+
-  
-               
-              +--------------------------------------------------+
-              |                SCF iteration   10                |
-              +--------------------------------------------------+
-  
-          Number of electrons from P*S  =    27.99999999999997
-           
-          Numerical integration of the XC term:
-          Number of electrons          =    28.00007922898965
-           
-          Norm of current diis error    =  3.608D-04
-          RMS of difference density     =  5.061D-06
-          SCF energy change             = -2.983D-05
-          new damping factor            =      0.100
-  
-              +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4073076341    |
-              | COULOMB ENERGY       =       -1115.5282785690    |
-              | EXCH. & CORR. ENERGY =         -41.6082338981    |
-              |==================================================|
-              | TOTAL ENERGY         =        -578.7292048330    |
-              +--------------------------------------------------+
-  
-               
-              +--------------------------------------------------+
-              |                SCF iteration   11                |
-              +--------------------------------------------------+
-  
-          Number of electrons from P*S  =    27.99999999999996
-           
-          Numerical integration of the XC term:
-          Number of electrons          =    28.00007923090557
-           
-          Norm of current diis error    =  2.929D-04
-          RMS of difference density     =  3.233D-07
-          SCF energy change             = -1.421D-07
-          new damping factor            =      0.100
-  
-              +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4073095309    |
-              | COULOMB ENERGY       =       -1115.5282826541    |
-              | EXCH. & CORR. ENERGY =         -41.6082318520    |
-              |==================================================|
-              | TOTAL ENERGY         =        -578.7292049751    |
-              +--------------------------------------------------+
-  
-               
-              +--------------------------------------------------+
-              |                SCF iteration   12                |
-              +--------------------------------------------------+
-  
-          Number of electrons from P*S  =    27.99999999999995
-           
-          Numerical integration of the XC term:
-          Number of electrons          =    28.00007923300544
-           
-          Norm of current diis error    =  1.848D-04
-          RMS of difference density     =  6.296D-08
-          SCF energy change             = -2.510D-08
+          Norm of current diis error    =  5.591D-06
+          RMS of difference density     =  9.725D-09
+          SCF energy change             = -8.831D-10
           new damping factor            =      0.150
   
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4072293284    |
-              | COULOMB ENERGY       =       -1115.5282117682    |
-              | EXCH. & CORR. ENERGY =         -41.6082225604    |
+              | KINETIC ENERGY       =         577.5661289242    |
+              | COULOMB ENERGY       =       -1114.7108828869    |
+              | EXCH. & CORR. ENERGY =         -41.6399108397    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7292050002    |
+              | TOTAL ENERGY         =        -578.7846648024    |
               +--------------------------------------------------+
   
                
@@ -576,31 +507,31 @@
               |       SCF converged - final SCF iteration        |
               +--------------------------------------------------+
   
-          Number of electrons from P*S  =    28.00000000000001
+          Number of electrons from P*S  =    27.99999999999989
            
           Numerical integration of the XC term:
-          Number of electrons          =    28.00007923703728
+          Number of electrons          =    28.00005190955650
            
   
-              SCF converged within     12 cycles.
+              SCF converged within      9 cycles.
   
               +--------------------------------------------------+
               |                FINAL ENERGIES                    |
               +--------------------------------------------------+
-              | KINETIC ENERGY       =         578.4070848749    |
-              | COULOMB ENERGY       =       -1115.5280845823    |
-              | EXCH. & CORR. ENERGY =         -41.6082053086    |
+              | KINETIC ENERGY       =         577.5661601344    |
+              | COULOMB ENERGY       =       -1114.7109116500    |
+              | EXCH. & CORR. ENERGY =         -41.6399132869    |
               |==================================================|
-              | TOTAL ENERGY         =        -578.7292050160    |
+              | TOTAL ENERGY         =        -578.7846648025    |
               +--------------------------------------------------+
   
   
          ------------------ Fermi Level Statistics ----------------
-             Lowest unoccupied band =       -0.189147
-             Highest occupied band  =       -0.237887
-             Band gap               =        0.048739
-             Band gap middle        =       -0.213517
-             Fermi level            =       -0.213517
+             Lowest unoccupied band =       -0.162330
+             Highest occupied band  =       -0.191213
+             Band gap               =        0.028883
+             Band gap middle        =       -0.176771
+             Fermi level            =       -0.176771
          ----------------------------------------------------------
                
               +--------------------------------------------------+
@@ -637,59 +568,59 @@
     ------------------------------------------------------------------------
     module                         sec     %               sec     %
     ------------------------------------------------------------------------
-    RIPER                       134.0  100.00           20.3  100.00   6.6
-    Preliminaries                 0.3    0.21            0.0    0.23   5.9
-    BANDS init                    0.5    0.39            0.1    0.32   8.0
-    DFT grid setup                7.8    5.82            3.3   16.30   2.4
-    DFT system grid               7.8    5.80            3.3   16.23   2.4
-    CFMM preliminaries            1.5    1.11            1.2    5.85   1.2
-    PQ matrix                     0.5    0.38            0.1    0.31   8.0
-    PQ CNF                        0.5    0.36            0.1    0.30   7.9
-    SCF                         107.2   80.03           13.6   67.02   7.9
-    jmat nuclear                  0.4    0.28            0.0    0.23   7.9
-    SCF looop                   105.7   78.88           13.4   66.08   7.9
-    XC matrix                    33.4   24.93            4.2   20.58   8.0
-    Coulomb total                66.4   49.55            8.5   41.88   7.8
-    gamma vector                 48.0   35.83            6.2   30.58   7.7
-    gamma CFF                     0.5    0.41            0.1    0.47   5.7
-    gamma CNF FF                  9.2    6.86            1.1    5.65   8.0
-    gamma CNF FF mom              0.5    0.38            0.1    0.31   8.0
-    gamma CNF FF p. 2             8.5    6.32            1.1    5.20   8.0
-    gamma CNF NF                 38.2   28.54            5.0   24.44   7.7
-    gamma CNF NF p. 1            29.3   21.90            3.9   18.99   7.6
-    gamma CNF NF p. 2             8.9    6.64            1.1    5.46   8.0
-    Coulomb matrix               18.4   13.70            2.3   11.29   8.0
-    jmat CFF                      0.4    0.30            0.1    0.26   7.6
-    jmat CNF FF                   7.0    5.23            0.9    4.32   8.0
-    jmat CNF FF p. 2              6.5    4.84            0.8    4.00   8.0
-    jmat CNF NF                   0.2    0.15            0.0    0.15   6.5
-    elec. en. aux                10.6    7.94            1.3    6.53   8.0
-    SCF solve                     1.2    0.89            0.2    0.75   7.8
-    D build                       0.5    0.35            0.1    0.27   8.5
-    MO dump                       4.5    3.34            0.6    2.75   8.0
-    Gradient                     16.2   12.06            2.0    9.95   8.0
-    grad XC                       3.3    2.45            0.4    2.02   8.0
-    grad Coulomb                 12.8    9.59            1.6    7.91   8.0
-    grad CFF                      0.4    0.31            0.1    0.26   7.9
-    grad FF CNF                   2.0    1.52            0.3    1.25   8.0
-    CNF FF dnuc                   0.7    0.52            0.1    0.43   8.0
-    CNF FF daux                   0.7    0.52            0.1    0.43   8.0
-    CNF FF drho                   0.6    0.48            0.1    0.40   8.0
-    grad NF CNF                  10.4    7.75            1.3    6.39   8.0
-    CNF NF drhoaux                9.2    6.83            1.1    5.64   8.0
-    CNF NF dauxaux                0.5    0.34            0.1    0.28   8.0
-    CNF NF drhonuc                0.8    0.57            0.1    0.47   8.0
+    RIPER                       628.6  100.00           87.6  100.00   7.2
+    BANDS init                    1.2    0.19            0.2    0.17   8.0
+    DFT grid setup                7.9    1.25            3.3    3.79   2.4
+    DFT system grid               7.8    1.24            3.3    3.76   2.4
+    CFMM preliminaries            3.8    0.60            2.4    2.79   1.6
+    RI core setup                 0.7    0.11            0.1    0.10   8.0
+    PQ matrix                     0.7    0.11            0.1    0.10   8.0
+    PQ CNF                        0.7    0.11            0.1    0.10   8.0
+    SCF                         523.1   83.22           69.6   79.50   7.5
+    jmat nuclear                  7.8    1.24            1.0    1.12   8.0
+    SCF looop                   512.8   81.57           68.3   78.02   7.5
+    XC matrix                   196.1   31.19           28.7   32.76   6.8
+    Coulomb total               304.7   48.47           38.1   43.53   8.0
+    gamma vector                267.8   42.60           33.5   38.27   8.0
+    gamma CFF                     1.9    0.30            0.2    0.27   8.0
+    gamma CNF FF                 24.8    3.94            3.1    3.59   7.9
+    gamma CNF FF mom              2.2    0.35            0.3    0.32   8.0
+    gamma CNF FF p. 2            22.3    3.54            2.8    3.22   7.9
+    gamma CNF NF                240.8   38.30           30.1   34.37   8.0
+    gamma CNF NF p. 1           226.9   36.10           28.4   32.40   8.0
+    gamma CNF NF p. 2            13.9    2.20            1.7    1.97   8.0
+    Coulomb matrix               33.5    5.33            4.2    4.78   8.0
+    jmat CFF                      2.0    0.31            0.2    0.28   7.9
+    jmat CNF FF                  14.5    2.30            1.8    2.06   8.0
+    jmat CNF FF p. 2             12.2    1.95            1.5    1.75   8.0
+    jmat CNF NF                   1.2    0.19            0.2    0.18   7.7
+    elec. en. aux                15.7    2.50            2.0    2.24   8.0
+    SCF solve                     3.5    0.56            0.4    0.50   8.0
+    D build                       1.5    0.23            0.2    0.21   7.9
+    MO dump                       7.3    1.16            0.9    1.04   8.0
+    Gradient                     91.3   14.53           11.9   13.55   7.7
+    grad XC                      23.3    3.70            3.3    3.82   7.0
+    grad Coulomb                 67.9   10.79            8.5    9.70   8.0
+    grad CFF                      1.0    0.15            0.1    0.14   8.0
+    CFF drho                      0.8    0.12            0.1    0.11   8.0
+    grad FF CNF                   7.4    1.18            0.9    1.07   7.9
+    CNF FF dnuc                   2.6    0.41            0.3    0.38   7.8
+    CNF FF daux                   2.5    0.39            0.3    0.36   7.9
+    CNF FF drho                   2.4    0.38            0.3    0.34   8.0
+    grad NF CNF                  59.1    9.40            7.4    8.43   8.0
+    CNF NF drhoaux               44.4    7.06            5.5    6.34   8.0
+    CNF NF drhonuc               14.2    2.27            1.8    2.03   8.0
     ------------------------------------------------------------------------
 
 
     ------------------------------------------------------------------------
-         total  cpu-time :  2 minutes and 14 seconds
-         total wall-time :  20.33 seconds
+         total  cpu-time : 10 minutes and 29 seconds
+         total wall-time :  1 minutes and 28 seconds
     ------------------------------------------------------------------------
 
    ****  riper : all done  ****
 
 
-    2023-12-07 17:34:52.799 
+    2023-12-08 23:45:45.650 
 
   riper ended normally

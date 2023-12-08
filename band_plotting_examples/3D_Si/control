@@ -6,21 +6,22 @@ $optimize
  redundant  off
  cartesian  on
 $atoms
-    basis =pob-TZVP
+    basis =def2-TZVP
     jbas  =universal
 $basis    file=basis
 $scfmo    file=mos
+$closed shells
+ a       1-14                                   ( 2 )
 $scfiterlimit       30
 $scfdamp   start=0.300  step=0.050  min=0.100
 $scfdump
 $scfdiis
 $maxcor    500 MiB  per_core
 $scforbitalshift  automatic=.1
-$jbas    file=auxbasis
-$ricore      500
-$rij
+$energy    file=energy
+$grad    file=gradient
 $cell angs
-  3.84927886   3.84927886   3.84927886   59.999999999999986   59.99999999999999   59.99999999999999
+  3.84927886   3.84927886   3.84927886   59.99999999999999   59.99999999999999   59.99999999999999
 $periodic 3
 $kpoints
     nkpoints 8 8 8
@@ -39,13 +40,12 @@ $dft
     functional   pbe
     gridsize   m5
 $scfconv   7
+$jbas    file=auxbasis
+$ricore      500
+$rij
 $rundimensions
    natoms=2
-$xctype GGA (not to be modified here)
-$last SCF energy change = -578.72921
-$closed shells
- a       1-14                                   ( 2 )
-$energy    file=energy
-$grad    file=gradient
 $last step     riper
+$xctype GGA (not to be modified here)
+$last SCF energy change = -578.78466
 $end
