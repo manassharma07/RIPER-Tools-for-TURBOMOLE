@@ -76,3 +76,7 @@ st.code('nohup riper -proper > riper.out &', language='shell')
 st.write('#### Tutorial #3 (Calculating Densities and MOs on grids using RIPER)')
 _, container, _ = st.columns([50, 100, 50])
 container.video(data='https://www.youtube.com/watch?v=549bXQvaAjU')
+
+st.write('#### Tutorial #4 (Periodic DFT calculation using RIPER)')
+_, container, _ = st.columns([50, 100, 50])
+container.video(data='https://www.youtube.com/watch?v=8XIkTT2uPT8')

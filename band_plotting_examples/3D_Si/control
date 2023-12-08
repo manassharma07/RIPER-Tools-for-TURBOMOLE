@@ -1,0 +1,51 @@
+$title
+$symmetry c1
+$coord    file=coord
+$optimize
+ internal   off
+ redundant  off
+ cartesian  on
+$atoms
+    basis =pob-TZVP
+    jbas  =universal
+$basis    file=basis
+$scfmo    file=mos
+$scfiterlimit       30
+$scfdamp   start=0.300  step=0.050  min=0.100
+$scfdump
+$scfdiis
+$maxcor    500 MiB  per_core
+$scforbitalshift  automatic=.1
+$jbas    file=auxbasis
+$ricore      500
+$rij
+$cell angs
+  3.84927886   3.84927886   3.84927886   59.999999999999986   59.99999999999999   59.99999999999999
+$periodic 3
+$kpoints
+    nkpoints 8 8 8
+    kptlines 10
+    recipr    0.000000    0.000000    0.000000    0.500000    0.000000    0.500000    40
+    recipr    0.500000    0.000000    0.500000    0.500000    0.250000    0.750000    40
+    recipr    0.500000    0.250000    0.750000    0.375000    0.375000    0.750000    40
+    recipr    0.375000    0.375000    0.750000    0.000000    0.000000    0.000000    40
+    recipr    0.000000    0.000000    0.000000    0.500000    0.500000    0.500000    40
+    recipr    0.500000    0.500000    0.500000    0.625000    0.250000    0.625000    40
+    recipr    0.625000    0.250000    0.625000    0.500000    0.250000    0.750000    40
+    recipr    0.500000    0.250000    0.750000    0.500000    0.500000    0.500000    40
+    recipr    0.500000    0.500000    0.500000    0.375000    0.375000    0.750000    40
+    recipr    0.625000    0.250000    0.625000    0.500000    0.000000    0.500000    40
+$dft
+    functional   pbe
+    gridsize   m5
+$scfconv   7
+$rundimensions
+   natoms=2
+$xctype GGA (not to be modified here)
+$last SCF energy change = -578.72921
+$closed shells
+ a       1-14                                   ( 2 )
+$energy    file=energy
+$grad    file=gradient
+$last step     riper
+$end
