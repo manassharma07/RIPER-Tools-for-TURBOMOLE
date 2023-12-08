@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 filename = "bands.xyz"
 
 # Define the energy range for plotting (in eV)
-energy_range_min = -2.5  # Modify this according to your desired range
-energy_range_max = 3   # Modify this according to your desired range
+energy_range_min = -5  # Modify this according to your desired range
+energy_range_max = 9   # Modify this according to your desired range
 # User-provided energy shift value (in au)
 energy_shift =  -0.237887
 # Num k-points for each band
@@ -76,7 +76,7 @@ down_spin_bands_to_plot = []
 
 for band_index in range(num_bands_up_spin):
     band_data = up_spin_df[band_index * num_k_points : (band_index + 1) * num_k_points]
-    if any((energy_range_min <= energy <= energy_range_max) for energy in band_data['energy_ev']):
+    if any((energy_range_min  <= energy <= energy_range_max) for energy in band_data['energy_ev']):
         up_spin_bands_to_plot.append(band_data['energy_ev'].tolist())
 
 
@@ -101,5 +101,6 @@ plt.axhline(y=0, color='black', linestyle='--', linewidth=1.7)  # Add a horizont
 # Disable horizontal grid lines
 plt.grid(which='major', axis='x', linestyle='-', linewidth=1.8, color='gray')
 plt.xlim(kpoint_ticks[0], kpoint_ticks[-1])
+plt.ylim(energy_range_min+energy_shift, energy_range_max+energy_shift)
 plt.tight_layout()
 plt.show()
