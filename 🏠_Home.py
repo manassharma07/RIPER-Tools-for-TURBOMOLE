@@ -80,3 +80,7 @@ container.video(data='https://www.youtube.com/watch?v=549bXQvaAjU')
 st.write('#### Tutorial #4 (Periodic DFT calculation using RIPER)')
 _, container, _ = st.columns([50, 100, 50])
 container.video(data='https://www.youtube.com/watch?v=8XIkTT2uPT8')
+
+st.write('#### Tutorial #5 (Calculating and plotting Band Structure of bulk (3D) Silicon crystal using RIPER)')
+_, container, _ = st.columns([50, 100, 50])
+container.video(data='https://youtu.be/CMqbbXCyTgo')
