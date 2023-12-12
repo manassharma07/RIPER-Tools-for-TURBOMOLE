@@ -12,6 +12,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from io import StringIO
 from ase.io.espresso import read_espresso_in
+from ase.io.extxyz import read_extxyz
 from ase.io.cif import read_cif
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
@@ -210,6 +211,14 @@ def parse_qe_ase(stringio):
     structure = AseAtomsAdaptor().get_structure(atoms)
     return structure
 
+def parse_extxyz_ase(stringio):
+    # Read extended XYZ file
+    atoms = read_extxyz(stringio)
+
+    # Convert ASE Atoms to pymatgen Structure
+    structure = AseAtomsAdaptor().get_structure(atoms)
+    return structure
+
 
 def parse_cif_ase(stringio):
     # Read CIF
@@ -247,7 +256,7 @@ st.write("Please select the file format")
 
 # Select file format
 file_format = st.selectbox("Select file format",
-                           ("CIF", "XYZ", "CAR (Materials Studio)", "POSCAR", "Quantum ESPRESSO (PWSCF)"))
+                           ("CIF", "XYZ", "CAR (Materials Studio)", "POSCAR", "Quantum ESPRESSO (PWSCF)", "Extended XYZ"))
 
 if file_format == 'CIF':
     cif_parser_options = ['ASE', 'PYMATGEN']
@@ -297,6 +306,10 @@ if contents != '':
         # Create a StringIO object
         stringio_obj = StringIO(contents)
         structure = parse_qe_ase(stringio_obj)
+    elif file_format == "Extended XYZ":
+        # Create a StringIO object
+        stringio_obj = StringIO(contents)
+        structure = parse_extxyz_ase(stringio_obj)
 
     # if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
     #     # Get conventional structure
