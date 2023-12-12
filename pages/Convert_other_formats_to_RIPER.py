@@ -213,7 +213,8 @@ def parse_qe_ase(stringio):
 
 def parse_extxyz_ase(stringio):
     # Read extended XYZ file
-    atoms = read_extxyz(stringio)
+    # atoms = read_extxyz(stringio)
+    atoms = read(stringio, format="read_extxyz")
 
     # Convert ASE Atoms to pymatgen Structure
     structure = AseAtomsAdaptor().get_structure(atoms)
