@@ -310,7 +310,7 @@ if contents != '':
     elif file_format == "Extended XYZ":
         # Create a StringIO object
         stringio_obj = StringIO(contents)
-        structure = parse_extxyz_ase(stringio_obj)
+        structure = parse_extxyz_ase(contents)
 
     # if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
     #     # Get conventional structure
