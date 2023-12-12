@@ -214,7 +214,7 @@ def parse_qe_ase(stringio):
 def parse_extxyz_ase(stringio):
     # Read extended XYZ file
     # atoms = read_extxyz(stringio)
-    atoms = read(stringio, format="read_extxyz")
+    atoms = read(stringio, format="extxyz")
 
     # Convert ASE Atoms to pymatgen Structure
     structure = AseAtomsAdaptor().get_structure(atoms)
@@ -310,7 +310,7 @@ if contents != '':
     elif file_format == "Extended XYZ":
         # Create a StringIO object
         stringio_obj = StringIO(contents)
-        structure = parse_extxyz_ase(contents)
+        structure = parse_extxyz_ase(stringio_obj)
 
     # if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
     #     # Get conventional structure
