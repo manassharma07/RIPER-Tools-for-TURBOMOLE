@@ -102,7 +102,7 @@ def visualize_structure(structure, html_file_name='viz.html'):
 
     HtmlFile = open(html_file_name, 'r', encoding='utf-8')
     source_code = HtmlFile.read() 
-    components.html(source_code, height = 300, width=900)
+    components.html(source_code, height = 300, width=300)
     HtmlFile.close()
 
 # return filecontents
