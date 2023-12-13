@@ -117,7 +117,7 @@ def generate_lattice_text(structure, pbc='3D'):
     if pbc=='3D':
         lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
     elif pbc=='2D':
-        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[0]}\n"
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[2]}\n"
     if pbc=='3D':
         lattice_text += "$periodic 3\n"
     elif pbc=='2D':
