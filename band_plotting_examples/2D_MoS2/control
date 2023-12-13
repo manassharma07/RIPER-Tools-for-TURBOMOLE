@@ -1,0 +1,47 @@
+$title
+$symmetry c1
+$coord    file=coord
+$optimize
+ internal   off
+ redundant  off
+ cartesian  on
+$atoms
+    basis =pob-TZVP-rev2
+    jbas  =universal
+mo 1
+    ecp   =mo def-ecp
+$basis    file=basis
+$ecp    file=basis
+$scfmo    file=mos
+$closed shells
+ a       1-23                                   ( 2 )
+$scfiterlimit       30
+$scfdamp   start=0.300  step=0.050  min=0.100
+$scfdump
+$scfdiis
+$maxcor    500 MiB  per_core
+$scforbitalshift  automatic=.1
+$energy    file=energy
+$grad    file=gradient
+$dft
+    functional   pbe
+    gridsize   m5
+$scfconv   7
+$jbas    file=auxbasis
+$ricore      500
+$rij
+$cell angs
+  3.18406646   3.18406646   120.0
+$periodic 2
+$kpoints
+    nkpoints 12 12
+    kptlines 3
+    recipr    0.000000    0.000000    0.500000    0.000000    40
+    recipr    0.500000    0.000000    0.333333    0.333333    40
+    recipr    0.333333    0.333333    0.000000    0.000000    40
+$rundimensions
+   natoms=3
+$last step     riper
+$xctype GGA (not to be modified here)
+$last SCF energy change = -.77394072E-01
+$end
