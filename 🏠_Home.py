@@ -49,10 +49,6 @@ $riper
     lenonly on
 ''', language='shell')
 
-st.write('#### Tutorial #1 (Molecular DFT calculation using RIPER)')
-_, container, _ = st.columns([50, 100, 50])
-container.video(data='https://www.youtube.com/watch?v=5ZlbBYxjwX8')
-
 st.write(''' `jobex` will automatically use riper when the keyword `$periodic` is present in the `control`
 file. Alternatively, the use of riper can be forced by specifying `-riper` argument of `jobex`,
 i.e., invoking''')
@@ -62,9 +58,6 @@ st.write('''Simultaneous optimization of atomic positions and cell parameters or
 performed by specifying the keyword `$optcell` in the `control` file and then invoking the
 jobex script as described above.''')
 
-st.write('#### Tutorial #2 (Molecular Geometry Optimization using RIPER)')
-_, container, _ = st.columns([50, 100, 50])
-container.video(data='https://www.youtube.com/watch?v=-Io3hpYVs84')
 
 st.write('''
 Calculation of data on grids for molecular and periodic systems using `riper` requires the
@@ -73,6 +66,18 @@ written to appropriate output files. These files can be generated either running
 point energy riper calculation or invoking
 ''')
 st.code('nohup riper -proper > riper.out &', language='shell')
+
+st.write('### YouTube Tutorials on `RIPER`')
+
+st.write('#### Tutorial #1 (Molecular DFT calculation using RIPER)')
+_, container, _ = st.columns([50, 100, 50])
+container.video(data='https://www.youtube.com/watch?v=5ZlbBYxjwX8')
+
+st.write('#### Tutorial #2 (Molecular Geometry Optimization using RIPER)')
+_, container, _ = st.columns([50, 100, 50])
+container.video(data='https://www.youtube.com/watch?v=-Io3hpYVs84')
+
+
 st.write('#### Tutorial #3 (Calculating Densities and MOs on grids using RIPER)')
 _, container, _ = st.columns([50, 100, 50])
 container.video(data='https://www.youtube.com/watch?v=549bXQvaAjU')
@@ -84,3 +89,7 @@ container.video(data='https://www.youtube.com/watch?v=8XIkTT2uPT8')
 st.write('#### Tutorial #5 (Calculating and plotting Band Structure of bulk (3D) Silicon crystal using RIPER)')
 _, container, _ = st.columns([50, 100, 50])
 container.video(data='https://youtu.be/CMqbbXCyTgo')
+
+st.write('#### Tutorial #5 (Calculating and plotting Band Structure of 2D-MoS2 using RIPER)')
+_, container, _ = st.columns([50, 100, 50])
+container.video(data='https://www.youtube.com/watch?v=q2UGnZr9_go')
