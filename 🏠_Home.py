@@ -67,7 +67,7 @@ point energy riper calculation or invoking
 ''')
 st.code('nohup riper -proper > riper.out &', language='shell')
 
-st.write('### YouTube Tutorials on `RIPER`')
+st.write('### YouTube Tutorials for `RIPER`')
 
 st.write('#### Tutorial #1 (Molecular DFT calculation using RIPER)')
 _, container, _ = st.columns([50, 100, 50])
