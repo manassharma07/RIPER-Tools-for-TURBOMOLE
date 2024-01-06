@@ -1,6 +1,28 @@
 import streamlit as st
 import pandas as pd
 
+# Set page config
+st.set_page_config(page_title='RT-TDDFT Absorption Spectrum Plotter 📈', layout='wide', page_icon="⚛️",
+menu_items={
+         'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
+     })
+
+# Sidebar stuff
+st.sidebar.write('# About')
+st.sidebar.write(' Originally Made By [Manas Sharma](https://manas.bragitoff.com)')
+st.sidebar.write(' In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
+st.sidebar.write('### *Powered by*')
+st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
+st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
+st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Representations')
+st.sidebar.write('* [PubChempy](https://pypi.org/project/PubChemPy/1.0/) for Accessing the PubChem Database')
+st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the Materials Project Database')
+st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
+st.sidebar.write('### *Contributors*')
+st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
+st.sidebar.write('### *Source Code*')
+st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
+
 def generate_field_input(selected_field, amplitude_x, amplitude_y, amplitude_z, tzero, width, omega, sigma, phase_x, phase_y, phase_z):
     if selected_field == "Static":
         return f"$fields\n    electric on\n$electric field\n    amplitude x={amplitude_x}  y={amplitude_y}  z={amplitude_z}\n    static"
