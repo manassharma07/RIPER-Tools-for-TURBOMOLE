@@ -32,7 +32,7 @@ def generate_lattice_text(structure, periodicity):
         lattice_text += "$kpoints\n"
         lattice_text += "    nkpoints <nx> <ny> <nz> "
     if periodicity==2:
-        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[0]}  \n"
+        lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[2]}  \n"
         lattice_text += "$periodic 2\n"
         lattice_text += "$kpoints\n"
         lattice_text += "    nkpoints <nx> <ny> "
