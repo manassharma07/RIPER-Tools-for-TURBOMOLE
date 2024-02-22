@@ -2,16 +2,20 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.express as px
 from io import StringIO
 from pymatgen.core import Structure, Lattice
 from pymatgen.io.cif import CifWriter
 import py3Dmol
 import streamlit.components.v1 as components
 
+
 # Function to convert atomic coordinates to Bohr units
 def convert_to_bohr(structure):
     coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
-    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
+    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in
+            coords]
+
 
 # Function to generate coordinate text
 def generate_coord_text(coords_bohr):
@@ -21,37 +25,41 @@ def generate_coord_text(coords_bohr):
     coord_text += "$end"
     return coord_text
 
+
 # Function to generate lattice parameter text
 def generate_lattice_text(structure, periodicity):
     lattice_params = structure.lattice.abc
     angles = structure.lattice.angles
     lattice_text = "$cell angs\n"
-    if periodicity==3:
+    if periodicity == 3:
         lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
         lattice_text += "$periodic 3\n"
         lattice_text += "$kpoints\n"
         lattice_text += "    nkpoints <nx> <ny> <nz> "
-    if periodicity==2:
+    if periodicity == 2:
         lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {angles[2]}  \n"
         lattice_text += "$periodic 2\n"
         lattice_text += "$kpoints\n"
         lattice_text += "    nkpoints <nx> <ny> "
-    if periodicity==1:
+    if periodicity == 1:
         lattice_text += f"  {lattice_params[0]:.8f}    \n"
         lattice_text += "$periodic 1\n"
         lattice_text += "$kpoints\n"
         lattice_text += "    nkpoints <nx> "
     return lattice_text
 
+
 # return filecontents
 def read_file(filename):
     with open(filename, 'r') as file:
         return file.read()
 
+
 # Function to convert a structure to CIF
 def convert_to_cif(structure, filename):
     cif_writer = CifWriter(structure)
     cif_writer.write_file(filename)
+
 
 def find_line_with_text(lines, text):
     for line in lines:
@@ -65,7 +73,7 @@ def parse_energies(text):
     coulomb_energy = []
     exchange_corr_energy = []
     total_energy = []
-    
+
     lines = text.split('\n')
     for line in lines:
         if "KINETIC ENERGY" in line:
@@ -76,8 +84,9 @@ def parse_energies(text):
             exchange_corr_energy.append(float(line.split()[6]))
         elif "TOTAL ENERGY" in line:
             total_energy.append(float(line.split()[4]))
-    
+
     return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy
+
 
 # Function to display structure information
 def display_structure_info(structure):
@@ -122,6 +131,7 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
     spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
@@ -150,8 +160,10 @@ def visualize_structure(structure, html_file_name='viz.html'):
     components.html(source_code, height=300, width=500)
     HtmlFile.close()
 
+
 st.title("`RIPER` Output Parser")
-st.write('This tool lets you parse the output files from a RIPER calculation and show convergence plot, structure, etc.')
+st.write(
+    'This tool lets you parse the output files from a RIPER calculation and show convergence plot, structure, etc.')
 
 latt_param_a = None
 latt_param_b = None
@@ -179,9 +191,9 @@ if file is not None:
     contents = stringio.read()
 
 if contents != '':
-    file_contents = contents #upload_file.read()
+    file_contents = contents  # upload_file.read()
     energies = parse_energies(file_contents)
-    
+
     st.subheader("Parsed Energies")
     data = {
         "SCF Iteration": list(range(1, len(energies[0]) + 1)),
@@ -206,18 +218,51 @@ if contents != '':
     plt.ylabel("Energy")
     plt.title("Energy vs SCF Iteration")
     plt.legend()
-    st.pyplot(plt)
+    # st.pyplot(plt)
+
+    fig = px.scatter(df, x="SCF Iteration", y="Total Energy", title="Total Energy vs SCF Iteration")
+    fig.update_traces(mode='lines+markers', marker={'size': 8})
+    fig.update_layout(
+        title_font_size=18,
+        xaxis_title_font_size=18,
+        yaxis_title_font_size=18,
+        xaxis=dict(
+            tickfont=dict(size=15),
+        ),
+        yaxis=dict(
+            tickfont=dict(size=15),
+            showexponent='last',
+            exponentformat='e',
+        ),
+
+        hoverlabel=dict(font=dict(size=15))
+    )
+    # st.plotly_chart(fig,
+    #                 on_select=True,
+    #                 key="scatter_chart"
+    #                 )
+
+    tab1, tab2 = st.tabs(["Plotly", "Matplotlib"])
+    with tab1:
+        # Use Plotly
+        st.plotly_chart(fig,
+                        on_select=True,
+                        key="scatter_chart"
+                        )
+    with tab2:
+        # Use Matplotlib
+        st.pyplot(plt)
 
 
     # Find periodicity and lattice parameters
     lines = file_contents.split('\n')
     cell_params_line = find_line_with_text(lines, "Cell parameters (au,deg.)")
-    
+
     if cell_params_line is not None:
         st.success("The output file indicates a periodic DFT calculation and the structure can be visualized!")
         fourth_line = lines[lines.index(cell_params_line) + 4]
         num_elements = len(fourth_line.split())
-        
+
         if num_elements == 6:
             periodicity = 3
         elif num_elements == 3:
@@ -225,34 +270,33 @@ if contents != '':
         elif num_elements == 1:
             periodicity = 1
 
-        st.write('#### Periodicity: '+str(periodicity))
+        st.write('#### Periodicity: ' + str(periodicity))
 
-        if periodicity==1:
-            latt_param_a = float(fourth_line.split()[0])*0.52917721092
-        if periodicity==2:
-            latt_param_a = float(fourth_line.split()[0])*0.52917721092
-            latt_param_b = float(fourth_line.split()[1])*0.52917721092
+        if periodicity == 1:
+            latt_param_a = float(fourth_line.split()[0]) * 0.52917721092
+        if periodicity == 2:
+            latt_param_a = float(fourth_line.split()[0]) * 0.52917721092
+            latt_param_b = float(fourth_line.split()[1]) * 0.52917721092
             latt_param_gamma = float(fourth_line.split()[2])
-        if periodicity==3:
-            latt_param_a = float(fourth_line.split()[0])*0.52917721092
-            latt_param_b = float(fourth_line.split()[1])*0.52917721092
-            latt_param_c = float(fourth_line.split()[2])*0.52917721092
+        if periodicity == 3:
+            latt_param_a = float(fourth_line.split()[0]) * 0.52917721092
+            latt_param_b = float(fourth_line.split()[1]) * 0.52917721092
+            latt_param_c = float(fourth_line.split()[2]) * 0.52917721092
             latt_param_alpha = float(fourth_line.split()[3])
             latt_param_beta = float(fourth_line.split()[4])
             latt_param_gamma = float(fourth_line.split()[5])
-            
+
         lattice_lines = []
         direct_space_line = find_line_with_text(lines, "Direct space cell vectors (au):")
         if direct_space_line is not None:
-            lattice_lines = lines[lines.index(direct_space_line) + 1 : lines.index(direct_space_line) + periodicity + 1]
-            
+            lattice_lines = lines[lines.index(direct_space_line) + 1: lines.index(direct_space_line) + periodicity + 1]
 
         # Find atomic coordinates
         fractional_coords_line = find_line_with_text(lines, "fractional coordinates")
         if fractional_coords_line is not None:
             atomic_coords_lines = lines[lines.index(fractional_coords_line) + 1:]
             atomic_coords = []
-            
+
             for line in atomic_coords_lines:
                 if line.strip() == "":
                     break  # Stop when an empty line is encountered
@@ -262,27 +306,27 @@ if contents != '':
                 atomic_coords.append((element, coords))
 
             # Create the lattice using the lattice vectors
-            if periodicity==3:
+            if periodicity == 3:
                 lattice_vectors = []
                 for line in lattice_lines:
                     lattice_vectors.append(list(map(float, line.split()[1:4])))
                 lattice = Lattice(lattice_vectors, pbc=[True, True, True])
-                lattice = lattice.matrix*0.52917721092
-            if periodicity==2:
+                lattice = lattice.matrix * 0.52917721092
+            if periodicity == 2:
                 lattice_vectors = []
                 for line in lattice_lines:
                     lattice_vectors.append(list(map(float, line.split()[1:4])))
-                lattice_vectors.append([0.0, 0.0, 1.88972612456506]) # 1 Angstrom = 1.88972612456506 bohr
+                lattice_vectors.append([0.0, 0.0, 1.88972612456506])  # 1 Angstrom = 1.88972612456506 bohr
                 lattice = Lattice(lattice_vectors, pbc=[True, True, False])
-                lattice = lattice.matrix*0.52917721092
-            if periodicity==1:
+                lattice = lattice.matrix * 0.52917721092
+            if periodicity == 1:
                 lattice_vectors = []
                 for line in lattice_lines:
                     lattice_vectors.append(list(map(float, line.split()[1:4])))
-                    lattice_vectors.append([0.0, 1.88972612456506, 0.0]) # 1 Angstrom = 1.88972612456506 bohr
-                lattice_vectors.append([0.0, 0.0, 1.88972612456506]) # 1 Angstrom = 1.88972612456506 bohr
+                    lattice_vectors.append([0.0, 1.88972612456506, 0.0])  # 1 Angstrom = 1.88972612456506 bohr
+                lattice_vectors.append([0.0, 0.0, 1.88972612456506])  # 1 Angstrom = 1.88972612456506 bohr
                 lattice = Lattice(lattice_vectors, pbc=[True, False, False])
-                lattice = lattice.matrix*0.52917721092
+                lattice = lattice.matrix * 0.52917721092
 
             # Create the sites using atomic coordinates
             sites = []
@@ -330,8 +374,10 @@ if contents != '':
                 # Download CIF files
                 st.subheader("Download CIF Files")
                 convert_to_cif(structure, "structure.cif")
-                st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
-                st.warning('Please note, that a CIF generated for 2D and 1D structures would be probematic. This is because the CIF stores the atomic positions in fractional coordinates and RIPER assigns a lattice parameter of 1 Angstrom for the non-periodic direction. This will lead to problems when trying to visualize or post-process the CIF in some external software.')
+                st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif',
+                                   key='cif_button')
+                st.warning(
+                    'Please note, that a CIF generated for 2D and 1D structures would be probematic. This is because the CIF stores the atomic positions in fractional coordinates and RIPER assigns a lattice parameter of 1 Angstrom for the non-periodic direction. This will lead to problems when trying to visualize or post-process the CIF in some external software.')
                 # Get TURBOMOLE (RIPER) Coord file and Control file contents
                 st.subheader("RIPER Files")
                 # Convert the atomic coordinates to Bohr units
@@ -347,7 +393,8 @@ if contents != '':
 
                 # Display the coordinate text in the first column
                 with col1:
-                    st.text_area("`coord` file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key='coords_text')
+                    st.text_area("`coord` file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300,
+                                 key='coords_text')
                     st.download_button('Download `coord` file', coords_text, file_name='coord', key='control_text')
 
                 # Display the lattice parameters text in the second column
@@ -356,4 +403,3 @@ if contents != '':
 
     else:
         st.error("Only structures from periodic DFT calculations can be visualized for now!")
-
