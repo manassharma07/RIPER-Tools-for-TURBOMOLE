@@ -73,6 +73,11 @@ def parse_energies(text):
     coulomb_energy = []
     exchange_corr_energy = []
     total_energy = []
+    free_energy = []
+    rms_of_difference_density = [None]  # no value in SCF iteration 1
+    scf_energy_change = []
+    free_energy_change = []
+    new_damping_factor = []
 
     lines = text.split('\n')
     for line in lines:
@@ -84,8 +89,21 @@ def parse_energies(text):
             exchange_corr_energy.append(float(line.split()[6]))
         elif "TOTAL ENERGY" in line:
             total_energy.append(float(line.split()[4]))
+        elif "FREE  ENERGY" in line:
+            free_energy.append(float(line.split()[4]))
+        elif "RMS of difference density" in line:
+            rms_of_difference_density.append(float(line.split()[5].replace("D", "E")))
+        elif "SCF energy change" in line:
+            scf_energy_change.append(float(line.split()[4].replace("D", "E")))
+        elif "Free energy change" in line:
+            free_energy_change.append(float(line.split()[4].replace("D", "E")))
+        elif "new damping factor" in line:
+            new_damping_factor.append(float(line.split()[4].replace("D", "E")))
+        elif "FINAL ENERGIES" in line:  # stop until this line
+            break
 
-    return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy
+    return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, free_energy, \
+        rms_of_difference_density, scf_energy_change, free_energy_change, new_damping_factor
 
 
 # Function to display structure information
@@ -200,50 +218,65 @@ if contents != '':
         "Kinetic Energy": energies[0],
         "Coulomb Energy": energies[1],
         "Exchange Corr. Energy": energies[2],
-        "Total Energy": energies[3]
+        "Total Energy": energies[3],
+        "Free Energy": energies[4],
+        "RMS of Difference Density": energies[5],
+        "SCF Energy Change": energies[6],
+        "Free Energy Change": energies[7],
+        "New Damping Factor": energies[8],
     }
+
     df = pd.DataFrame(data)
     # Format large numbers without exponents in the DataFrame
     df['Kinetic Energy'] = df['Kinetic Energy'].apply('{:.15g}'.format)
     df['Coulomb Energy'] = df['Coulomb Energy'].apply('{:.15g}'.format)
     df['Exchange Corr. Energy'] = df['Exchange Corr. Energy'].apply('{:.15g}'.format)
     df['Total Energy'] = df['Total Energy'].apply('{:.15g}'.format)
+    df['Free Energy'] = df['Free Energy'].apply('{:.15g}'.format)
 
     st.dataframe(df)
 
-    st.subheader("Convergence (Energy vs SCF Iteration)")
-    plt.figure(figsize=(10, 6))
-    plt.plot(data["SCF Iteration"], data["Total Energy"], marker='o', linestyle='-', color='b', label='Total Energy')
-    plt.xlabel("SCF Iteration")
-    plt.ylabel("Energy")
-    plt.title("Energy vs SCF Iteration")
-    plt.legend()
-    # st.pyplot(plt)
-
-    fig = px.scatter(df, x="SCF Iteration", y="Total Energy", title="Total Energy vs SCF Iteration")
-    fig.update_traces(mode='lines+markers', marker={'size': 8})
-    fig.update_layout(
-        title_font_size=18,
-        xaxis_title_font_size=18,
-        yaxis_title_font_size=18,
-        xaxis=dict(
-            tickfont=dict(size=15),
-        ),
-        yaxis=dict(
-            tickfont=dict(size=15),
-            showexponent='last',
-            exponentformat='e',
-        ),
-
-        hoverlabel=dict(font=dict(size=15))
-    )
-    # st.plotly_chart(fig,
-    #                 on_select=True,
-    #                 key="scatter_chart"
-    #                 )
-
     tab1, tab2 = st.tabs(["Plotly", "Matplotlib"])
     with tab1:
+        def formatvalue(value):
+            if value == "RMS of Difference Density" or value == "SCF Energy Change" or value == "Free Energy Change":
+                return f"{value}=%{{y}}"
+            elif value == "New Damping Factor":
+                return f"{value}=%{{y:.3f}}"
+            else:
+                return f"{value}=%{{y:.10f}}"
+
+        # selectbox for the y-axis and set default to "Free Energy"
+        y_value = st.selectbox('Select the y-axis value:', df.columns[1:], index=4)
+
+        fig = px.scatter(df,
+                         x="SCF Iteration",
+                         y=y_value,
+                         title=f"{y_value} vs SCF Iteration"
+                         )
+        fig.update_traces(mode='lines+markers', marker={'size': 8})
+        fig.update_traces(
+            hovertemplate="<br>".join([
+                "SCF Iteration=%{x}",
+                formatvalue(y_value)
+            ])
+        )
+        fig.update_layout(
+            title_font_size=18,
+            xaxis_title_font_size=18,
+            yaxis_title_font_size=18,
+            xaxis=dict(
+                tickfont=dict(size=15),
+            ),
+            yaxis=dict(
+                tickfont=dict(size=15),
+                showexponent='last',
+                exponentformat='e',
+            ),
+
+            hoverlabel=dict(font=dict(size=15))
+        )
+
         # Use Plotly
         st.plotly_chart(fig,
                         on_select=True,
@@ -251,6 +284,14 @@ if contents != '':
                         )
     with tab2:
         # Use Matplotlib
+        st.subheader("Convergence (Energy vs SCF Iteration)")
+        plt.figure(figsize=(10, 6))
+        plt.plot(data["SCF Iteration"], data["Total Energy"], marker='o', linestyle='-', color='b',
+                 label='Total Energy')
+        plt.xlabel("SCF Iteration")
+        plt.ylabel("Energy")
+        plt.title("Energy vs SCF Iteration")
+        plt.legend()
         st.pyplot(plt)
 
 
