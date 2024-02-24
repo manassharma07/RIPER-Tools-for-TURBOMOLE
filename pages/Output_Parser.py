@@ -73,11 +73,14 @@ def parse_energies(text):
     coulomb_energy = []
     exchange_corr_energy = []
     total_energy = []
-    free_energy = []
+    norm_of_current_diis_error = [None]  # no value in SCF iteration 1
     rms_of_difference_density = [None]  # no value in SCF iteration 1
     scf_energy_change = []
-    free_energy_change = []
     new_damping_factor = []
+
+    # Optional values when using smearing (`sigma` in the control file)
+    free_energy = []
+    free_energy_change = []
 
     lines = text.split('\n')
     for line in lines:
@@ -89,21 +92,26 @@ def parse_energies(text):
             exchange_corr_energy.append(float(line.split()[6]))
         elif "TOTAL ENERGY" in line:
             total_energy.append(float(line.split()[4]))
-        elif "FREE  ENERGY" in line:
-            free_energy.append(float(line.split()[4]))
+        elif "Norm of current diis error" in line:
+            norm_of_current_diis_error.append(float(line.split()[6].replace("D", "E")))
         elif "RMS of difference density" in line:
             rms_of_difference_density.append(float(line.split()[5].replace("D", "E")))
         elif "SCF energy change" in line:
             scf_energy_change.append(float(line.split()[4].replace("D", "E")))
-        elif "Free energy change" in line:
-            free_energy_change.append(float(line.split()[4].replace("D", "E")))
         elif "new damping factor" in line:
             new_damping_factor.append(float(line.split()[4].replace("D", "E")))
+
+        elif "FREE  ENERGY" in line:  # optional
+            free_energy.append(float(line.split()[4]))
+        elif "Free energy change" in line:  # optional
+            free_energy_change.append(float(line.split()[4].replace("D", "E")))
+
         elif "FINAL ENERGIES" in line:  # stop until this line
             break
 
-    return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, free_energy, \
-        rms_of_difference_density, scf_energy_change, free_energy_change, new_damping_factor
+    return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, \
+        norm_of_current_diis_error, rms_of_difference_density, scf_energy_change, new_damping_factor,\
+        free_energy, free_energy_change
 
 
 # Function to display structure information
@@ -213,18 +221,24 @@ if contents != '':
     energies = parse_energies(file_contents)
 
     st.subheader("Parsed Energies")
+
     data = {
         "SCF Iteration": list(range(1, len(energies[0]) + 1)),
         "Kinetic Energy": energies[0],
         "Coulomb Energy": energies[1],
         "Exchange Corr. Energy": energies[2],
         "Total Energy": energies[3],
-        "Free Energy": energies[4],
+        "Norm of Current Diis Error": energies[4],
         "RMS of Difference Density": energies[5],
         "SCF Energy Change": energies[6],
-        "Free Energy Change": energies[7],
-        "New Damping Factor": energies[8],
+        "New Damping Factor": energies[7],
     }
+
+    # when the keyword `sigma` is in the control file
+    if energies[8]:  # checks if free_energy list is not empty
+        data["Free Energy"] = energies[8]
+    if energies[9]:  # checks if free_energy_change list is not empty
+        data["Free Energy Change"] = energies[9]
 
     df = pd.DataFrame(data)
     # Format large numbers without exponents in the DataFrame
@@ -232,22 +246,37 @@ if contents != '':
     df['Coulomb Energy'] = df['Coulomb Energy'].apply('{:.15g}'.format)
     df['Exchange Corr. Energy'] = df['Exchange Corr. Energy'].apply('{:.15g}'.format)
     df['Total Energy'] = df['Total Energy'].apply('{:.15g}'.format)
-    df['Free Energy'] = df['Free Energy'].apply('{:.15g}'.format)
+    df['Norm of Current Diis Error'] = df['Norm of Current Diis Error'].apply('{:.3e}'.format)
+    df['RMS of Difference Density'] = df['RMS of Difference Density'].apply('{:.3e}'.format)
+    df['SCF Energy Change'] = df['SCF Energy Change'].apply('{:.3e}'.format)
+    df['New Damping Factor'] = df['New Damping Factor'].apply('{:.3e}'.format)
+
+    if "Free Energy" in df.columns:
+        df['Free Energy'] = df['Free Energy'].apply('{:.15g}'.format)
+    if "Free Energy Change" in df.columns:
+        df['Free Energy Change'] = df['Free Energy Change'].apply('{:.3e}'.format)
+
 
     st.dataframe(df)
 
     tab1, tab2 = st.tabs(["Plotly", "Matplotlib"])
     with tab1:
         def formatvalue(value):
-            if value == "RMS of Difference Density" or value == "SCF Energy Change" or value == "Free Energy Change":
-                return f"{value}=%{{y}}"
+            if value == "Norm of Current Diis Error" or value == "RMS of Difference Density" or \
+                    value == "SCF Energy Change" or value == "Free Energy Change":
+                return f"{value}=%{{y:.3e}}"
             elif value == "New Damping Factor":
                 return f"{value}=%{{y:.3f}}"
             else:
                 return f"{value}=%{{y:.10f}}"
 
-        # selectbox for the y-axis and set default to "Free Energy"
-        y_value = st.selectbox('Select the y-axis value:', df.columns[1:], index=4)
+        # selectbox for the y-axis and set default to "Free Energy" if available, otherwise "Total energy"
+        if "Free Energy" in df.columns:
+            select_index = df.columns[1:].get_loc("Free Energy")
+        else:
+            select_index = df.columns[1:].get_loc("Total Energy")
+
+        y_value = st.selectbox('Select the y-axis value:', df.columns[1:], index=select_index)
 
         fig = px.scatter(df,
                          x="SCF Iteration",
