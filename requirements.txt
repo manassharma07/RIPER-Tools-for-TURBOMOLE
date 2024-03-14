@@ -10,3 +10,4 @@ ase
 openpyxl
 emmet-core>=0.64.6
 plotly
+openbabel-wheel
