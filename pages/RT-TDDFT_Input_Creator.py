@@ -139,7 +139,7 @@ tstep = col2_rt.number_input("Time Step (au)", value=0.1)
 print_step = col3_rt.number_input("Print Step", value=1)
 min_energy = col1_rt.number_input("Min Energy (au)", value=0.00)
 max_energy = col2_rt.number_input("Max Energy (au)", value=0.75)
-energy_step = col3_rt.text_input("Energy Step (au)", value="0.005")
+energy_step = col3_rt.text_input("Energy Step (au)", value="0.001")
 damping = col1_rt.text_input("Damping Factor", value="0.004")
 
 st.write("## Generated RT-TDDFT Input:")
