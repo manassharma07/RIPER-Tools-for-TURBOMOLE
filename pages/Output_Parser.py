@@ -111,18 +111,28 @@ def parse_energies(text):
 
     # Handling the case that the lists are not of equal length (happens when a SCF iteration is not completed)
     # 1. Group all lists together
-    energy_lists = [kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy,
-                    norm_of_current_diis_error, rms_of_difference_density, scf_energy_change,
-                    new_damping_factor, free_energy, free_energy_change]
+    # when the keyword `sigma` is in the control file
+    if free_energy:  # checks if free_energy list is not empty
+        energy_lists = [kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy,
+                        norm_of_current_diis_error, rms_of_difference_density, scf_energy_change,
+                        new_damping_factor, free_energy, free_energy_change]
+    else:
+        energy_lists = [kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy,
+                        norm_of_current_diis_error, rms_of_difference_density, scf_energy_change,
+                        new_damping_factor]
     
     # 2. Determine the smallest length among all lists
     min_length = min(len(lst) for lst in energy_lists)
     
     # 3. Truncate all lists to the minimum length
-    kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, \
-    norm_of_current_diis_error, rms_of_difference_density, scf_energy_change, \
-    new_damping_factor, free_energy, free_energy_change = [lst[:min_length] for lst in energy_lists]
-
+    if free_energy:  # checks if free_energy list is not empty
+        kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, \
+        norm_of_current_diis_error, rms_of_difference_density, scf_energy_change, \
+        new_damping_factor, free_energy, free_energy_change = [lst[:min_length] for lst in energy_lists]
+    else:
+        kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, \
+        norm_of_current_diis_error, rms_of_difference_density, scf_energy_change, \
+        new_damping_factor = [lst[:min_length] for lst in energy_lists]
     
     return kinetic_energy, coulomb_energy, exchange_corr_energy, total_energy, \
         norm_of_current_diis_error, rms_of_difference_density, scf_energy_change, new_damping_factor,\
