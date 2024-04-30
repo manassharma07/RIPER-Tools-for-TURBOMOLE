@@ -630,13 +630,13 @@ if not natoms_A==0:
 # Manas Sharma and Marek Sierka
 # Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
 # DOI: 10.1021/acs.jctc.2c00380\n'''
-    input_file_str = input_file_str + '$FDE'
+    input_file_str = input_file_str + '$EMBED'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
     input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
     input_file_str = input_file_str + '\nbasis = ' + str(basis_set_tot)
     input_file_str = input_file_str + '\nauxbasis = ' + str(auxbasis_set)
-    input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
+    # input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
     input_file_str = input_file_str + '\nxName = ' + str(xfunc_tot)
     input_file_str = input_file_str + '\ncName = ' + str(cfunc_tot)
     input_file_str = input_file_str + '\nfrozen = ' + str(not isFaT)
