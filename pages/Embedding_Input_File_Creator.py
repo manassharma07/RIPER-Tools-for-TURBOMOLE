@@ -458,7 +458,7 @@ if not natoms_A==0:
     ricore = 500 # Memory to keep RI integrals in core
     mxitdiis = 5 # No. of DIIS vectors to be used
     scfiterlimit = 50 # Max SCF iterations for each Embedding run
-    path = '/home/user/turbomole/bin/sysname/'
+    # path = '/home/user/turbomole/bin/sysname/'
 
     
 
@@ -621,15 +621,15 @@ if not natoms_A==0:
     isEmbError = st.checkbox('Should a total regular KS-DFT calculation be performed at the end to estimate the embedding error?', value=True)
 
     ### RIPER path ####
-    riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
+    # riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
 
     ### Start creating the text for the input file ####
     st.write('#### INPUT FILE')
     input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
     input_file_str = input_file_str + '''# Cite the implementation as: 
-Manas Sharma and Marek Sierka
-Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
-DOI: 10.1021/acs.jctc.2c00380\n'''
+# Manas Sharma and Marek Sierka
+# Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
+# DOI: 10.1021/acs.jctc.2c00380\n'''
     input_file_str = input_file_str + '$FDE'
     input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
     input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
@@ -653,7 +653,7 @@ DOI: 10.1021/acs.jctc.2c00380\n'''
     input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
     if method_code==5:
         input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
-    input_file_str = input_file_str + '\npath = ' + str(riper_path)
+    # input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
 
