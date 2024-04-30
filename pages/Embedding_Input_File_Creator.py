@@ -28,7 +28,7 @@ if os.path.exists('viz1.html'):
     os.remove('viz1.html')
 
 further_information = '''When you run the `riperembed` script, it reads in the input parameters from the file named 
-'input' and the coordinates of the total system, from a file named `totalCoord`.\n
+`input` and the coordinates of the total system, from a file named `totalCoord`.\n
 Next, it automatically creates the required subdirectories for the subsystems and runs `define` and `riper` automatically based on the given input file. \n
 Let's have a look at the workflows of some specific casess.
 ##### Freeze-and-Thaw Workflow
@@ -671,7 +671,7 @@ if not natoms_A==0:
     st.write('1️⃣ Download the `totalCoord` file from the previous section.')
     st.write('2️⃣ Download the `input` file that we just created.')
     st.write('3️⃣ Put the two files in the same directory.')
-    st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed.py > output_embedding &`')
+    st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed > output_embedding &`')
 
     st.write('### Further information to understand the outputs')
     st.write(further_information)
