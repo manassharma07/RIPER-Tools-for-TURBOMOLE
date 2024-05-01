@@ -537,153 +537,154 @@ if not natoms_A==0:
     st.write('Description of the chosen embedding method')
     st.write(embedding_method_descriptions[method_code])
 
-    ### Exchange-Correlation Functionals ####
-    st.write('##### Exchange-Correlation Functionals')
-    is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
-    st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
-
-    xfunc_dict = {1:'Slater exchange', 101: 'PBE Exchange'}
-    cfunc_dict = {7:'VWN5 Correlation', 12: 'Perdew & Wang Correlation', 130: 'PBE Correlation'}
-    if is_same_xc:
-        xfunc_tot = st.selectbox('Select the LibXC code for exchange functional for the total system',
-            xfunc_dict, key='xfunc_tot')
-        cfunc_tot = st.selectbox('Select the LibXC code for correlation functional for the total system',
-            cfunc_dict, key='cfunc_tot')
-
-    ### Kinetic Energy Functionals ####
-    if method_code==1 or method_code==3 or method_code==5:
-        st.write('##### Kinetic Energy Density Functional (KEDF)')
-        if method_code==3 or method_code==5:
-            st.warning('Currently selected method uses Projection based embedding and does not requrie any KEDF. Hence it is recommended to set KEDF to `electro`.')
+    if not method==4:
+        ### Exchange-Correlation Functionals ####
+        st.write('##### Exchange-Correlation Functionals')
+        is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
         st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
-        kedfunc_dict = {'electro':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
-        
-        kedfunc = st.selectbox('Select the LibXC code for kinetic energy density functional for the embedding calculations',
-                kedfunc_dict, key='kedfunc')
 
-    ### Charges for subsystems ####
-    st.write('##### Charges for subsystems')
-    st.write('Since only closed-shell occupations are supported for embedding calculations, one may need to provide charges to subsystems to ensure this, especially when covalent bonds are broken.')
-    charge_A = st.number_input('Charge for subsystem A', value=0, step=1)
-    charge_B = st.number_input('Charge for subsystem B', value=0, step=1)
+        xfunc_dict = {1:'Slater exchange', 101: 'PBE Exchange'}
+        cfunc_dict = {7:'VWN5 Correlation', 12: 'Perdew & Wang Correlation', 130: 'PBE Correlation'}
+        if is_same_xc:
+            xfunc_tot = st.selectbox('Select the LibXC code for exchange functional for the total system',
+                xfunc_dict, key='xfunc_tot')
+            cfunc_tot = st.selectbox('Select the LibXC code for correlation functional for the total system',
+                cfunc_dict, key='cfunc_tot')
 
-    ### Periodic details ####
-    if method_code==5:
-        st.write('##### Details for the periodic system')
-        periodicity = st.number_input('Periodicity', value=1, min_value=1, max_value=3, step=1)
-        cell_info_mode = st.radio('Will you provide cell parameters (also known as lattice constants/lattice parameters) or lattice vectors?', ('Cell Parameters', 'Lattice Vectors'))
-        if cell_info_mode=='Cell Parameters':
-            col1_cell, col2_cell, col3_cell = st.columns(3)
+        ### Kinetic Energy Functionals ####
+        if method_code==1 or method_code==3 or method_code==5:
+            st.write('##### Kinetic Energy Density Functional (KEDF)')
+            if method_code==3 or method_code==5:
+                st.warning('Currently selected method uses Projection based embedding and does not requrie any KEDF. Hence it is recommended to set KEDF to `electro`.')
+            st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
+            kedfunc_dict = {'electro':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
+            
+            kedfunc = st.selectbox('Select the LibXC code for kinetic energy density functional for the embedding calculations',
+                    kedfunc_dict, key='kedfunc')
+
+        ### Charges for subsystems ####
+        st.write('##### Charges for subsystems')
+        st.write('Since only closed-shell occupations are supported for embedding calculations, one may need to provide charges to subsystems to ensure this, especially when covalent bonds are broken.')
+        charge_A = st.number_input('Charge for subsystem A', value=0, step=1)
+        charge_B = st.number_input('Charge for subsystem B', value=0, step=1)
+
+        ### Periodic details ####
+        if method_code==5:
+            st.write('##### Details for the periodic system')
+            periodicity = st.number_input('Periodicity', value=1, min_value=1, max_value=3, step=1)
+            cell_info_mode = st.radio('Will you provide cell parameters (also known as lattice constants/lattice parameters) or lattice vectors?', ('Cell Parameters', 'Lattice Vectors'))
+            if cell_info_mode=='Cell Parameters':
+                col1_cell, col2_cell, col3_cell = st.columns(3)
+                if periodicity==1:
+                    cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                if periodicity==2:
+                    cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                    cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
+                    cell_gamma = col1_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
+                if periodicity==3:
+                    cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                    cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
+                    cell_c = col3_cell.number_input('Cell parameter c (in Angstroms)', value=4.0, step=0.1)
+                    cell_alpha = col1_cell.number_input('Cell parameter alpha (in degrees)', value=90.0, step=0.5)
+                    cell_beta = col2_cell.number_input('Cell parameter beta (in degrees)', value=90.0, step=0.5)
+                    cell_gamma = col3_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
+            elif cell_info_mode=='Lattice Vectors':
+                col1_cell, col2_cell, col3_cell = st.columns(3)
+                if periodicity==1:
+                    x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                if periodicity==2:
+                    x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                    y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                    x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                    y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
+                if periodicity==3:
+                    x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                    y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                    z_latt_vec_a = col3_cell.number_input('Z-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
+                    x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                    y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
+                    z_latt_vec_b = col3_cell.number_input('Z-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
+                    x_latt_vec_c = col1_cell.number_input('X-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
+                    y_latt_vec_c = col2_cell.number_input('Y-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
+                    z_latt_vec_c = col3_cell.number_input('Z-component of Lattice vector c (in Angstroms)', value=4.0, step=0.1)
+
+            st.write('###### K-mesh/gridsize info')
+            col1_kpts, col2_kpts, col3_kpts = st.columns(3)
             if periodicity==1:
-                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
+                nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
             if periodicity==2:
-                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
-                cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
-                cell_gamma = col1_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
+                nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
+                nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
             if periodicity==3:
-                cell_a = col1_cell.number_input('Cell parameter a (in Angstroms)', value=4.0, step=0.1)
-                cell_b = col2_cell.number_input('Cell parameter b (in Angstroms)', value=4.0, step=0.1)
-                cell_c = col3_cell.number_input('Cell parameter c (in Angstroms)', value=4.0, step=0.1)
-                cell_alpha = col1_cell.number_input('Cell parameter alpha (in degrees)', value=90.0, step=0.5)
-                cell_beta = col2_cell.number_input('Cell parameter beta (in degrees)', value=90.0, step=0.5)
-                cell_gamma = col3_cell.number_input('Cell parameter gamma (in degrees)', value=90.0, step=0.5)
-        elif cell_info_mode=='Lattice Vectors':
-            col1_cell, col2_cell, col3_cell = st.columns(3)
+                nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
+                nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
+                nk_z = col3_kpts.number_input('No. of k-points along z', value=3, step=1)
+
+        ### Calculate Embedding Error ####
+        st.write('##### Calculate embedding error?')
+        isEmbError = st.checkbox('Should a total regular KS-DFT calculation be performed at the end to estimate the embedding error?', value=True)
+
+        ### RIPER path ####
+        # riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
+
+        ### Start creating the text for the input file ####
+        st.write('#### INPUT FILE')
+        input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
+        input_file_str = input_file_str + '''# Cite the implementation as: 
+    # Manas Sharma and Marek Sierka
+    # Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
+    # DOI: 10.1021/acs.jctc.2c00380\n'''
+        input_file_str = input_file_str + '$EMBED'
+        input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
+        input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
+        input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
+        input_file_str = input_file_str + '\nbasis = ' + str(basis_set_tot)
+        input_file_str = input_file_str + '\nauxbasis = ' + str(auxbasis_set)
+        input_file_str = input_file_str + '\nxName = ' + str(xfunc_tot)
+        input_file_str = input_file_str + '\ncName = ' + str(cfunc_tot)
+        input_file_str = input_file_str + '\nfrozen = ' + str(not isFaT)
+        input_file_str = input_file_str + '\nscratch = ' + str(True)
+        input_file_str = input_file_str + '\nsuper = ' + str(isSuperBasis)
+        input_file_str = input_file_str + '\nemb_error = ' + str(isEmbError)
+        input_file_str = input_file_str + '\nmethod = ' + str(method_code)
+        input_file_str = input_file_str + '\nscfconv = ' + str(energy_conv)
+        input_file_str = input_file_str + '\ndenconv = ' + str(density_conv)
+        input_file_str = input_file_str + '\nricore = ' + str(ricore_memory)
+        if isFaT:
+            input_file_str = input_file_str + '\nnmax_FaT = ' + str(max_fat_cycles)
+        input_file_str = input_file_str + '\nscfiterlimit = ' + str(max_scf_cycles)
+        input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
+        if method_code==5:
+            input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
             if periodicity==1:
-                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
+                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a)
             if periodicity==2:
-                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
-                y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
-                x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
-                y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
+                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_gamma)
             if periodicity==3:
-                x_latt_vec_a = col1_cell.number_input('X-component of Lattice vector a (in Angstroms)', value=4.0, step=0.1)
-                y_latt_vec_a = col2_cell.number_input('Y-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
-                z_latt_vec_a = col3_cell.number_input('Z-component of Lattice vector a (in Angstroms)', value=0.0, step=0.1)
-                x_latt_vec_b = col1_cell.number_input('X-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
-                y_latt_vec_b = col2_cell.number_input('Y-component of Lattice vector b (in Angstroms)', value=4.0, step=0.1)
-                z_latt_vec_b = col3_cell.number_input('Z-component of Lattice vector b (in Angstroms)', value=0.0, step=0.1)
-                x_latt_vec_c = col1_cell.number_input('X-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
-                y_latt_vec_c = col2_cell.number_input('Y-component of Lattice vector c (in Angstroms)', value=0.0, step=0.1)
-                z_latt_vec_c = col3_cell.number_input('Z-component of Lattice vector c (in Angstroms)', value=4.0, step=0.1)
-
-        st.write('###### K-mesh/gridsize info')
-        col1_kpts, col2_kpts, col3_kpts = st.columns(3)
-        if periodicity==1:
-            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
-        if periodicity==2:
-            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
-            nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
-        if periodicity==3:
-            nk_x = col1_kpts.number_input('No. of k-points along x', value=3, step=1)
-            nk_y = col2_kpts.number_input('No. of k-points along y', value=3, step=1)
-            nk_z = col3_kpts.number_input('No. of k-points along z', value=3, step=1)
-
-    ### Calculate Embedding Error ####
-    st.write('##### Calculate embedding error?')
-    isEmbError = st.checkbox('Should a total regular KS-DFT calculation be performed at the end to estimate the embedding error?', value=True)
-
-    ### RIPER path ####
-    # riper_path = st.text_input('Path of the riper or riper_smp/riper_omp executable', value='/home/user/turbomole/bin/em64t-unknown-linux-gnu_smp/')
-
-    ### Start creating the text for the input file ####
-    st.write('#### INPUT FILE')
-    input_file_str = '# INPUT FILE FOR RUNNING EMBEDDING CALCULATIONS VIA riperembed.py SCRIPT AND RIPER MODULE OF TURBOMOLE\n'
-    input_file_str = input_file_str + '''# Cite the implementation as: 
-# Manas Sharma and Marek Sierka
-# Journal of Chemical Theory and Computation 2022 18 (11), 6892-6904
-# DOI: 10.1021/acs.jctc.2c00380\n'''
-    input_file_str = input_file_str + '$EMBED'
-    input_file_str = input_file_str + '\nnsystm = ' + str(nsystm)
-    input_file_str = input_file_str + '\nptnIndx = ' + str(ptnIndx[0]) + ' ' + str(ptnIndx[1])
-    input_file_str = input_file_str + '\nKEfunc = ' + str(kedfunc)
-    input_file_str = input_file_str + '\nbasis = ' + str(basis_set_tot)
-    input_file_str = input_file_str + '\nauxbasis = ' + str(auxbasis_set)
-    input_file_str = input_file_str + '\nxName = ' + str(xfunc_tot)
-    input_file_str = input_file_str + '\ncName = ' + str(cfunc_tot)
-    input_file_str = input_file_str + '\nfrozen = ' + str(not isFaT)
-    input_file_str = input_file_str + '\nscratch = ' + str(True)
-    input_file_str = input_file_str + '\nsuper = ' + str(isSuperBasis)
-    input_file_str = input_file_str + '\nemb_error = ' + str(isEmbError)
-    input_file_str = input_file_str + '\nmethod = ' + str(method_code)
-    input_file_str = input_file_str + '\nscfconv = ' + str(energy_conv)
-    input_file_str = input_file_str + '\ndenconv = ' + str(density_conv)
-    input_file_str = input_file_str + '\nricore = ' + str(ricore_memory)
-    if isFaT:
-        input_file_str = input_file_str + '\nnmax_FaT = ' + str(max_fat_cycles)
-    input_file_str = input_file_str + '\nscfiterlimit = ' + str(max_scf_cycles)
-    input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
-    if method_code==5:
-        input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
-        if periodicity==1:
-            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a)
-        if periodicity==2:
-            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_gamma)
-        if periodicity==3:
-            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
-        if periodicity==1:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x)
-        if periodicity==2:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y)
-        if periodicity==3:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y) + ' ' + str(nk_z)
-    # input_file_str = input_file_str + '\npath = ' + str(riper_path)
+                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
+            if periodicity==1:
+                input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x)
+            if periodicity==2:
+                input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y)
+            if periodicity==3:
+                input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y) + ' ' + str(nk_z)
+        # input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
 
-    st.text_area('Input file contents for embedding via RIPER', value=input_file_str, height=400)
-    st.download_button(
-        label="Download the input file",
-        data=input_file_str,
-        file_name='input',
-        mime='text/csv',
-    )
+        st.text_area('Input file contents for embedding via RIPER', value=input_file_str, height=400)
+        st.download_button(
+            label="Download the input file",
+            data=input_file_str,
+            file_name='input',
+            mime='text/csv',
+        )
 
-    st.write('#### What next?')
-    st.write('1️⃣ Download the `totalCoord` file from the previous section.')
-    st.write('2️⃣ Download the `input` file that we just created.')
-    st.write('3️⃣ Put the two files in the same directory.')
-    st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed > output_embedding &`')
+        st.write('#### What next?')
+        st.write('1️⃣ Download the `totalCoord` file from the previous section.')
+        st.write('2️⃣ Download the `input` file that we just created.')
+        st.write('3️⃣ Put the two files in the same directory.')
+        st.write('4️⃣ Run the `riperembed.py` script as: `nohup riperembed > output_embedding &`')
 
-    st.write('### Further information to understand the outputs')
-    st.write(further_information)
+        st.write('### Further information to understand the outputs')
+        st.write(further_information)
