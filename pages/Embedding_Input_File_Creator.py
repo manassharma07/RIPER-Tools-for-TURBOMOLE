@@ -553,8 +553,8 @@ if not natoms_A==0:
     ### Kinetic Energy Functionals ####
     if method_code==1 or method_code==3 or method_code==5:
         st.write('##### Kinetic Energy Density Functional (KEDF)')
-        if method_code==3:
-            st.write('Currently selected method 3 uses Projection based embedding and hence it is recommended to use `electro` as the KEDF.')
+        if method_code==3 or method_code==5:
+            st.warning('Currently selected method uses Projection based embedding and does not requrie any KEDF. Hence it is recommended to set KEDF to `electro`.')
         st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
         kedfunc_dict = {'electro':'none', 521:'LC94 (GGA)', 50: 'Thomas-Fermi KE (LDA)', 55: 'REVAPBE - revised APBE (GGA)', 53: 'REVAPBEINT - interpolated version of revAPBE (GGA)'}
         
