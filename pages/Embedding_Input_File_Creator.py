@@ -551,7 +551,7 @@ if not natoms_A==0:
             cfunc_dict, key='cfunc_tot')
 
     ### Kinetic Energy Functionals ####
-    if method_code==1 or method_code==3:
+    if method_code==1 or method_code==3 or method_code==5:
         st.write('##### Kinetic Energy Density Functional (KEDF)')
         if method_code==3:
             st.write('Currently selected method 3 uses Projection based embedding and hence it is recommended to use `electro` as the KEDF.')
