@@ -657,12 +657,24 @@ if not natoms_A==0:
         input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
         if method_code==5:
             input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
-            if periodicity==1:
-                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a)
-            if periodicity==2:
-                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_gamma)
-            if periodicity==3:
-                input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
+            if cell_info_mode=='Cell Parameters':
+                if periodicity==1:
+                    input_file_str = input_file_str + '\ncell_params = ' + str(cell_a)
+                if periodicity==2:
+                    input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_gamma)
+                if periodicity==3:
+                    input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
+            else:
+                if periodicity==1:
+                    input_file_str = input_file_str + '\n latt_vec_a = ' + str(x_latt_vec_a)
+                if periodicity==2:
+                    input_file_str = input_file_str + '\n latt_vec_a = ' + str(x_latt_vec_a) + ' ' + str(y_latt_vec_a)
+                    input_file_str = input_file_str + '\n latt_vec_b = ' + str(x_latt_vec_b) + ' ' + str(y_latt_vec_b)
+                if periodicity==3:
+                    input_file_str = input_file_str + '\n latt_vec_a = ' + str(x_latt_vec_a) + ' ' + str(y_latt_vec_a) + ' ' + str(z_latt_vec_a)
+                    input_file_str = input_file_str + '\n latt_vec_b = ' + str(x_latt_vec_b) + ' ' + str(y_latt_vec_b) + ' ' + str(z_latt_vec_b)
+                    input_file_str = input_file_str + '\n latt_vec_c = ' + str(x_latt_vec_c) + ' ' + str(y_latt_vec_c) + ' ' + str(z_latt_vec_c)
+
             if periodicity==1:
                 input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x)
             if periodicity==2:
