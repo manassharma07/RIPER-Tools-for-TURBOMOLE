@@ -655,6 +655,18 @@ if not natoms_A==0:
     input_file_str = input_file_str + '\nmxitdiis = ' + str(max_it_diis)
     if method_code==5:
         input_file_str = input_file_str + '\nperiodicity = ' + str(periodicity)
+        if periodicity==1:
+            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a)
+        if periodicity==2:
+            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_gamma)
+        if periodicity==3:
+            input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
+        if periodicity==1:
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x)
+        if periodicity==2:
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x) + ' ' + str(nk_y)
+        if periodicity==3:
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x) + ' ' + str(nk_y) + ' ' + str(nk_z)
     # input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
