@@ -537,7 +537,7 @@ if not natoms_A==0:
     st.write('Description of the chosen embedding method')
     st.write(embedding_method_descriptions[method_code])
 
-    if not method==4:
+    if not method_code==4:
         ### Exchange-Correlation Functionals ####
         st.write('##### Exchange-Correlation Functionals')
         # is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
