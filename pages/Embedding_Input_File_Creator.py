@@ -662,11 +662,11 @@ if not natoms_A==0:
         if periodicity==3:
             input_file_str = input_file_str + '\ncell_params = ' + str(cell_a) + ' ' + str(cell_b) + ' ' + str(cell_c) + ' ' + str(cell_alpha) + ' ' + str(cell_beta) + ' ' + str(cell_gamma)
         if periodicity==1:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x)
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x)
         if periodicity==2:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x) + ' ' + str(nk_y)
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y)
         if periodicity==3:
-            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints' + str(nk_x) + ' ' + str(nk_y) + ' ' + str(nk_z)
+            input_file_str = input_file_str + '\nkpoints = ' + 'nkpoints ' + str(nk_x) + ' ' + str(nk_y) + ' ' + str(nk_z)
     # input_file_str = input_file_str + '\npath = ' + str(riper_path)
 
 
