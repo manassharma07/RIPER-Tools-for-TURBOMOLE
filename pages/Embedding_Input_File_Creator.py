@@ -540,7 +540,8 @@ if not natoms_A==0:
     if not method==4:
         ### Exchange-Correlation Functionals ####
         st.write('##### Exchange-Correlation Functionals')
-        is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
+        # is_same_xc = st.checkbox('Use same exchange-correlation functional for both the subsystems', value=True)
+        is_same_xc = True
         st.write('Use this link to find out more LibXC codes and their references: [https://tddft.org/programs/libxc/functionals/](https://tddft.org/programs/libxc/functionals/)')
 
         xfunc_dict = {1:'Slater exchange', 101: 'PBE Exchange'}
