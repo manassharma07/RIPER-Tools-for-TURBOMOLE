@@ -23,7 +23,7 @@ The web app is available at [https://riper-tools.streamlit.app/](https://riper-t
 The app was originally created by me (https://github.com/manassharma07/) but now also contains contributions from https://github.com/Lexachoc.
 
 ## About me
-I am a fourth-year PhD student in Physics at [Friedrich Schiller University Jena (FSU) Germany](https://www.uni-jena.de/), advised by [Prof. Dr. Marek Sierka](https://www.cmsg.uni-jena.de/) (CEO [TURBOMOLE](https://www.turbomole.org/)).
+I am a computational material scientist who like to work in the area of method development. I have obtained my PhD in Physics from [Friedrich Schiller University Jena (FSU) Germany](https://www.uni-jena.de/), under the supervision of [Prof. Dr. Marek Sierka](https://www.cmsg.uni-jena.de/) (CEO [TURBOMOLE](https://www.turbomole.org/)).
 My passion lies in developing codes and methods to model the light-matter interaction of hybrid systems. 
 
 You can find out more about me here: [https://manas.bragitoff.com/](https://manas.bragitoff.com/)
