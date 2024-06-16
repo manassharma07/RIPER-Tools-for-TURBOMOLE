@@ -333,7 +333,7 @@ if contents != '':
 
         # Use Plotly
         st.plotly_chart(fig,
-                        on_select=True,
+                        on_select="ignore",
                         key="scatter_chart"
                         )
     with tab2:
