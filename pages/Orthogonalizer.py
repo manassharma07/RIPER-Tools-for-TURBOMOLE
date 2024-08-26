@@ -7,11 +7,12 @@ from ase.io import read, write
 from abtem.structures import orthogonalize_cell, is_cell_orthogonal
 from pymatgen.core import Structure
 from pymatgen.io.ase import AseAtomsAdaptor
+from pymatgen.io.cif import CifWriter
 import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 
-st.set_page_config(page_title='CIF Orthogonalization Tool', layout='wide', page_icon="⚛️")
+st.set_page_config(page_title='Surface Cell Orthogonalization Tool', layout='wide', page_icon="⚛️")
 
 # Sidebar stuff
 st.sidebar.write('# About')
@@ -112,20 +113,39 @@ def orthogonalize_cif(cif_content):
     
     return orthogonal_atoms, strain
 
-st.title('CIF Orthogonalization Tool')
 
-cif_input = st.radio("Choose input method:", ('Paste CIF contents', 'Upload CIF file'))
+# Function to convert a structure to CIF
+def convert_to_cif(structure, filename):
+    cif_writer = CifWriter(structure)
+    cif_writer.write_file(filename)
 
-if cif_input == 'Paste CIF contents':
-    cif_contents = st.text_area("Paste CIF contents here", height=300)
-else:
-    cif_file = st.file_uploader("Upload CIF file", type=['cif'])
-    if cif_file is not None:
-        cif_contents = cif_file.getvalue().decode("utf-8")
-    else:
-        cif_contents = None
+# return filecontents
+def read_file(filename):
+    with open(filename, 'r') as file:
+        return file.read()
 
-if cif_contents:
+st.title('Surface Cell Orthogonalization Tool')
+
+st.write('You can either paste the CIF file contents below or upload the source file')
+cif_contents = st.text_area(label='Enter the contents of the CIF file here', value='', placeholder='Put your text here',
+                        height=400, key='input_text_area')
+# Create a file uploader widget
+file = st.file_uploader("or Upload the CIF file")
+
+if file is not None:
+    # If a file is uploaded, read its contents
+    # contents = file.read()
+    # To read file as bytes:
+    bytes_data = file.getvalue()
+
+    # To convert to a string based IO:
+    stringio = StringIO(file.getvalue().decode("utf-8"))
+
+    # To read file as string:
+    cif_contents = stringio.read()
+    # st.write(contensts)
+
+if cif_contents != '':
     st.subheader("Original Structure")
     original_atoms = read(StringIO(cif_contents), format='cif')
     original_structure = AseAtomsAdaptor.get_structure(original_atoms)
@@ -152,16 +172,8 @@ if cif_contents:
             st.write("Strain:")
             st.write(strain)
             
-            # Save orthogonalized CIF to a StringIO object
-            output = StringIO()
-            write(output, orthogonal_atoms, format='cif')
-            orthogonal_cif = output.getvalue()
-            
-            st.download_button(
-                label="Download Orthogonalized CIF",
-                data=orthogonal_cif,
-                file_name="orthogonalized_structure.cif",
-                mime="chemical/x-cif"
-            )
+            # Save orthogonalized CIF 
+            convert_to_cif(orthogonal_structure, "cell.cif")
+            st.download_button('Download Cell CIF', data=read_file("cell.cif"), file_name='cell.cif', key='cell_cif_button')
         else:
             st.info("The cell is already orthogonal. No changes were made.")
