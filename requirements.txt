@@ -11,4 +11,4 @@ openpyxl
 emmet-core>=0.64.6
 plotly
 openbabel-wheel
-abtem
+abtem==1.0.0beta34
