@@ -54,31 +54,49 @@ def visualize_structure(structure, html_file_name='viz.html'):
     components.html(source_code, height=400, width=500)
     HtmlFile.close()
 
-def display_structure_info(structure, atoms):
+# Function to display structure information
+def display_structure_info(structure):
     st.subheader("Structure Information")
     st.write("Formula: ", structure.composition.reduced_formula)
 
-    a, b, c = atoms.cell.lengths()
-    alpha, beta, gamma = atoms.cell.angles()
+    #Display lattice parameters
+    a, b, c = structure.lattice.abc
+    alpha, beta, gamma = structure.lattice.angles
 
+    # Create a DataFrame for the lattice parameters and angles
     data = {
         "Lattice Parameters": [a, b, c, alpha, beta, gamma]
     }
     df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
-    st.write("Lattice Parameters (Angstroms):")
-    st.table(df_latt_params.style.format('{:.8f}'))
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
 
-    lattice_vectors = atoms.cell[:]
+    # Display lattice vectors
+    lattice_vectors = structure.lattice.matrix
     df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
-    st.write("Lattice Vectors (Angstroms):")
-    st.table(df_vectors.style.format('{:.8f}'))
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
 
-    st.write("Atomic Coordinates (Fractional):")
-    atomic_coords = []
-    for site in structure.sites:
-        atomic_coords.append([site.species_string] + list(site.frac_coords))
-    df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
-    st.table(df_coords.style.format('{:.8f}'))
+    # Create a list of atomic coordinates
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        if coord_type=='Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+        
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+    
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
 
 def orthogonalize_cif(cif_content):
     # Read the structure from CIF content
@@ -116,7 +134,7 @@ if cif_contents:
     with col1:
         visualize_structure(original_structure, "viz_original.html")
     with col2:
-        display_structure_info(original_structure, original_atoms)
+        display_structure_info(original_structure)
     
     if st.button("Orthogonalize Cell"):
         orthogonal_atoms, strain = orthogonalize_cif(cif_contents)
