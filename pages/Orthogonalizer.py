@@ -173,7 +173,7 @@ if cif_contents != '':
             st.write(strain)
             
             # Save orthogonalized CIF 
-            convert_to_cif(orthogonal_structure, "cell.cif")
-            st.download_button('Download Cell CIF', data=read_file("cell.cif"), file_name='cell.cif', key='cell_cif_button')
+            convert_to_cif(orthogonal_structure, "ortho_cell.cif")
+            st.download_button('Download Orthogonal Cell CIF', data=read_file("ortho_cell.cif"), file_name='ortho_cell.cif', key='cell_cif_button')
         else:
             st.info("The cell is already orthogonal. No changes were made.")
