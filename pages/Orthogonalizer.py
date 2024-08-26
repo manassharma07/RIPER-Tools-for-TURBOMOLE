@@ -55,7 +55,7 @@ def visualize_structure(structure, html_file_name='viz.html'):
     HtmlFile.close()
 
 # Function to display structure information
-def display_structure_info(structure):
+def display_structure_info(structure, key='1'):
     st.subheader("Structure Information")
     st.write("Formula: ", structure.composition.reduced_formula)
 
@@ -80,7 +80,7 @@ def display_structure_info(structure):
 
     # Create a list of atomic coordinates
     with st.expander("Atomic Coordinates", expanded=False):
-        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key=key)
         if coord_type=='Cartesian':
             atomic_coords = []
             for site in structure.sites:
@@ -147,7 +147,7 @@ if cif_contents:
             with col1:
                 visualize_structure(orthogonal_structure, "viz_orthogonal.html")
             with col2:
-                display_structure_info(orthogonal_structure)
+                display_structure_info(orthogonal_structure, key='orthgonal')
             
             st.write("Strain:")
             st.write(strain)
