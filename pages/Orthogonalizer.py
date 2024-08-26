@@ -147,7 +147,7 @@ if cif_contents:
             with col1:
                 visualize_structure(orthogonal_structure, "viz_orthogonal.html")
             with col2:
-                display_structure_info(orthogonal_structure, orthogonal_atoms)
+                display_structure_info(orthogonal_structure)
             
             st.write("Strain:")
             st.write(strain)
