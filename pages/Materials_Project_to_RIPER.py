@@ -164,6 +164,20 @@ docs = None
 st.write('# Materials Project ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from Materials Project Database")
 
+st.markdown("### Citation")
+st.markdown("By downloading Content from Materials Project, you agree to accept the [Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/), implying that the Content may be copied, distributed, transmitted, and adapted, without obtaining specific permission from the Materials Project, provided proper attribution is given to the Materials Project.")
+st.markdown("""
+**If you use the Materials Project as a resource in your research, please cite the following work:**
+
+**Commentary: The Materials Project: A materials genome approach to accelerating materials innovation**
+
+*Anubhav Jain, Shyue Ping Ong, Geoffroy Hautier, Wei Chen, William Davidson Richards, Stephen Dacek, Shreyas Cholia, Dan Gunter, David Skinner, Gerbrand Ceder, and Kristin A. Persson*
+
+*APL Materials, 2013*
+
+[APL Materials](https://doi.org/10.1063/1.4812323) | [BibTeX](https://materialsproject.org/citations/mp)
+""")
+
 # Search by material_id, formula or elements?
 # input_type = st.selectbox("Search by:", ['Formula','Material ID','Elements'])
 input_type = st.selectbox("Search by:", ['Formula','Material ID'])
