@@ -164,8 +164,9 @@ docs = None
 st.write('# Materials Project ➡️ RIPER')
 st.write("#### Get atomic coordinates and cell parameters for RIPER (TURBOMOLE) from Materials Project Database")
 
-with st.expander("### Citation Information", expanded=False):
+with st.expander("### Cite Materials Project", expanded=True):
 # st.markdown("### Citation")
+    st.write('The structural data in this module is provided by the [Materials Project](https://next-gen.materialsproject.org/). Please cite the appropriate publications if this data is useful for your work.')
     st.markdown("By downloading Content from Materials Project, you agree to accept the [Creative Commons Attribution 4.0 License](https://creativecommons.org/licenses/by/4.0/), implying that the Content may be copied, distributed, transmitted, and adapted, without obtaining specific permission from the Materials Project, provided proper attribution is given to the Materials Project.")
     st.markdown("""
     **If you use the Materials Project as a resource in your research, please cite the following work:**
