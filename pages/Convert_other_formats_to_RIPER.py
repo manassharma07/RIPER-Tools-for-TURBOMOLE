@@ -378,7 +378,7 @@ if contents != '':
 
     if isinstance(structure, Structure):
         # Add sliders for translation along a, b, and c lattice vectors
-        st.warning('Translation feature is still in development so may not work as expected!')
+        # st.warning('Translation feature is still in development so may not work as expected!')
         st.subheader("Translate Structure Along Lattice Vectors")
         translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
         translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
@@ -389,8 +389,6 @@ if contents != '':
         translation_vector = translate_a * structure.lattice.matrix[0] + \
                             translate_b * structure.lattice.matrix[1] + \
                             translate_c * structure.lattice.matrix[2]
-        st.write(structure.lattice.matrix[0])
-        st.write(translation_vector)
         translated_structure.translate_sites(range(len(structure.sites)), translation_vector, frac_coords=False)
 
         # Re-visualize the translated structure
@@ -447,9 +445,8 @@ if contents != '':
         nx = col1.number_input("Enter nx", min_value=1, step=1)
         ny = col2.number_input("Enter ny", min_value=1, step=1)
         nz = col3.number_input("Enter nz", min_value=1, step=1)
-        # st.write(primitive_structure)
-        # st.write(conventional_structure)
-        supercell_structure = structure.copy()
+        # supercell_structure = structure.copy()
+        supercell_structure = translated_structure.copy()
         supercell_structure.make_supercell([int(nx), int(ny), int(nz)])
         # Get the number of atoms
         num_atoms_supercell = supercell_structure.num_sites
