@@ -377,6 +377,58 @@ if contents != '':
             st.text_area("Add the following to your control file", value=lattice_text, height=300)
 
     if isinstance(structure, Structure):
+        # Add sliders for translation along a, b, and c lattice vectors
+        st.subheader("Translate Structure Along Lattice Vectors")
+        translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+        translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+        translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+
+        translated_structure = structure.copy()
+        # Apply the translation to the structure
+        translation_vector = translate_a * structure.lattice.matrix[0] + \
+                            translate_b * structure.lattice.matrix[1] + \
+                            translate_c * structure.lattice.matrix[2]
+        translated_structure.translate_sites(range(len(structure.sites)), translation_vector)
+
+        # Re-visualize the translated structure
+        visualize_structure(translated_structure, "viz_translated.html")
+
+        # Get the number of atoms
+        num_atoms_supercell = translated_structure.num_sites
+        if num_atoms_supercell<500:
+            visualize_structure(translated_structure, 'viz2.html')
+        else:
+            st.warning("We can't visualize your supercell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
+
+
+        # Get TURBOMOLE (RIPER) Coord file and Control file contents
+        st.subheader("RIPER Files for the Supercell")
+        # Convert the atomic coordinates to Bohr units
+        coords_bohr_translated = convert_to_bohr(translated_structure)
+
+        # Generate the coordinate text
+        coords_text_translated = generate_coord_text(coords_bohr_translated)
+        # Generate the lattice parameter text
+        lattice_text_translated = generate_lattice_text(translated_structure)
+
+        # Create two columns for text boxes
+        col1, col2 = st.columns(2)
+
+        # Display the coordinate text in the first column
+        with col1:
+            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_translated, height=300,
+                         key='translated_text_coord')
+
+            st.download_button('Download coord file', coords_text_translated, file_name='coord')
+
+        # Display the lattice parameters text in the second column
+        with col2:
+            st.text_area("Add the following to your control file", value=lattice_text_translated, height=300,
+                         key='translated_text_control')
+        
+
+
+    if isinstance(structure, Structure):
         # Create supercells
         # with st.expander("Model Supercell", expanded=False):
         st.subheader('Model Supercell')
