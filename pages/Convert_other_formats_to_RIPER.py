@@ -345,7 +345,7 @@ if contents != '':
 
     # Download CIF files
     if isinstance(structure, Structure):
-        st.subheader("Download CIF Files")
+        st.subheader("Download CIF File")
 
         convert_to_cif(structure, "structure.cif")
         st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
@@ -384,12 +384,15 @@ if contents != '':
         translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
         translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
 
-        translated_structure = structure.copy()
+        structure_copy = structure.copy()
+        # translated_structure = structure.copy()
         # Apply the translation to the structure
         translation_vector = translate_a * structure.lattice.matrix[0] + \
                             translate_b * structure.lattice.matrix[1] + \
                             translate_c * structure.lattice.matrix[2]
-        translated_structure.translate_sites(range(len(structure.sites)), translation_vector)
+        structure_copy.translate_sites(range(len(structure.sites)), translation_vector)
+        translated_structure = structure_copy.copy()
+        structure_copy = structure.copy()
 
         # Re-visualize the translated structure
 
@@ -400,6 +403,12 @@ if contents != '':
         else:
             st.warning("We can't visualize your cell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
 
+        # Download CIF files
+        if isinstance(translated_structure, Structure):
+            st.subheader("Download CIF File for the translatedd structure")
+
+            convert_to_cif(translated_structure, "translated_structure.cif")
+            st.download_button('Download CIF', data=read_file("translated_structure.cif"), file_name='translated_structure.cif', key='cif_button_translated_structure')
 
         # Get TURBOMOLE (RIPER) Coord file and Control file contents
         st.subheader("RIPER Files for the Translated Structure")
