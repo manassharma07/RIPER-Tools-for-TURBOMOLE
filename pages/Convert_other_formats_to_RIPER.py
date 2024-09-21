@@ -384,17 +384,14 @@ if contents != '':
         translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
         translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
 
-        structure_copy = structure.copy()
-        # translated_structure = structure.copy()
+        translated_structure = structure.copy()
         # Apply the translation to the structure
         translation_vector = translate_a * structure.lattice.matrix[0] + \
                             translate_b * structure.lattice.matrix[1] + \
                             translate_c * structure.lattice.matrix[2]
         st.write(structure.lattice.matrix[0])
         st.write(translation_vector)
-        structure_copy.translate_sites(range(len(structure.sites)), translation_vector)
-        translated_structure = structure_copy.copy()
-        structure_copy = structure.copy()
+        translated_structure.translate_sites(range(len(structure.sites)), translation_vector, frac_coords=False)
 
         # Re-visualize the translated structure
 
