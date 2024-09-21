@@ -391,12 +391,11 @@ if contents != '':
         translated_structure.translate_sites(range(len(structure.sites)), translation_vector)
 
         # Re-visualize the translated structure
-        visualize_structure(translated_structure, "viz_translated.html")
 
         # Get the number of atoms
         num_atoms_supercell = translated_structure.num_sites
         if num_atoms_supercell<500:
-            visualize_structure(translated_structure, 'viz2.html')
+            visualize_structure(translated_structure, 'viz_translated.html')
         else:
             st.warning("We can't visualize your supercell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
 
