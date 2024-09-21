@@ -378,6 +378,7 @@ if contents != '':
 
     if isinstance(structure, Structure):
         # Add sliders for translation along a, b, and c lattice vectors
+        st.warning('Translation feature is still in development so may not work as expected!')
         st.subheader("Translate Structure Along Lattice Vectors")
         translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
         translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
@@ -397,11 +398,11 @@ if contents != '':
         if num_atoms_supercell<500:
             visualize_structure(translated_structure, 'viz_translated.html')
         else:
-            st.warning("We can't visualize your supercell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
+            st.warning("We can't visualize your cell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
 
 
         # Get TURBOMOLE (RIPER) Coord file and Control file contents
-        st.subheader("RIPER Files for the Supercell")
+        st.subheader("RIPER Files for the Translated Structure")
         # Convert the atomic coordinates to Bohr units
         coords_bohr_translated = convert_to_bohr(translated_structure)
 
