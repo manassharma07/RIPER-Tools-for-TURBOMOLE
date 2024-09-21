@@ -390,6 +390,7 @@ if contents != '':
         translation_vector = translate_a * structure.lattice.matrix[0] + \
                             translate_b * structure.lattice.matrix[1] + \
                             translate_c * structure.lattice.matrix[2]
+        st.write(translation_vector)
         structure_copy.translate_sites(range(len(structure.sites)), translation_vector)
         translated_structure = structure_copy.copy()
         structure_copy = structure.copy()
