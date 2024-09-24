@@ -10,6 +10,7 @@ from ase.io import read
 from pymatgen.io.cif import CifWriter
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from ase.spacegroup import get_spacegroup
+import re
 
 
 # Set page config
@@ -96,45 +97,28 @@ def format_coordinate(coord):
 
 #     text = f"$kpoints \n    kptlines {nlines}\n" + text
 #     return text
+def split_bandpath(bandpath_str):
+    # Split bandpath string into valid high-symmetry points (letters followed by optional digits)
+    return re.findall(r'[A-Za-z]\d?', bandpath_str)
+
 def generate_turbomole_text(nlines, bandpath_str, special_points, pbc):
     substrings = bandpath_str.split(",")
     text = ""
-
     for substring in substrings:
-        i = 0
-        n_chars = len(substring)
-
-        while i < n_chars - 1:
-            # Handle multi-character high-symmetry points
-            if i + 1 < n_chars and substring[i + 1].isdigit():
-                start_point_label = substring[i:i + 2]  # Capture 2 characters, e.g., 'Z1'
-                i += 2
-            else:
-                start_point_label = substring[i]  # Capture single character, e.g., 'G'
-                i += 1
-
-            if i < n_chars:
-                if i + 1 < n_chars and substring[i + 1].isdigit():
-                    end_point_label = substring[i:i + 2]  # Capture 2 characters, e.g., 'Z1'
-                    i += 2
-                else:
-                    end_point_label = substring[i]  # Capture single character, e.g., 'M'
-                    i += 1
-
-                # Retrieve the points from special_points dictionary
-                start_point = special_points[start_point_label]
-                end_point = special_points[end_point_label]
-
-                if pbc == '3D':
-                    start_point_str = format_coordinate(start_point)
-                    end_point_str = format_coordinate(end_point)
-                elif pbc == '2D':
-                    start_point_str = format_coordinate(start_point[0:2])
-                    end_point_str = format_coordinate(end_point[0:2])
-
-                line = f"    recipr    {start_point_str}    {end_point_str}    40\n"
-                text += line
-
+        # Split substring into valid high-symmetry points
+        points = split_bandpath(substring)
+        n_chars = len(points)
+        for i in range(n_chars - 1):
+            start_point = special_points[points[i]]
+            end_point = special_points[points[i + 1]]
+            if pbc == '3D':
+                start_point_str = format_coordinate(start_point)
+                end_point_str = format_coordinate(end_point)
+            elif pbc == '2D':
+                start_point_str = format_coordinate(start_point[0:2])
+                end_point_str = format_coordinate(end_point[0:2])
+            line = f"    recipr    {start_point_str}    {end_point_str}    40\n"
+            text += line
     text = f"$kpoints \n    kptlines {nlines}\n" + text
     return text
 
