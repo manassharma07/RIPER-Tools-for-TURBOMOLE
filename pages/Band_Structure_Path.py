@@ -320,16 +320,24 @@ if structure:
         sga = SpacegroupAnalyzer(primitive_structure)
         space_group = sga.get_space_group_symbol()
         international_symbol = sga.get_space_group_number()
-        st.write(f"Space Group: {space_group} (No. {international_symbol})")
+        st.write(f"Space Group (Determined by Pymatgen): {space_group} (No. {international_symbol})")
         # Get space group info using ASE
         space_group = get_spacegroup(atoms)
-        st.write(f"Space Group: {space_group.symbol} (No. {space_group.no})")
+        st.write(f"Space Group  (Determined by ASE): {space_group.symbol} (No. {space_group.no})")
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
         visualize_structure(structure, "viz1.html")
         # display_structure_info(structure)
         atoms = AseAtomsAdaptor.get_atoms(structure)
         display_structure_info_ase(structure, atoms)
+        # Get space group info
+        sga = SpacegroupAnalyzer(structure)
+        space_group = sga.get_space_group_symbol()
+        international_symbol = sga.get_space_group_number()
+        st.write(f"Space Group (Determined by Pymatgen): {space_group} (No. {international_symbol})")
+        # Get space group info using ASE
+        space_group = get_spacegroup(atoms)
+        st.write(f"Space Group  (Determined by ASE): {space_group.symbol} (No. {space_group.no})")
 
     st.write("### Specify Periodicity (EXPERIMENTAL FEATURE)")
     pbc = st.selectbox('PBC: ', ['3D', '2D'])
