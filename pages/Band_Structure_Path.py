@@ -68,9 +68,16 @@ def convert_pymatgen_to_ase_to_pymatgen(structure):
     return parse_cif_ase(file)
 
 
+# def calculate_nlines(bandpath_str):
+#     substrings = bandpath_str.split(",")
+#     nlines = sum(len(substring) - 1 for substring in substrings)
+#     return nlines
 def calculate_nlines(bandpath_str):
     substrings = bandpath_str.split(",")
-    nlines = sum(len(substring) - 1 for substring in substrings)
+    nlines = 0
+    for substring in substrings:
+        points = split_bandpath(substring)  # Use the same splitting function
+        nlines += len(points) - 1
     return nlines
 
 def format_coordinate(coord):
