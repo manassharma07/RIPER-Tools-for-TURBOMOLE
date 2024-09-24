@@ -314,6 +314,11 @@ if structure:
         # display_structure_info(primitive_structure)
         atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
         display_structure_info_ase(primitive_structure, atoms)
+        # Get space group info
+        sga = SpacegroupAnalyzer(primitive_structure)
+        space_group = sga.get_space_group_symbol()
+        international_symbol = sga.get_space_group_number()
+        st.write(f"Space Group: {space_group} (No. {international_symbol})")
     else:
         st.warning("Using Conventional Structure. May result in Band Folding")
         visualize_structure(structure, "viz1.html")
@@ -329,6 +334,7 @@ if structure:
         pbc_arr = [1,1,0]
 
     lat = atoms.cell.get_bravais_lattice(pbc=pbc_arr)
+    st.write('*Bravais Lattice Type:* ', lat)
     special_points = lat.get_special_points()
 
     
