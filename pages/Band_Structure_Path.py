@@ -8,6 +8,7 @@ import streamlit.components.v1 as components
 from io import StringIO
 from ase.io import read
 from pymatgen.io.cif import CifWriter
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 
 # Set page config
