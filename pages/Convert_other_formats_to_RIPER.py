@@ -375,8 +375,12 @@ if contents != '':
         st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
 
     center_of_mass = calculate_com(structure)
-    st.write('#### Coordinates of Center of Mass (Angstroms) ')
+    st.write('#### Cartesian Coordinates of Center of Mass (Angstroms) ')
     st.write(center_of_mass)
+    # Convert COM in Cartesian coordinates to fractional coordinates
+    com_fractional = structure.lattice.get_fractional_coords(center_of_mass)
+    st.write('#### Fractional Coordinates of Center of Mass (Angstroms) ')
+    st.write(com_fractional)
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files")
