@@ -1,6 +1,6 @@
 import streamlit as st
 from mp_api.client import MPRester
-from pymatgen.core import Structure
+from pymatgen.core import Structure, Element
 from pymatgen.io.cif import CifWriter
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.io.cif import CifParser
