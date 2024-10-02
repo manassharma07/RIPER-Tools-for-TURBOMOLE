@@ -40,6 +40,30 @@ st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
+def calculate_com(structure):
+    """
+    Calculate the center of mass (COM) of a pymatgen structure.
+    
+    :param structure: pymatgen Structure object
+    :return: COM coordinates as a tuple (x_com, y_com, z_com)
+    """
+    total_mass = 0
+    com = [0, 0, 0]  # x_com, y_com, z_com
+    
+    for site in structure:
+        element = Element(site.specie.symbol)
+        mass = element.atomic_mass
+        total_mass += mass
+        
+        # Multiply mass by the fractional coordinates
+        com[0] += mass * site.coords[0]
+        com[1] += mass * site.coords[1]
+        com[2] += mass * site.coords[2]
+    
+    # Divide by total mass to get COM
+    com = [x / total_mass for x in com]
+    
+    return tuple(com)
 
 # Function to convert atomic coordinates to Bohr units
 def convert_to_bohr(structure):
@@ -349,6 +373,9 @@ if contents != '':
 
         convert_to_cif(structure, "structure.cif")
         st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
+
+    center_of_mass = calculate_com(structure)
+    st.write('### Center of Mass: ', center_of_mass)
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files")
