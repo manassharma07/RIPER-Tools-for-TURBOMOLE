@@ -375,7 +375,8 @@ if contents != '':
         st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
 
     center_of_mass = calculate_com(structure)
-    st.write('### Center of Mass: ', center_of_mass)
+    st.write('#### Coorinates of Center of Mass (Angstroms) ')
+    st.write(center_of_mass)
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files")
