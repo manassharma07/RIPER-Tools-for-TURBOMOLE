@@ -342,13 +342,15 @@ else:
 
 if structure:
     if use_primitive:
-        primitive_structure = structure.get_primitive_structure()
+        analyzer = SpacegroupAnalyzer(structure)
+        primitive_structure = analyzer.get_primitive_standard_structure()
+        # primitive_structure = structure.get_primitive_structure()
         # primitive_structure = convert_pymatgen_to_ase_to_pymatgen(primitive_structure)
         visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
-        display_structure_info(primitive_structure)
+        # display_structure_info(primitive_structure)
         atoms = AseAtomsAdaptor.get_atoms(primitive_structure)
-        # display_structure_info_ase(primitive_structure, atoms)
+        display_structure_info_ase(primitive_structure, atoms)
         # Get space group info
         sga = SpacegroupAnalyzer(primitive_structure)
         space_group = sga.get_space_group_symbol()
