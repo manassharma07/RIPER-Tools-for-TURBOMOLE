@@ -374,11 +374,10 @@ if contents != '':
         convert_to_cif(structure, "structure.cif")
         st.download_button('Download CIF', data=read_file("structure.cif"), file_name='structure.cif', key='cif_button')
 
-    
+    center_of_mass = calculate_com(structure)
+    st.write('#### Cartesian Coordinates of Center of Mass (Angstroms) ')
+    st.write(center_of_mass)
     if isinstance(structure, Structure):
-        center_of_mass = calculate_com(structure)
-        st.write('#### Cartesian Coordinates of Center of Mass (Angstroms) ')
-        st.write(center_of_mass)
         # Convert COM in Cartesian coordinates to fractional coordinates
         com_fractional = structure.lattice.get_fractional_coords(center_of_mass)
         st.write('#### Fractional Coordinates of Center of Mass (Angstroms) ')

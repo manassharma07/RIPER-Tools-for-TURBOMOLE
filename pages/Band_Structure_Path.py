@@ -343,7 +343,7 @@ else:
 if structure:
     if use_primitive:
         primitive_structure = structure.get_primitive_structure()
-        primitive_structure = convert_pymatgen_to_ase_to_pymatgen(primitive_structure)
+        # primitive_structure = convert_pymatgen_to_ase_to_pymatgen(primitive_structure)
         visualize_structure(primitive_structure, "viz1.html")
         st.success("Converted to Primitive Structure! Using primitive structure from now on.")
         # display_structure_info(primitive_structure)
