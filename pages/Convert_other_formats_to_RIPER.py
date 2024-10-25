@@ -253,7 +253,7 @@ def parse_coord(file_contents):
                 
                 if len(parts) == 4:
                     x, y, z = map(float, parts[:3])
-                    atomic_species.append(parts[3])
+                    atomic_species.append(parts[3].capitalize())
                     coords.append([x, y, z])
         
     # Convert Bohr to Angstrom if needed
