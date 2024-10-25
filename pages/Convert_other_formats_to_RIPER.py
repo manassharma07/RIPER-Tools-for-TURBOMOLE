@@ -257,7 +257,7 @@ def parse_coord(file_contents):
                     coords.append([x, y, z])
         
     # Convert Bohr to Angstrom if needed
-    if in_bohr and not fractional:
+    if not fractional:
         coords = [[x * 0.529177, y * 0.529177, z * 0.529177] for x, y, z in coords]
     
     # Create Structure or Molecule
