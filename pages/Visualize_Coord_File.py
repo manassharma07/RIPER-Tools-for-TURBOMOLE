@@ -287,7 +287,7 @@ def read_file(filename):
 st.write('# `coord` File Visualizer')
 st.write(
     "#### Visualize Turbomole's `coord` files")  
-
+st.warning('Only molecular or coord files with 3D periodicity are supported. That is, the cell parameters of a 3D cell can only be parsed.')
 
 st.write('You can either paste the `coord` file contents below or upload the `coord` file')
 contents = st.text_area(label='Enter the contents of the `coord` file here', value='', placeholder='Put your text here',
