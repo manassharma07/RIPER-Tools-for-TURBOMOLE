@@ -352,7 +352,7 @@ st.write("Please select the file format")
 file_format = st.selectbox("Select file format",
                            ("CIF", "XYZ", "CAR (Materials Studio)", "POSCAR", "Quantum ESPRESSO (PWSCF)", "Extended XYZ", "TMOL (Coord)"))
 
-if file_format = "TMOL (Coord)":
+if file_format =="TMOL (Coord)":
     st.warning('Only molecular or coord files with 3D periodicity are supported. That is, the cell parameters of a 3D cell can only be parsed.')
 
 if file_format == 'CIF':
