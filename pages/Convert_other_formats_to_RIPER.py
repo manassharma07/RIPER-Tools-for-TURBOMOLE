@@ -1,6 +1,6 @@
 import streamlit as st
 from mp_api.client import MPRester
-from pymatgen.core import Structure, Element
+from pymatgen.core import Structure, Element, Molecule, Lattice
 from pymatgen.io.cif import CifWriter
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from pymatgen.io.cif import CifParser
@@ -17,6 +17,7 @@ from ase.io.cif import read_cif
 from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 from ase.io.dmol import read_dmol_car
+import re
 
 # Set page config
 st.set_page_config(page_title='CIF/XYZ/CAR/POSCAR/PWSCF ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -198,6 +199,74 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+def parse_coord(file_contents):
+    lines = file_contents.strip().splitlines()
+
+    lattice = None
+    coords = []
+    atomic_species = []
+    fractional = False
+    in_bohr = False
+    is_periodic = False
+
+    for i, line in enumerate(lines):
+        line = line.strip()
+        
+        # Check for units and periodicity
+        if line.startswith('$cell'):
+            is_periodic = True
+            if 'angs' in line:
+                in_bohr = False
+            else:
+                in_bohr = True
+            
+            # Extract cell parameters (axes and angles)
+            cell_line = lines[i + 1].strip().split()
+            a, b, c = map(float, cell_line[:3])
+            alpha, beta, gamma = map(float, cell_line[3:])
+            lattice = Lattice.from_parameters(a, b, c, alpha, beta, gamma)
+        
+        elif line.startswith('$lattice'):
+            is_periodic = True
+            if 'angs' in line:
+                in_bohr = False
+            else:
+                in_bohr = True
+
+            # Parse lattice vectors from following 3 lines
+            vec1 = list(map(float, lines[i + 1].strip().split()))
+            vec2 = list(map(float, lines[i + 2].strip().split()))
+            vec3 = list(map(float, lines[i + 3].strip().split()))
+            lattice = Lattice([vec1, vec2, vec3])
+        
+        elif line.startswith('$coord frac'):
+            is_periodic = True
+            fractional = True
+        
+        elif line.startswith('$coord'):
+            # Parse coordinates (in Cartesian or fractional)
+            for j in range(i + 1, len(lines)):
+                coord_line = lines[j].strip()
+                if coord_line == '$end':
+                    break
+                parts = coord_line.split()
+                
+                if len(parts) == 4:
+                    x, y, z = map(float, parts[:3])
+                    atomic_species.append(parts[3])
+                    coords.append([x, y, z])
+        
+    # Convert Bohr to Angstrom if needed
+    if in_bohr and not fractional:
+        coords = [[x * 0.529177, y * 0.529177, z * 0.529177] for x, y, z in coords]
+    
+    # Create Structure or Molecule
+    if is_periodic:
+        structure = Structure(lattice, atomic_species, coords, coords_are_cartesian=not fractional)
+        return structure
+    else:
+        molecule = Molecule(atomic_species, coords)
+        return molecule
 
 def parse_cif_pymatgen(contents):
     # Parse the CIF file using pymatgen
@@ -281,7 +350,10 @@ st.write("Please select the file format")
 
 # Select file format
 file_format = st.selectbox("Select file format",
-                           ("CIF", "XYZ", "CAR (Materials Studio)", "POSCAR", "Quantum ESPRESSO (PWSCF)", "Extended XYZ"))
+                           ("CIF", "XYZ", "CAR (Materials Studio)", "POSCAR", "Quantum ESPRESSO (PWSCF)", "Extended XYZ", "TMOL (Coord)"))
+
+if file_format = "TMOL (Coord)":
+    st.warning('Only molecular or coord files with 3D periodicity are supported. That is, the cell parameters of a 3D cell can only be parsed.')
 
 if file_format == 'CIF':
     cif_parser_options = ['ASE', 'PYMATGEN']
@@ -335,6 +407,8 @@ if contents != '':
         # Create a StringIO object
         stringio_obj = StringIO(contents)
         structure = parse_extxyz_ase(stringio_obj)
+    elif file_format == "TMOL (Coord)":
+        structure = parse_coord(contents)
 
     # if file_format!="XYZ" and selected_cif_parser=='PYMATGEN':
     #     # Get conventional structure
