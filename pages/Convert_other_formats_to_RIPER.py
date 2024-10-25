@@ -258,12 +258,10 @@ def parse_coord(file_contents):
         
     # Convert Bohr to Angstrom if needed
     if not fractional:
-        coords = [[x * 0.529177, y * 0.529177, z * 0.529177] for x, y, z in coords]
+        coords = [[x * 0.52917721092, y * 0.52917721092, z * 0.52917721092] for x, y, z in coords]
 
     if in_bohr:
-        lattice[0] *= 0.529177
-        lattice[1] *= 0.529177
-        lattice[2] *= 0.529177
+        lattice = Lattice(lattice.matrix * 0.52917721092)
     
     # Create Structure or Molecule
     if is_periodic:
