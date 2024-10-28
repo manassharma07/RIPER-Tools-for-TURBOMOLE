@@ -44,7 +44,9 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 # Function to format floating-point numbers with alignment
 def format_number(num, width=10, precision=5):
     # Handles positive/negative numbers while maintaining alignment
-    return f"{num: {width}.{precision}f}"
+    # Adjusting the width based on the sign to ensure alignment
+    return f"{num:>{width}.{precision}f}"
+
 
 def calculate_com(structure):
     """
