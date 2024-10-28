@@ -37,7 +37,7 @@ def generate_xyz_coordinates(cid):
     coords = [(atom.x, atom.y, atom.z) for atom in atoms]
 
     num_atoms = len(atoms)
-    xyz_text = f"{num_atoms}\n{compound.cid}  {compound.molecular_formula}\n"
+    xyz_text = f"{num_atoms}\n{compound.cid}  {compound.molecular_formula} {compound.isomeric_smiles}\n"
 
     for atom, coord in zip(atoms, coords):
         atom_symbol = atom.element
