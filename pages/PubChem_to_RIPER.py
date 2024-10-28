@@ -25,6 +25,11 @@ st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
+# Function to format floating-point numbers with alignment
+def format_number(num, width=10, precision=5):
+    # Handles positive/negative numbers while maintaining alignment
+    return f"{num: {width}.{precision}f}"
+
 # CID to XYZ
 def generate_xyz_coordinates(cid):
     compound = pcp.Compound.from_cid(cid, record_type='3d')
@@ -37,7 +42,7 @@ def generate_xyz_coordinates(cid):
     for atom, coord in zip(atoms, coords):
         atom_symbol = atom.element
         x, y, z = coord
-        xyz_text += f"{atom_symbol} {x} {y} {z}\n"
+        xyz_text += f"{atom_symbol} {format_number(x, precision=8)} {format_number(y, precision=8)} {format_number(z, precision=8)}\n"
 
     return xyz_text
 
