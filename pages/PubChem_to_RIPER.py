@@ -83,7 +83,7 @@ def search_pubchem(query):
 
 def get_molecule(cid):
     xyz_str = generate_xyz_coordinates(cid)
-    return Molecule.from_str(xyz_str, fmt='xyz')
+    return Molecule.from_str(xyz_str, fmt='xyz'), xyz_str
 
 
 def format_xyz(molecule):
@@ -126,7 +126,7 @@ if compounds is not None:
     # selected_cid = st.selectbox("Select a molecule", [cid for cid in compounds.index]) # if using the pubchempy dataframe
     selected_cid = st.selectbox("Select a molecule", molecule_df["CID"])
     # st.write(generate_xyz_coordinates(selected_cid))
-    selected_molecule = get_molecule(selected_cid)
+    selected_molecule, xyz_str = get_molecule(selected_cid)
 
     st.subheader("3D Atomic Coordinates")
     # Create a dataframe with atomic symbols and atomic coordinates
@@ -156,14 +156,15 @@ if compounds is not None:
     # XYZ and Coord files
     col1, col2 = st.columns(2)
     col1.subheader("XYZ Format")
-    col1.code(format_xyz(selected_molecule))
+    # col1.code(format_xyz(selected_molecule))
+    col1.code(xyz_str)
 
     col2.subheader("Turbomole Coord Format")
     col2.code(format_coord(selected_molecule))
 
     col1.download_button(
         "Download XYZ",
-        data=format_xyz(selected_molecule),
+        data=xyz_str,
         file_name="molecule.xyz",
         mime="chemical/x-xyz"
     )
