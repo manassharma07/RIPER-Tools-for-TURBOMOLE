@@ -42,7 +42,7 @@ st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
 # Function to format floating-point numbers with alignment
-def format_number(num, width=10, precision=5):
+def format_number(num, width=15, precision=8):
     # Handles positive/negative numbers while maintaining alignment
     # Adjusting the width based on the sign to ensure alignment
     return f"{num:>{width}.{precision}f}"
@@ -79,11 +79,24 @@ def convert_to_bohr(structure):
     return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
 
 
+# # Function to generate coordinate text
+# def generate_coord_text(coords_bohr):
+#     coord_text = "$coord\n"
+#     for coord in coords_bohr:
+#         coord_text += f"   {format_number(coord[0], precision=8)}  {format_number(coord[1], precision=8)}  {format_number(coord[2], precision=8)}  {coord[3]:<2s}\n"
+#     coord_text += "$end"
+#     return coord_text
 # Function to generate coordinate text
 def generate_coord_text(coords_bohr):
     coord_text = "$coord\n"
     for coord in coords_bohr:
-        coord_text += f"   {format_number(coord[0], precision=8)}  {format_number(coord[1], precision=8)}  {format_number(coord[2], precision=8)}  {coord[3]:<2s}\n"
+        # Aligning all coordinates and ensuring the element symbol is aligned to the left
+        coord_text += (
+            f"{format_number(coord[0], width=15, precision=8)} "
+            f"{format_number(coord[1], width=15, precision=8)} "
+            f"{format_number(coord[2], width=15, precision=8)} "
+            f"{coord[3]:<2s}\n"
+        )
     coord_text += "$end"
     return coord_text
 
