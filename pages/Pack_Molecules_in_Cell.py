@@ -28,6 +28,106 @@ st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
+# Function to visualize the structure using py3Dmol
+def visualize_structure(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="cif")
+    view.addModel(cif_for_visualization, 'cif')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.addUnitCell()
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
+
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=500)
+    HtmlFile.close()
+
+
+# Function to visualize the structure using py3Dmol
+def visualize_molecule(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="xyz")
+    view.addModel(cif_for_visualization, 'xyz')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
+
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=500)
+    HtmlFile.close()
+
+
+# Function to display structure information
+def display_structure_info(structure):
+    st.subheader("Structure Information")
+    st.write("Formula: ", structure.composition.reduced_formula)
+
+    # Display lattice parameters
+    a, b, c = structure.lattice.abc
+    alpha, beta, gamma = structure.lattice.angles
+
+    # Create a DataFrame for the lattice parameters and angles
+    data = {
+        "Lattice Parameters": [a, b, c, alpha, beta, gamma]
+    }
+    df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
+
+    # Display lattice vectors
+    lattice_vectors = structure.lattice.matrix
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Create a list of atomic coordinates
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'])
+        if coord_type == 'Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
+
 # def has_overlap(base_structure, molecule, tolerance):
 #     """Check if there's an overlap by calculating distances between the base structure and molecule."""
 #     combined = base_structure + molecule
@@ -166,7 +266,10 @@ else:
             st.success("Base structure loaded from file.")
         except Exception as e:
             st.error(f"Error reading CIF file: {str(e)}")
-
+if base_structure is not None:
+    base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
+    display_structure_info(base_structure_pymatgen)
+    visualize_structure(base_structure_pymatgen, "viz1.html")
 # XYZ input section
 st.header("Molecule Structure (XYZ)")
 xyz_input_method = st.radio("Choose input method for XYZ", ["Paste Content", "Upload File"], key="xyz_method")
