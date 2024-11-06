@@ -188,47 +188,47 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
     mol_center = original_positions.mean(axis=0)
     
     max_attempts = 50  # Limit to avoid infinite loops
-    
-    # Loop to add molecules
-    for i in range(num_molecules):
-        attempt = 0
-        added = False
-        while not added and attempt < max_attempts:
-            print(i, attempt)
-            attempt += 1
-            # Create a new copy of the molecule for this attempt
-            current_molecule = molecule.copy()
-            
-            # 1. Center the molecule at origin
-            centered_positions = original_positions - mol_center
-            
-            # 2. Apply random rotation
-            rotation_matrix = random_rotation_matrix()
-            rotated_positions = centered_positions @ rotation_matrix
-            
-            # 3. Generate random displacement within cell
-            displacement = np.random.rand(3) * packed_structure.cell.lengths()
-            
-            # 4. Apply displacement and set new positions
-            final_positions = rotated_positions + displacement
-            current_molecule.set_positions(final_positions)
-            
-            # Check for overlaps
-            if not has_overlap(packed_structure, current_molecule, tolerance):
-                packed_structure += current_molecule.copy()  # Add molecule to the packed structure
-                added = True
-                st.write(f"Molecule copy #{i+1} added successfully at position {displacement} after {attempt} attempts.")
-            # else:
-                # st.write(f"Attempt {attempt} for molecule {i+1} resulted in overlap; retrying.")
-            # if attempt == max_attempts - 1:
-            #     i = i - 1
-        if added:
-            print(f"Added the {i+1} th molecule at {attempt}th attempt")
-        else:
-            st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts.")
-            # Debug: Time for each molecule addition
-            # st.write(f"Time to add molecule {i+1}: {time.time() - start_time:.2f} seconds")
-            # start_time = time.time()  # Reset start time for next molecule
+    with st.expander("Packing...", expanded=False):
+        # Loop to add molecules
+        for i in range(num_molecules):
+            attempt = 0
+            added = False
+            while not added and attempt < max_attempts:
+                print(i, attempt)
+                attempt += 1
+                # Create a new copy of the molecule for this attempt
+                current_molecule = molecule.copy()
+                
+                # 1. Center the molecule at origin
+                centered_positions = original_positions - mol_center
+                
+                # 2. Apply random rotation
+                rotation_matrix = random_rotation_matrix()
+                rotated_positions = centered_positions @ rotation_matrix
+                
+                # 3. Generate random displacement within cell
+                displacement = np.random.rand(3) * packed_structure.cell.lengths()
+                
+                # 4. Apply displacement and set new positions
+                final_positions = rotated_positions + displacement
+                current_molecule.set_positions(final_positions)
+                
+                # Check for overlaps
+                if not has_overlap(packed_structure, current_molecule, tolerance):
+                    packed_structure += current_molecule.copy()  # Add molecule to the packed structure
+                    added = True
+                    st.write(f"Molecule copy #{i+1} added successfully at position {displacement} after {attempt} attempts.")
+                # else:
+                    # st.write(f"Attempt {attempt} for molecule {i+1} resulted in overlap; retrying.")
+                # if attempt == max_attempts - 1:
+                #     i = i - 1
+            if added:
+                print(f"Added the {i+1} th molecule at {attempt}th attempt")
+            else:
+                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts.")
+                # Debug: Time for each molecule addition
+                # st.write(f"Time to add molecule {i+1}: {time.time() - start_time:.2f} seconds")
+                # start_time = time.time()  # Reset start time for next molecule
     
     return packed_structure
 
