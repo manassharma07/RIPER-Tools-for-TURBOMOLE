@@ -89,6 +89,7 @@ def visualize_molecule(structure, html_file_name='viz.html'):
 
 
 # Function to display structure information
+@st.fragment
 def display_structure_info(structure):
     st.subheader("Structure Information")
     st.write("Formula: ", structure.composition.reduced_formula)
@@ -349,21 +350,12 @@ if base_structure is not None and molecule is not None:
                     st.write(f"Total packing time: {time.time() - overall_start_time:.2f} seconds")
                     if packed_structure is not None:
                         packed_structure_pymatgen = AseAtomsAdaptor().get_structure(packed_structure)
-                        packed_structure_pymatgen.apply_strain(1.0)
-                        # display_structure_info(packed_structure_pymatgen)
+                        # packed_structure_pymatgen.apply_strain(1.0)
+                        display_structure_info(packed_structure_pymatgen)
                         visualize_structure(packed_structure_pymatgen, "viz3.html")
 
                     # Download option
                     download_packed_struture(packed_structure)
-                    # cif_output = "packed_structure.cif"
-                    # write(cif_output, packed_structure, format='cif')
-                    # with open(cif_output, "rb") as f:
-                    #     st.download_button(
-                    #         label="Download Packed Structure (CIF)",
-                    #         data=f,
-                    #         file_name="packed_structure.cif",
-                    #         mime="chemical/x-cif"
-                    #     )
                 except Exception as e:
                     st.error(f"Error during packing: {str(e)}")
     else:
