@@ -5,6 +5,9 @@ import numpy as np
 import io
 import time  # For timing debug statements
 from pymatgen.io.ase import AseAtomsAdaptor
+import py3Dmol
+import pandas as pd
+import streamlit.components.v1 as components
 
 # Set page config
 st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
