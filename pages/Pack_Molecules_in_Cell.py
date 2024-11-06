@@ -349,6 +349,7 @@ if base_structure is not None and molecule is not None:
                     st.success("Packed structure generated successfully!")
                     st.write(f"Total packing time: {time.time() - overall_start_time:.2f} seconds")
                     if packed_structure is not None:
+                        packed_structure.wrap()
                         packed_structure_pymatgen = AseAtomsAdaptor().get_structure(packed_structure)
                         # packed_structure_pymatgen.apply_strain(1.0)
                         display_structure_info(packed_structure_pymatgen)
