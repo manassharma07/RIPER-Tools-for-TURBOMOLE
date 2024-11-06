@@ -302,7 +302,7 @@ else:
         except Exception as e:
             st.error(f"Error reading XYZ file: {str(e)}")
 if molecule is not None:
-    molecule_pymatgen = AseAtomsAdaptor().get_structure(molecule)
+    molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # display_structure_info(molecule)
     visualize_molecule(molecule_pymatgen, "viz2.html")
 
