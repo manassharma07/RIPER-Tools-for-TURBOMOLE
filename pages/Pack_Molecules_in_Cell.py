@@ -301,6 +301,10 @@ else:
             st.success("Molecule structure loaded from file.")
         except Exception as e:
             st.error(f"Error reading XYZ file: {str(e)}")
+if molecule is not None:
+    molecule_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
+    # display_structure_info(molecule)
+    visualize_molecule(molecule_pymatgen, "viz2.html")
 
 # Parameters and packing section
 if base_structure is not None and molecule is not None:
@@ -331,6 +335,10 @@ if base_structure is not None and molecule is not None:
                     packed_structure = pack_structure(base_structure, molecule, num_molecules, tolerance)
                     st.success("Packed structure generated successfully!")
                     st.write(f"Total packing time: {time.time() - overall_start_time:.2f} seconds")
+                    if packed_structure is not None:
+                        packed_structure_pymatgen = AseAtomsAdaptor().get_structure(packed_structure)
+                        display_structure_info(packed_structure_pymatgen)
+                        visualize_structure(packed_structure_pymatgen, "viz3.html")
 
                     # Download option
                     cif_output = "packed_structure.cif"
