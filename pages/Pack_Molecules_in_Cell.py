@@ -231,6 +231,18 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
     
     return packed_structure
 
+@st.fragment
+def download_packed_struture(packed_structure):
+    cif_output = "packed_structure.cif"
+    write(cif_output, packed_structure, format='cif')
+    with open(cif_output, "rb") as f:
+        st.download_button(
+            label="Download Packed Structure (CIF)",
+            data=f,
+            file_name="packed_structure.cif",
+            mime="chemical/x-cif"
+        )
+
 # # Streamlit interface
 
 st.title("Pack Molecules in a Cell")
@@ -338,19 +350,20 @@ if base_structure is not None and molecule is not None:
                     if packed_structure is not None:
                         packed_structure_pymatgen = AseAtomsAdaptor().get_structure(packed_structure)
                         packed_structure_pymatgen.apply_strain(1.0)
-                        display_structure_info(packed_structure_pymatgen)
+                        # display_structure_info(packed_structure_pymatgen)
                         visualize_structure(packed_structure_pymatgen, "viz3.html")
 
                     # Download option
-                    cif_output = "packed_structure.cif"
-                    write(cif_output, packed_structure, format='cif')
-                    with open(cif_output, "rb") as f:
-                        st.download_button(
-                            label="Download Packed Structure (CIF)",
-                            data=f,
-                            file_name="packed_structure.cif",
-                            mime="chemical/x-cif"
-                        )
+                    download_packed_struture(packed_structure)
+                    # cif_output = "packed_structure.cif"
+                    # write(cif_output, packed_structure, format='cif')
+                    # with open(cif_output, "rb") as f:
+                    #     st.download_button(
+                    #         label="Download Packed Structure (CIF)",
+                    #         data=f,
+                    #         file_name="packed_structure.cif",
+                    #         mime="chemical/x-cif"
+                    #     )
                 except Exception as e:
                     st.error(f"Error during packing: {str(e)}")
     else:
