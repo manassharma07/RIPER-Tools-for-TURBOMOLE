@@ -248,10 +248,9 @@ if base_structure is not None and molecule is not None:
     add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2])
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # display_structure_info(packed_structure_pymatgen)
+    col1.subheader("Structure Preview and Download")
+    col1.success("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
     visualize_structure(packed_structure_pymatgen, col1, "viz1.html")
     # Display packed structure info
-    st.subheader("Structure Preview and Download")
-    st.write("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
-    
     # Download option
     download_packed_struture(base_structure)
