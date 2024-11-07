@@ -32,13 +32,13 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 
 @st.fragment
 def download_packed_struture(packed_structure):
-    cif_output = "packed_structure.cif"
+    cif_output = "total_structure.cif"
     write(cif_output, packed_structure, format='cif')
     with open(cif_output, "rb") as f:
         st.download_button(
-            label="Download Packed Structure (CIF)",
+            label="Download Final Structure (CIF)",
             data=f,
-            file_name="packed_structure.cif",
+            file_name="total_structure.cif",
             mime="chemical/x-cif"
         )
 
