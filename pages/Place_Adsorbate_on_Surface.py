@@ -225,7 +225,7 @@ if base_structure is not None and molecule is not None:
     st.subheader("Adjust Adsorbate Position")
     translate_x = st.slider("Translate adsorbate along x (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
     translate_y = st.slider("Translate adsorbate along y (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
-    translate_z = st.slider("Translate adsorbate along z (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
+    # translate_z = st.slider("Translate adsorbate along z (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
 
     # Rotation sliders
     rotate_x = st.slider("Rotate molecule around x-axis (degrees)", min_value=0, max_value=360, step=1)
