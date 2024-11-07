@@ -19,7 +19,7 @@ st.info('The tool assumes that the surface CIF provided has the vacuum along the
 
 # CIF input section
 st.header("Base Structure (CIF)")
-cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method", horizontal=True)
+cif_input_method = st.radio("Choose input method for CIF", ["Upload File", "Paste Content"], key="cif_method", horizontal=True)
 
 base_structure = None
 if cif_input_method == "Paste Content":
@@ -47,7 +47,7 @@ else:
 
 # XYZ input section
 st.header("Molecule Structure (XYZ)")
-xyz_input_method = st.radio("Choose input method for XYZ", ["Paste Content", "Upload File"], key="xyz_method")
+xyz_input_method = st.radio("Choose input method for XYZ", ["Upload File", "Paste Content"], key="xyz_method", horizontal=True)
 
 molecule = None
 if xyz_input_method == "Paste Content":
