@@ -30,6 +30,18 @@ st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
+@st.fragment
+def download_packed_struture(packed_structure):
+    cif_output = "packed_structure.cif"
+    write(cif_output, packed_structure, format='cif')
+    with open(cif_output, "rb") as f:
+        st.download_button(
+            label="Download Packed Structure (CIF)",
+            data=f,
+            file_name="packed_structure.cif",
+            mime="chemical/x-cif"
+        )
+
 # Function to visualize the structure using py3Dmol
 def visualize_structure(structure, html_file_name='viz.html'):
     spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
