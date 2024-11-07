@@ -239,8 +239,7 @@ if base_structure is not None and molecule is not None:
     
     # Convert fractional coordinates to Cartesian and apply translation
     adsorbate_position = (translate_x * base_structure.cell[0] +
-                          translate_y * base_structure.cell[1] +
-                          translate_z * base_structure.cell[2])
+                          translate_y * base_structure.cell[1])
 
     # Add adsorbate onto the surface at a specified height
     adsorbate_height = st.slider("Adsorbate Height (Å)", min_value=1.0, max_value=15.0, value=2.0, step=0.1)
