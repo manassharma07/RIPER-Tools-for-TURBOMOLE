@@ -15,9 +15,11 @@ st.write("   - Paste the file contents directly in the text area.")
 st.write("   - Upload the file using the file uploader.")
 st.write("3. Adjust the x, y, z position of the adsorbate based on your preference.")
 
+st.info('The tool assumes that the surface CIF provided has the vacuum along the z direction, that is the surface is in the xy plane.')
+
 # CIF input section
 st.header("Base Structure (CIF)")
-cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method")
+cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method", horizontal=True)
 
 base_structure = None
 if cif_input_method == "Paste Content":
