@@ -44,32 +44,33 @@ def download_packed_struture(packed_structure):
 
 # Function to visualize the structure using py3Dmol
 @st.fragment
-def visualize_structure(structure, html_file_name='viz.html'):
-    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
-    view = py3Dmol.view(width=500, height=400)
-    cif_for_visualization = structure.to(fmt="cif")
-    view.addModel(cif_for_visualization, 'cif')
-    # view.setStyle({'stick': {'radius': 0.2}})
-    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
-                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
-    view.addUnitCell()
-    view.zoomTo()
-    view.spin(spin)
-    view.setClickable({'clickable': 'true'})
-    view.enableContextMenu({'contextMenuEnabled': 'true'})
-    view.show()
-    view.render()
-    # view.png()
-    t = view.js()
-    f = open(html_file_name, 'w')
-    f.write(t.startjs)
-    f.write(t.endjs)
-    f.close()
+def visualize_structure(structure, column, html_file_name='viz.html'):
+    with column:
+        spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+        view = py3Dmol.view(width=500, height=400)
+        cif_for_visualization = structure.to(fmt="cif")
+        view.addModel(cif_for_visualization, 'cif')
+        # view.setStyle({'stick': {'radius': 0.2}})
+        view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                    'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+        view.addUnitCell()
+        view.zoomTo()
+        view.spin(spin)
+        view.setClickable({'clickable': 'true'})
+        view.enableContextMenu({'contextMenuEnabled': 'true'})
+        view.show()
+        view.render()
+        # view.png()
+        t = view.js()
+        f = open(html_file_name, 'w')
+        f.write(t.startjs)
+        f.write(t.endjs)
+        f.close()
 
-    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
-    source_code = HtmlFile.read()
-    components.html(source_code, height=300, width=500)
-    HtmlFile.close()
+        HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+        source_code = HtmlFile.read()
+        components.html(source_code, height=300, width=500)
+        HtmlFile.close()
 
 
 # Function to visualize the structure using py3Dmol
@@ -221,16 +222,17 @@ if base_structure is not None and molecule is not None:
     # Translate molecule so its center of mass (COM) is at the origin
     molecule.translate(-molecule.get_center_of_mass())
     
+    col1, col2 = st.columns(2)
     # Set up adsorbate parameters
-    st.subheader("Adjust Adsorbate Position")
-    translate_x = st.slider("Translate adsorbate along x (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
-    translate_y = st.slider("Translate adsorbate along y (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
+    col2.subheader("Adjust Adsorbate Position")
+    translate_x = col2.slider("Translate adsorbate along x (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
+    translate_y = col2.slider("Translate adsorbate along y (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
     # translate_z = st.slider("Translate adsorbate along z (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
 
     # Rotation sliders
-    rotate_x = st.slider("Rotate molecule around x-axis (degrees)", min_value=0, max_value=360, step=1)
-    rotate_y = st.slider("Rotate molecule around y-axis (degrees)", min_value=0, max_value=360, step=1)
-    rotate_z = st.slider("Rotate molecule around z-axis (degrees)", min_value=0, max_value=360, step=1)
+    rotate_x = col2.slider("Rotate molecule around x-axis (degrees)", min_value=0, max_value=360, step=1)
+    rotate_y = col2.slider("Rotate molecule around y-axis (degrees)", min_value=0, max_value=360, step=1)
+    rotate_z = col2.slider("Rotate molecule around z-axis (degrees)", min_value=0, max_value=360, step=1)
 
     # Apply rotations to molecule
     molecule.rotate(rotate_x, 'x', center=(0, 0, 0))
@@ -242,11 +244,11 @@ if base_structure is not None and molecule is not None:
                           translate_y * base_structure.cell[1])
 
     # Add adsorbate onto the surface at a specified height
-    adsorbate_height = st.slider("Adsorbate Height (Å)", min_value=1.0, max_value=15.0, value=2.0, step=0.1)
+    adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=1.0, max_value=15.0, value=2.0, step=0.1)
     add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2])
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # display_structure_info(packed_structure_pymatgen)
-    visualize_structure(packed_structure_pymatgen, "viz1.html")
+    visualize_structure(packed_structure_pymatgen, col1, "viz1.html")
     # Display packed structure info
     st.subheader("Structure Preview and Download")
     st.write("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
