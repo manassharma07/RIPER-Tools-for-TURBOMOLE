@@ -212,6 +212,8 @@ else:
 
 # Parameters and adsorbate placement section
 if base_structure is not None and molecule is not None:
+    st.write(f"Number of atoms in base structure: {len(base_structure)}")
+    st.write(f"Number of atoms in molecule: {len(molecule)}")
     # Get pymatgen structure for further processing if needed
     # base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
@@ -242,7 +244,9 @@ if base_structure is not None and molecule is not None:
     # Add adsorbate onto the surface at a specified height
     adsorbate_height = st.slider("Adsorbate Height (Å)", min_value=1.0, max_value=15.0, value=2.0, step=0.1)
     add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2])
-    
+    packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
+    # display_structure_info(packed_structure_pymatgen)
+    visualize_structure(packed_structure_pymatgen, "viz1.html")
     # Display packed structure info
     st.subheader("Structure Preview and Download")
     st.write("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
