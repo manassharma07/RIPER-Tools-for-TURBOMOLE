@@ -43,7 +43,7 @@ def download_packed_struture(packed_structure):
         )
 
 # Function to visualize the structure using py3Dmol
-@st.fragment
+# @st.fragment
 def visualize_structure(structure, column, html_file_name='viz.html'):
     with column:
         spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
