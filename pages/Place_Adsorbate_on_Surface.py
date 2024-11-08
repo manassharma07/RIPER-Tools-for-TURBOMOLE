@@ -7,6 +7,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
+from pymatgen.core import Structure, Element, Molecule, Lattice
 
 # Set page config
 st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
@@ -29,6 +30,51 @@ st.sidebar.write('### *Contributors*')
 st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
+
+# Function to format floating-point numbers with alignment
+def format_number(num, width=15, precision=8):
+    # Handles positive/negative numbers while maintaining alignment
+    # Adjusting the width based on the sign to ensure alignment
+    return f"{num:>{width}.{precision}f}"
+
+# Function to convert atomic coordinates to Bohr units
+def convert_to_bohr(structure):
+    coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
+    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
+
+
+# # Function to generate coordinate text
+# def generate_coord_text(coords_bohr):
+#     coord_text = "$coord\n"
+#     for coord in coords_bohr:
+#         coord_text += f"   {format_number(coord[0], precision=8)}  {format_number(coord[1], precision=8)}  {format_number(coord[2], precision=8)}  {coord[3]:<2s}\n"
+#     coord_text += "$end"
+#     return coord_text
+# Function to generate coordinate text
+def generate_coord_text(coords_bohr):
+    coord_text = "$coord\n"
+    for coord in coords_bohr:
+        # Aligning all coordinates and ensuring the element symbol is aligned to the left
+        coord_text += (
+            f"{format_number(coord[0], width=15, precision=8)} "
+            f"{format_number(coord[1], width=15, precision=8)} "
+            f"{format_number(coord[2], width=15, precision=8)} "
+            f"{coord[3]:<2s}\n"
+        )
+    coord_text += "$end"
+    return coord_text
+
+
+# Function to generate lattice parameter text
+def generate_lattice_text(structure):
+    lattice_params = structure.lattice.abc
+    angles = structure.lattice.angles
+    lattice_text = "$cell angs\n"
+    lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    lattice_text += "$periodic 3\n"
+    lattice_text += "$kpoints\n"
+    lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
+    return lattice_text
 
 @st.fragment
 def download_packed_struture(packed_structure):
@@ -255,3 +301,27 @@ if base_structure is not None and molecule is not None:
     col1.success("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
     # Download option
     download_packed_struture(base_structure)
+
+    # Get TURBOMOLE (RIPER) Coord file and Control file contents
+    st.subheader("RIPER Files")
+    # Convert the atomic coordinates to Bohr units
+    coords_bohr = convert_to_bohr(packed_structure_pymatgen)
+
+    # Generate the coordinate text
+    coords_text = generate_coord_text(coords_bohr)
+
+    # Generate the lattice parameter text
+    if isinstance(packed_structure_pymatgen, Structure):
+        lattice_text = generate_lattice_text(packed_structure_pymatgen)
+
+
+    # Display the coordinate text in the first column
+    with col1:
+        st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300,
+                     key='coords_text')
+        st.download_button('Download coord file', coords_text, file_name='coord', key='control_text')
+
+    if isinstance(packed_structure_pymatgen, Structure):
+        # Display the lattice parameters text in the second column
+        with col2:
+            st.text_area("Add the following to your control file", value=lattice_text, height=300)
