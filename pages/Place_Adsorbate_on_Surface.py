@@ -294,13 +294,15 @@ if base_structure is not None and molecule is not None:
     adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=1.0, max_value=15.0, value=2.0, step=0.1)
     add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2])
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
-    # display_structure_info(packed_structure_pymatgen)
+    
     col1.subheader("Structure Preview and Download")
     visualize_structure(packed_structure_pymatgen, col1, "viz1.html")
     # Display packed structure info
     col1.success("The molecule has been positioned on the surface. You can download the final structure as a CIF file.")
     # Download option
     download_packed_struture(base_structure)
+
+    display_structure_info(packed_structure_pymatgen)
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
     st.subheader("RIPER Files")
