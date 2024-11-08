@@ -156,14 +156,14 @@ with st.expander('How to Use?', expanded=False):
     st.write("3. Adjust the x, y, z position of the adsorbate based on your preference.")
 
 st.info('The tool assumes that the surface CIF provided has the vacuum along the z direction, that is the surface is in the xy plane.')
-
+col1, col2 = st.columns(2)
 # CIF input section
-st.header("Base Structure (CIF)")
-cif_input_method = st.radio("Choose input method for CIF", ["Upload File", "Paste Content"], key="cif_method", horizontal=True)
+col1.header("Base Structure (CIF)")
+cif_input_method = col1.radio("Choose input method for CIF", ["Upload File", "Paste Content"], key="cif_method", horizontal=True)
 
 base_structure = None
 if cif_input_method == "Paste Content":
-    cif_content = st.text_area(
+    cif_content = col1.text_area(
         label="Enter the contents of the CIF file",
         value="",
         placeholder="Paste your CIF file contents here...",
@@ -173,25 +173,25 @@ if cif_input_method == "Paste Content":
     if cif_content.strip():
         try:
             base_structure = read(io.StringIO(cif_content), format="cif")
-            st.success("Base structure loaded from pasted content.")
+            col1.success("Base structure loaded from pasted content.")
         except Exception as e:
-            st.error(f"Error reading CIF content: {str(e)}")
+            col1.error(f"Error reading CIF content: {str(e)}")
 else:
-    cif_file = st.file_uploader("Upload CIF file", type=["cif"], key="cif_uploader")
+    cif_file = col1.file_uploader("Upload CIF file", type=["cif"], key="cif_uploader")
     if cif_file:
         try:
             base_structure = read(cif_file, format="cif")
-            st.success("Base structure loaded from file.")
+            col1.success("Base structure loaded from file.")
         except Exception as e:
-            st.error(f"Error reading CIF file: {str(e)}")
+            col1.error(f"Error reading CIF file: {str(e)}")
 
 # XYZ input section
-st.header("Molecule Structure (XYZ)")
-xyz_input_method = st.radio("Choose input method for XYZ", ["Upload File", "Paste Content"], key="xyz_method", horizontal=True)
+col2.header("Molecule Structure (XYZ)")
+xyz_input_method = col2.radio("Choose input method for XYZ", ["Upload File", "Paste Content"], key="xyz_method", horizontal=True)
 
 molecule = None
 if xyz_input_method == "Paste Content":
-    xyz_content = st.text_area(
+    xyz_content = col2.text_area(
         label="Enter the contents of the XYZ file",
         value="",
         placeholder="Paste your XYZ file contents here...",
@@ -201,29 +201,29 @@ if xyz_input_method == "Paste Content":
     if xyz_content.strip():
         try:
             molecule = read(io.StringIO(xyz_content), format="xyz")
-            st.success("Molecule structure loaded from pasted content.")
+            col2.success("Molecule structure loaded from pasted content.")
         except Exception as e:
-            st.error(f"Error reading XYZ content: {str(e)}")
+            col2.error(f"Error reading XYZ content: {str(e)}")
 else:
-    xyz_file = st.file_uploader("Upload XYZ file", type=["xyz"], key="xyz_uploader")
+    xyz_file = col2.file_uploader("Upload XYZ file", type=["xyz"], key="xyz_uploader")
     if xyz_file:
         try:
             molecule = read(io.StringIO(xyz_file.read().decode("utf-8")), format="xyz")
-            st.success("Molecule structure loaded from file.")
+            col2.success("Molecule structure loaded from file.")
         except Exception as e:
-            st.error(f"Error reading XYZ file: {str(e)}")
+            col2.error(f"Error reading XYZ file: {str(e)}")
 
 # Parameters and adsorbate placement section
 if base_structure is not None and molecule is not None:
-    st.write(f"Number of atoms in base structure: {len(base_structure)}")
-    st.write(f"Number of atoms in molecule: {len(molecule)}")
+    col1.write(f"Number of atoms in base structure: {len(base_structure)}")
+    col2.write(f"Number of atoms in molecule: {len(molecule)}")
     # Get pymatgen structure for further processing if needed
     # base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # Translate molecule so its center of mass (COM) is at the origin
     molecule.translate(-molecule.get_center_of_mass())
     
-    col1, col2 = st.columns(2)
+    
     # Set up adsorbate parameters
     col2.subheader("Adjust Adsorbate Position")
     translate_x = col2.slider("Translate adsorbate along x (fractional coordinates)", min_value=0.0, max_value=1.0, step=0.01, value=0.5)
