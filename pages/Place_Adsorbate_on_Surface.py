@@ -314,14 +314,14 @@ if base_structure is not None and molecule is not None:
     if isinstance(packed_structure_pymatgen, Structure):
         lattice_text = generate_lattice_text(packed_structure_pymatgen)
 
-
+    col1_, col2_ = st.columns(2)
     # Display the coordinate text in the first column
-    with col1:
+    with col1_:
         st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300,
                      key='coords_text')
         st.download_button('Download coord file', coords_text, file_name='coord', key='control_text')
 
     if isinstance(packed_structure_pymatgen, Structure):
         # Display the lattice parameters text in the second column
-        with col2:
+        with col2_:
             st.text_area("Add the following to your control file", value=lattice_text, height=300)
