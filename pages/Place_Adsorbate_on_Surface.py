@@ -146,13 +146,14 @@ def display_structure_info(structure):
         st.table(df_coords)
 
 st.title("Place Adsorbate (molecule) on a Surface (periodic)")
-st.write("1. The tool works as follows.")
-st.write("   - Provide a `CIF` file of the cell (surface) you want to place the molecule on.")
-st.write("   - Provide the `XYZ` file of the molecule to place on the surface.")
-st.write("2. For both files, you can either:")
-st.write("   - Paste the file contents directly in the text area.")
-st.write("   - Upload the file using the file uploader.")
-st.write("3. Adjust the x, y, z position of the adsorbate based on your preference.")
+with st.expander('How to Use?', expanded=False):
+    st.write("1. The tool works as follows.")
+    st.write("   - Provide a `CIF` file of the cell (surface) you want to place the molecule on.")
+    st.write("   - Provide the `XYZ` file of the molecule to place on the surface.")
+    st.write("2. For both files, you can either:")
+    st.write("   - Paste the file contents directly in the text area.")
+    st.write("   - Upload the file using the file uploader.")
+    st.write("3. Adjust the x, y, z position of the adsorbate based on your preference.")
 
 st.info('The tool assumes that the surface CIF provided has the vacuum along the z direction, that is the surface is in the xy plane.')
 
