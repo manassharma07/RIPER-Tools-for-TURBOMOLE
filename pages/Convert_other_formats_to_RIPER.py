@@ -290,6 +290,7 @@ def parse_coord(file_contents):
     
     # Create Structure or Molecule
     if is_periodic:
+        st.write(coords)
         structure = Structure(lattice, atomic_species, coords, coords_are_cartesian=not fractional)
         structure = convert_pymatgen_to_ase_to_pymatgen(structure)
         return structure
