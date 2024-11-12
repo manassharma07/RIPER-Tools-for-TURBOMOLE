@@ -18,6 +18,7 @@ from ase.io import read
 from pymatgen.io.ase import AseAtomsAdaptor
 from ase.io.dmol import read_dmol_car
 import re
+import numpy as np
 
 # Set page config
 st.set_page_config(page_title='CIF/XYZ/CAR/POSCAR/PWSCF ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -219,6 +220,20 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+
+def build_lattice(a, b, c, alpha, beta, gamma):
+    """Builds the lattice matrix from the cell parameters."""
+    alpha, beta, gamma = np.radians([alpha, beta, gamma])
+    volume = np.sqrt(1 - np.cos(alpha)**2 - np.cos(beta)**2 - np.cos(gamma)**2 + 
+                     2 * np.cos(alpha) * np.cos(beta) * np.cos(gamma))
+    lattice = np.zeros((3, 3))
+    lattice[0] = [a, 0, 0]
+    lattice[1] = [b * np.cos(gamma), b * np.sin(gamma), 0]
+    lattice[2] = [c * np.cos(beta),
+                  c * (np.cos(alpha) - np.cos(beta) * np.cos(gamma)) / np.sin(gamma),
+                  c * volume / np.sin(gamma)]
+    return lattice
+
 def convert_pymatgen_to_ase_to_pymatgen(structure):
     convert_to_cif(structure, "temp.cif")
     file = open("temp.cif", 'r')
@@ -249,7 +264,8 @@ def parse_coord(file_contents):
             cell_line = lines[i + 1].strip().split()
             a, b, c = map(float, cell_line[:3])
             alpha, beta, gamma = map(float, cell_line[3:])
-            lattice = Lattice.from_parameters(a, b, c, alpha, beta, gamma)
+            # lattice = Lattice.from_parameters(a, b, c, alpha, beta, gamma)
+            lattice = build_lattice(a, b, c, alpha, beta, gamma)
         
         elif line.startswith('$lattice'):
             is_periodic = True
