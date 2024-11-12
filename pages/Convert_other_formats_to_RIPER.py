@@ -219,6 +219,11 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+def convert_pymatgen_to_ase_to_pymatgen(structure):
+    convert_to_cif(structure, "temp.cif")
+    file = open("temp.cif", 'r')
+    return parse_cif_ase(file)
+
 def parse_coord(file_contents):
     lines = file_contents.strip().splitlines()
 
@@ -286,6 +291,7 @@ def parse_coord(file_contents):
     # Create Structure or Molecule
     if is_periodic:
         structure = Structure(lattice, atomic_species, coords, coords_are_cartesian=not fractional)
+        structure = convert_pymatgen_to_ase_to_pymatgen(structure)
         return structure
     else:
         molecule = Molecule(atomic_species, coords)
