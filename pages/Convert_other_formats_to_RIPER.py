@@ -501,7 +501,7 @@ if contents != '':
     if isinstance(structure, Structure):
         # Convert COM in Cartesian coordinates to fractional coordinates
         com_fractional = structure.lattice.get_fractional_coords(center_of_mass)
-        st.write('#### Fractional Coordinates of Center of Mass (Angstroms) ')
+        st.write('#### Fractional Coordinates of Center of Mass ')
         st.write(com_fractional)
 
     # Get TURBOMOLE (RIPER) Coord file and Control file contents
