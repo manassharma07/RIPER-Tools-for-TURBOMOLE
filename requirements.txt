@@ -12,3 +12,4 @@ emmet-core>=0.64.6
 plotly
 openbabel-wheel
 abtem==1.0.0beta34
+rddkit

@@ -8,6 +8,9 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from ase.calculators.emt import EMT
 from ase.calculators.singlepoint import SinglePointCalculator
 from ase.optimize import BFGS
+from rdkit import Chem
+from rdkit.Chem import AllChem
+from pymatgen.core.structure import Molecule
 
 # Sidebar stuff
 st.sidebar.write('# About')
@@ -24,6 +27,35 @@ st.sidebar.write('### *Contributors*')
 st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
+
+
+
+def optimize_geometry_rdkit(molecule: Molecule):
+    """
+    Optimize geometry using RDKit's UFF implementation.
+    """
+    # Convert Pymatgen Molecule to RDKit Mol object
+    rdmol = Chem.MolFromSmiles(molecule.composition.alphabetical_formula)
+    if rdmol is None:
+        raise ValueError("Unable to create RDKit molecule from the input.")
+    rdmol = Chem.AddHs(rdmol)  # Add hydrogens
+    AllChem.EmbedMolecule(rdmol, AllChem.ETKDG())  # Generate 3D coordinates
+    result = AllChem.UFFOptimizeMolecule(rdmol)  # Optimize geometry with UFF
+    
+    if result != 0:
+        raise RuntimeError("RDKit UFF optimization failed.")
+
+    # Extract coordinates and update Pymatgen Molecule
+    conf = rdmol.GetConformer()
+    optimized_coords = [
+        [conf.GetAtomPosition(i).x, conf.GetAtomPosition(i).y, conf.GetAtomPosition(i).z]
+        for i in range(rdmol.GetNumAtoms())
+    ]
+    optimized_species = [atom.GetSymbol() for atom in rdmol.GetAtoms()]
+    optimized_molecule = Molecule(optimized_species, optimized_coords)
+
+    return optimized_molecule
+
 
 # Function to format floating-point numbers with alignment
 def format_number(num, width=10, precision=5):
@@ -176,49 +208,38 @@ if compounds is not None:
         mime="text/plain"
     )
 
-    from ase.optimize import BFGS
-    from ase.calculators.openbabel import OpenBabelCalc
+    if st.button("Optimize Geometry with RDKit UFF"):
+        with st.spinner("Optimizing geometry using RDKit UFF..."):
+            try:
+                optimized_molecule = optimize_geometry_rdkit(selected_molecule)
+                st.success("Geometry optimization with RDKit UFF completed!")
 
-    # Add an optimization button and functionality with UFF
-    if st.button("Optimize Geometry with UFF"):
-        with st.spinner("Optimizing the geometry using UFF..."):
-            # Convert the molecule to ASE atoms
-            ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
-            
-            # Set up the OpenBabel calculator with UFF
-            calc = OpenBabelCalc(method="UFF")
-            ase_atoms.set_calculator(calc)
-            
-            # Set up the optimizer (BFGS in this example)
-            optimizer = BFGS(ase_atoms)
-            
-            # Run the optimization
-            optimizer.run(fmax=0.05, steps=200)  # Adjust fmax and steps as needed
-            
-            # Get the optimized structure as Pymatgen structure
-            optimized_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
-            
-            st.success("Geometry optimization with UFF completed!")
-            
-            # Visualization of the optimized structure
-            st.subheader("Optimized Geometry")
-            visualize_structure(optimized_molecule, html_file_name='optimized_viz.html')
-            
-            # Show the optimized atomic coordinates
-            optimized_xyz = format_xyz(optimized_molecule)
-            optimized_coord = format_coord(optimized_molecule)
-            
-            # Display and provide download options for the optimized structure
-            col1, col2 = st.columns(2)
-            col1.subheader("Optimized XYZ Format")
-            col1.code(optimized_xyz)
-            col2.subheader("Optimized Turbomole Coord Format")
-            col2.code(optimized_coord)
+                # Visualization of the optimized structure
+                st.subheader("Optimized Geometry")
+                visualize_structure(optimized_molecule, html_file_name="optimized_viz.html")
 
-            col1.download_button(
-                "Download Optimized XYZ",
-                data=optimized_xyz,
-                file_name="optimized_molecule_uff.xyz",
-                mime="chemical/x-xyz"
-            )
-      
+                # Display and download optimized coordinates
+                optimized_xyz = format_xyz(optimized_molecule)
+                optimized_coord = format_coord(optimized_molecule)
+
+                col1, col2 = st.columns(2)
+                col1.subheader("Optimized XYZ Format")
+                col1.code(optimized_xyz)
+                col2.subheader("Optimized Turbomole Coord Format")
+                col2.code(optimized_coord)
+
+                col1.download_button(
+                    "Download Optimized XYZ",
+                    data=optimized_xyz,
+                    file_name="optimized_molecule_rdkit.xyz",
+                    mime="chemical/x-xyz",
+                )
+
+                col2.download_button(
+                    "Download Optimized Coord",
+                    data=optimized_coord,
+                    file_name="optimized_coord_rdkit",
+                    mime="text/plain",
+                )
+            except Exception as e:
+                st.error(f"Optimization failed: {str(e)}")
