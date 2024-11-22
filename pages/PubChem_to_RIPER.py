@@ -30,31 +30,6 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 
 
 
-# def optimize_geometry_rdkit(smiles):
-#     """
-#     Optimize geometry using RDKit's UFF implementation.
-#     """
-#     # Convert Pymatgen Molecule to RDKit Mol object
-#     rdmol = Chem.MolFromSmiles(smiles)
-#     if rdmol is None:
-#         raise ValueError("Unable to create RDKit molecule from the input.")
-#     rdmol = Chem.AddHs(rdmol)  # Add hydrogens
-#     AllChem.EmbedMolecule(rdmol, AllChem.ETKDG())  # Generate 3D coordinates
-#     result = AllChem.UFFOptimizeMolecule(rdmol)  # Optimize geometry with UFF
-    
-#     if result != 0:
-#         raise RuntimeError("RDKit UFF optimization failed.")
-
-#     # Extract coordinates and update Pymatgen Molecule
-#     conf = rdmol.GetConformer()
-#     optimized_coords = [
-#         [conf.GetAtomPosition(i).x, conf.GetAtomPosition(i).y, conf.GetAtomPosition(i).z]
-#         for i in range(rdmol.GetNumAtoms())
-#     ]
-#     optimized_species = [atom.GetSymbol() for atom in rdmol.GetAtoms()]
-#     optimized_molecule = Molecule(optimized_species, optimized_coords)
-
-#     return optimized_molecule
 def optimize_geometry_rdkit(smiles: str) -> Molecule:
     """
     Optimize geometry using RDKit's UFF implementation for a molecule given as SMILES.
