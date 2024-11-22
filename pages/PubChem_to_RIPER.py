@@ -53,7 +53,8 @@ def optimize_geometry_rdkit(smiles: str) -> Molecule:
         # Optimize geometry using UFF
         result = AllChem.UFFOptimizeMolecule(mol)
         if result != 0:
-            raise RuntimeError("UFF optimization failed.")
+            # raise RuntimeError("UFF optimization failed.")
+            st.warn('Optimization not converged after maxIterations!')
 
         # Extract optimized geometry
         conf = mol.GetConformer()
