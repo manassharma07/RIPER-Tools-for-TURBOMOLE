@@ -54,7 +54,7 @@ def optimize_geometry_rdkit(smiles: str) -> Molecule:
         result = AllChem.UFFOptimizeMolecule(mol)
         if result != 0:
             # raise RuntimeError("UFF optimization failed.")
-            st.warn('Optimization not converged after maxIterations!')
+            st.warning('Optimization not converged after maxIterations!')
 
         # Extract optimized geometry
         conf = mol.GetConformer()
@@ -68,8 +68,8 @@ def optimize_geometry_rdkit(smiles: str) -> Molecule:
         optimized_molecule = Molecule(optimized_species, optimized_coords)
         return optimized_molecule
 
-    except Exception as e:
-        raise RuntimeError(f"Optimization failed: {e}")
+    # except Exception as e:
+    #     raise RuntimeError(f"Optimization failed: {e}")
 
 
 # Function to format floating-point numbers with alignment
