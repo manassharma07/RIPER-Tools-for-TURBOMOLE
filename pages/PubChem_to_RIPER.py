@@ -175,3 +175,50 @@ if compounds is not None:
         file_name="coord",
         mime="text/plain"
     )
+
+    from ase.optimize import BFGS
+    from ase.calculators.openbabel import OpenBabelCalc
+
+    # Add an optimization button and functionality with UFF
+    if st.button("Optimize Geometry with UFF"):
+        with st.spinner("Optimizing the geometry using UFF..."):
+            # Convert the molecule to ASE atoms
+            ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
+            
+            # Set up the OpenBabel calculator with UFF
+            calc = OpenBabelCalc(method="UFF")
+            ase_atoms.set_calculator(calc)
+            
+            # Set up the optimizer (BFGS in this example)
+            optimizer = BFGS(ase_atoms)
+            
+            # Run the optimization
+            optimizer.run(fmax=0.05, steps=200)  # Adjust fmax and steps as needed
+            
+            # Get the optimized structure as Pymatgen structure
+            optimized_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
+            
+            st.success("Geometry optimization with UFF completed!")
+            
+            # Visualization of the optimized structure
+            st.subheader("Optimized Geometry")
+            visualize_structure(optimized_molecule, html_file_name='optimized_viz.html')
+            
+            # Show the optimized atomic coordinates
+            optimized_xyz = format_xyz(optimized_molecule)
+            optimized_coord = format_coord(optimized_molecule)
+            
+            # Display and provide download options for the optimized structure
+            col1, col2 = st.columns(2)
+            col1.subheader("Optimized XYZ Format")
+            col1.code(optimized_xyz)
+            col2.subheader("Optimized Turbomole Coord Format")
+            col2.code(optimized_coord)
+
+            col1.download_button(
+                "Download Optimized XYZ",
+                data=optimized_xyz,
+                file_name="optimized_molecule_uff.xyz",
+                mime="chemical/x-xyz"
+            )
+      
