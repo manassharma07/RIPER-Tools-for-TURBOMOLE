@@ -30,31 +30,70 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 
 
 
-def optimize_geometry_rdkit(molecule: Molecule):
-    """
-    Optimize geometry using RDKit's UFF implementation.
-    """
-    # Convert Pymatgen Molecule to RDKit Mol object
-    rdmol = Chem.MolFromSmiles(molecule.composition.alphabetical_formula)
-    if rdmol is None:
-        raise ValueError("Unable to create RDKit molecule from the input.")
-    rdmol = Chem.AddHs(rdmol)  # Add hydrogens
-    AllChem.EmbedMolecule(rdmol, AllChem.ETKDG())  # Generate 3D coordinates
-    result = AllChem.UFFOptimizeMolecule(rdmol)  # Optimize geometry with UFF
+# def optimize_geometry_rdkit(smiles):
+#     """
+#     Optimize geometry using RDKit's UFF implementation.
+#     """
+#     # Convert Pymatgen Molecule to RDKit Mol object
+#     rdmol = Chem.MolFromSmiles(smiles)
+#     if rdmol is None:
+#         raise ValueError("Unable to create RDKit molecule from the input.")
+#     rdmol = Chem.AddHs(rdmol)  # Add hydrogens
+#     AllChem.EmbedMolecule(rdmol, AllChem.ETKDG())  # Generate 3D coordinates
+#     result = AllChem.UFFOptimizeMolecule(rdmol)  # Optimize geometry with UFF
     
-    if result != 0:
-        raise RuntimeError("RDKit UFF optimization failed.")
+#     if result != 0:
+#         raise RuntimeError("RDKit UFF optimization failed.")
 
-    # Extract coordinates and update Pymatgen Molecule
-    conf = rdmol.GetConformer()
-    optimized_coords = [
-        [conf.GetAtomPosition(i).x, conf.GetAtomPosition(i).y, conf.GetAtomPosition(i).z]
-        for i in range(rdmol.GetNumAtoms())
-    ]
-    optimized_species = [atom.GetSymbol() for atom in rdmol.GetAtoms()]
-    optimized_molecule = Molecule(optimized_species, optimized_coords)
+#     # Extract coordinates and update Pymatgen Molecule
+#     conf = rdmol.GetConformer()
+#     optimized_coords = [
+#         [conf.GetAtomPosition(i).x, conf.GetAtomPosition(i).y, conf.GetAtomPosition(i).z]
+#         for i in range(rdmol.GetNumAtoms())
+#     ]
+#     optimized_species = [atom.GetSymbol() for atom in rdmol.GetAtoms()]
+#     optimized_molecule = Molecule(optimized_species, optimized_coords)
 
-    return optimized_molecule
+#     return optimized_molecule
+def optimize_geometry_rdkit(smiles: str) -> Molecule:
+    """
+    Optimize geometry using RDKit's UFF implementation for a molecule given as SMILES.
+    :param smiles: The SMILES string of the molecule.
+    :return: Optimized geometry as a Pymatgen Molecule.
+    """
+    try:
+        # Generate RDKit molecule from SMILES
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            raise ValueError(f"Invalid SMILES: {smiles}")
+        
+        # Add hydrogens
+        mol = Chem.AddHs(mol)
+
+        # Embed 3D coordinates
+        result = AllChem.EmbedMolecule(mol, AllChem.ETKDG())
+        if result != 0:
+            raise RuntimeError("3D embedding failed. Check the SMILES or molecular structure.")
+
+        # Optimize geometry using UFF
+        result = AllChem.UFFOptimizeMolecule(mol)
+        if result != 0:
+            raise RuntimeError("UFF optimization failed.")
+
+        # Extract optimized geometry
+        conf = mol.GetConformer()
+        optimized_coords = [
+            [conf.GetAtomPosition(i).x, conf.GetAtomPosition(i).y, conf.GetAtomPosition(i).z]
+            for i in range(mol.GetNumAtoms())
+        ]
+        optimized_species = [atom.GetSymbol() for atom in mol.GetAtoms()]
+
+        # Convert to Pymatgen Molecule
+        optimized_molecule = Molecule(optimized_species, optimized_coords)
+        return optimized_molecule
+
+    except Exception as e:
+        raise RuntimeError(f"Optimization failed: {e}")
 
 
 # Function to format floating-point numbers with alignment
@@ -149,6 +188,7 @@ if compounds:
         [(compound.cid, compound.iupac_name, compound.molecular_formula, compound.molecular_weight, compound.isomeric_smiles)
             for compound in compounds],
         columns=["CID", "Name", "Formula", "Weight", "Isomeric SMILES"]
+
     )
 
     st.success(f"{len(molecule_df)} molecule(s) found!")
@@ -159,6 +199,7 @@ if compounds is not None:
     selected_cid = st.selectbox("Select a molecule", molecule_df["CID"])
     # st.write(generate_xyz_coordinates(selected_cid))
     selected_molecule, xyz_str = get_molecule(selected_cid)
+    selected_smiles = molecule_df.loc[molecule_df["CID"] == selected_cid, "Isomeric SMILES"].values[0]
 
     st.subheader("3D Atomic Coordinates")
     # Create a dataframe with atomic symbols and atomic coordinates
@@ -211,7 +252,7 @@ if compounds is not None:
     if st.button("Optimize Geometry with RDKit UFF"):
         with st.spinner("Optimizing geometry using RDKit UFF..."):
             try:
-                optimized_molecule = optimize_geometry_rdkit(selected_molecule)
+                optimized_molecule = optimize_geometry_rdkit(selected_smiles)
                 st.success("Geometry optimization with RDKit UFF completed!")
 
                 # Visualization of the optimized structure
