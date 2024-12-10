@@ -389,7 +389,7 @@ if structure:
     st.write("### Special High-Symmetry k-points:")
     st.write(special_points)
 
-    bandpath = atoms.cell.bandpath(pbc=pbc_arr)
+    bandpath = atoms.cell.bandpath(eps=0.00001, pbc=pbc_arr)
     # bandpath.s
     bandpath_str = bandpath.path
     st.write("### Special High-Symmetry path for Band Structure Calculation:")
