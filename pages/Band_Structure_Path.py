@@ -380,7 +380,7 @@ if structure:
     if pbc=='2D':
         pbc_arr = [1,1,0]
 
-    lat = atoms.cell.get_bravais_lattice(pbc=pbc_arr)
+    lat = atoms.cell.get_bravais_lattice(eps=0.00001, pbc=pbc_arr)
     st.write('*Bravais Lattice Type:* ', lat)
     special_points = lat.get_special_points()
 
