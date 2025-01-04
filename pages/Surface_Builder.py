@@ -248,6 +248,14 @@ display_structure_info(pymatgen_structure)
 
 if is_bulk(pymatgen_structure):
         st.success("The uploaded structure is a bulk material.")
+        # Visualization
+        with st.expander("Visualize Bulk Structure", expanded=False):
+            view = py3Dmol.view(width=800, height=400)
+            view.addModel(pymatgen_structure.to(fmt="cif"), "cif")
+            view.setStyle({'stick': {}})
+            view.zoomTo()
+            view.show()
+            components.html(view._make_html(), height=400)
 else:
     st.warning("The uploaded structure is a slab.")
 
@@ -268,7 +276,7 @@ if st.button("Generate Surface Slab"):
         slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
 
         # Visualization
-        with st.expander("Visualize Slab Structure"):
+        with st.expander("Visualize Slab Structure", expanded=True):
             view = py3Dmol.view(width=800, height=400)
             view.addModel(slab_pymatgen.to(fmt="cif"), "cif")
             view.setStyle({'stick': {}})
