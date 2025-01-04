@@ -8,7 +8,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from pymatgen.core import Structure, Element, Molecule, Lattice
 from ase.build import surface, make_supercell
-from pymatgen.analysis.surface_analysis import SlabGenerator
+from pymatgen.core.surface import SlabGenerator
 
 # Set page config
 st.set_page_config(page_title='Build surface/slab', layout='wide', page_icon="⚛️",
@@ -300,7 +300,7 @@ if st.button("Generate Surface Slab"):
         # slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
         # slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         # Generate slabs with different terminations
-        slabgen = SlabGenerator(pymatgen_structure, miller_index=miller_indices.split(), min_slab_size=layers, min_vacuum_size=vacuum_size)
+        slabgen = SlabGenerator(pymatgen_structure, miller_index=miller_indices.split(), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
         slabs = slabgen.get_slabs(symmetrize=True)
         slab_pymatgen = slabs[0]
         st.success("Surface slab generated successfully.")
