@@ -276,7 +276,7 @@ if st.button("Generate Surface Slab"):
     if miller_indices:
         miller = tuple(map(int, miller_indices.split()))
         slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
-        slab.repeat((supercell_size_nx, supercell_size_ny, 1))
+        slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         st.success("Surface slab generated successfully.")
         slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
 
