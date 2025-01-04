@@ -250,12 +250,33 @@ display_structure_info(pymatgen_structure)
 
 if is_bulk(pymatgen_structure):
     st.success("The uploaded structure is a bulk material.")
-    # Visualization
-    with st.expander("Visualize Bulk Structure", expanded=False):
-        visualize_structure(pymatgen_structure, "viz1.html")
 else:
     st.error("The uploaded structure is not a bulk.")
     st.stop()
+
+if isinstance(bulk_structure, Structure):
+    # Add sliders for translation along a, b, and c lattice vectors
+    # st.warning('Translation feature is still in development so may not work as expected!')
+    st.subheader("Translate Structure Along Lattice Vectors")
+    translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+    translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+    translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+
+    translated_structure = pymatgen_structure.copy()
+    # Apply the translation to the structure
+    translation_vector = translate_a * pymatgen_structure.lattice.matrix[0] + \
+                        translate_b * pymatgen_structure.lattice.matrix[1] + \
+                        translate_c * pymatgen_structure.lattice.matrix[2]
+    translated_structure.translate_sites(range(len(pymatgen_structure.sites)), translation_vector, frac_coords=False)
+    pymatgen_structure = translated_structure
+    bulk_structure = AseAtomsAdaptor.get_atoms(translated_structure)
+
+    # Get the number of atoms
+    num_atoms_supercell = pymatgen_structure.num_sites
+    if num_atoms_supercell<500:
+        visualize_structure(pymatgen_structure, 'viz_bulk.html')
+    else:
+        st.warning("We can't visualize your cell as it contains more than 500 atoms which is a bit too much for a free web app.\n But don't worry, RIPER can still do the calculations with ease (provided you have the required resources).")
 
 # Miller indices input
 miller_indices = st.text_input("Specify Miller Indices (e.g., 0 0 1):")
