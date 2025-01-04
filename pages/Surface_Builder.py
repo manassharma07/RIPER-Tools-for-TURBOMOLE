@@ -198,6 +198,9 @@ def is_bulk(structure):
     st.write(lengths)
     # If any lattice vector is significantly larger, it's likely a slab with vacuum
     if any(length > 30.0 for length in lengths):
+        st.write(lengths[0]>30)
+        st.write(lengths[1]>30)
+        st.write(lengths[2]>30)
         return False
 
 st.title("Build Slab/Surface")
