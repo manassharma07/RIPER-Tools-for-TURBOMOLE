@@ -290,9 +290,9 @@ layers = st.slider("Number of layers:", min_value=1, max_value=8, value=1)
 
 
 # Increase surface area (in-plane) by making a supercell (n_x x n_y x 1)
-supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1, max_value=5, value=1, step=0.5)
-supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5, value=1, step=0.5)
-supercell_size_nz = st.slider("Supercell size (n_z):", min_value=1, max_value=5, value=1, step=0.5)
+supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
+supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
+supercell_size_nz = st.slider("Supercell size (n_z):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
 
 
 if st.button("Generate Surface Slab"):
