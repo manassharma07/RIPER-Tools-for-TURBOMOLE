@@ -174,7 +174,7 @@ def display_structure_info(structure):
 
     # Create a list of atomic coordinates
     with st.expander("Atomic Coordinates", expanded=False):
-        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key='selectbox'+structure.composition.reduced_formula)
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key='selectbox'+structure.composition.formula)
         if coord_type == 'Cartesian':
             atomic_coords = []
             for site in structure.sites:
