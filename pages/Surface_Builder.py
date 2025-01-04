@@ -301,7 +301,7 @@ if st.button("Generate Surface Slab"):
         # slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         # Generate slabs with different terminations
         slabgen = SlabGenerator(pymatgen_structure, miller_index=list(map(int, miller_indices.split())), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
-        slabs = slabgen.get_slabs(symmetrize=True)
+        slabs = slabgen.get_slabs()
         slab_pymatgen = slabs[0]
         st.success("Surface slab generated successfully.")
         # slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
