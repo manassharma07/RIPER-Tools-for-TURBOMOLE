@@ -300,7 +300,7 @@ if st.button("Generate Surface Slab"):
         # slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
         # slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         # Generate slabs with different terminations
-        slabgen = SlabGenerator(pymatgen_structure, miller_index=int(miller_indices.split()), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
+        slabgen = SlabGenerator(pymatgen_structure, miller_index=list(map(int, miller_indices.split())), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
         slabs = slabgen.get_slabs(symmetrize=True)
         slab_pymatgen = slabs[0]
         st.success("Surface slab generated successfully.")
