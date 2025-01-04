@@ -288,7 +288,7 @@ if st.button("Generate Surface Slab"):
         # Get TURBOMOLE (RIPER) Coord file and Control file contents
         st.subheader("RIPER Files")
         # Convert the atomic coordinates to Bohr units
-        coords_bohr = convert_to_bohr(slab_pymatgenlab)
+        coords_bohr = convert_to_bohr(slab_pymatgen)
 
         # Generate the coordinate text
         coords_text = generate_coord_text(coords_bohr)
