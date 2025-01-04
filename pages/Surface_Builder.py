@@ -202,6 +202,8 @@ def is_bulk(structure):
         st.write(lengths[1]>30)
         st.write(lengths[2]>30)
         return False
+    else :
+        return True
 
 st.title("Build Slab/Surface")
 # with st.expander('How to Use?', expanded=False):
