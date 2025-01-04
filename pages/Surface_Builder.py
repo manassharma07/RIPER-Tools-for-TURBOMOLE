@@ -290,22 +290,23 @@ layers = st.slider("Number of layers:", min_value=1, max_value=8, value=1)
 
 
 # Increase surface area (in-plane) by making a supercell (n_x x n_y x 1)
-supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1, max_value=5, value=1)
-supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5, value=1)
+supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1, max_value=5, value=1, step=0.5)
+supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5, value=1, step=0.5)
+supercell_size_nz = st.slider("Supercell size (n_z):", min_value=1, max_value=5, value=1, step=0.5)
 
 
 if st.button("Generate Surface Slab"):
     if miller_indices:
         miller = tuple(map(int, miller_indices.split()))
-        # slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
-        # slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
+        slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
+        slab = slab.repeat((supercell_size_nx, supercell_size_ny, supercell_size_nz))
         # Generate slabs with different terminations
-        slabgen = SlabGenerator(pymatgen_structure, miller_index=list(map(int, miller_indices.split())), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
-        slabs = slabgen.get_slabs()
-        slab_pymatgen = slabs[0]
+        # slabgen = SlabGenerator(pymatgen_structure, miller_index=list(map(int, miller_indices.split())), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
+        # slabs = slabgen.get_slabs()
+        # slab_pymatgen = slabs[0]
         st.success("Surface slab generated successfully.")
-        # slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
-        slab = AseAtomsAdaptor.get_atoms(slab_pymatgen) # Convert to ASE Atoms object
+        slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
+        # slab = AseAtomsAdaptor.get_atoms(slab_pymatgen) # Convert to ASE Atoms object
 
         # Visualization
         with st.expander("Visualize Slab Structure", expanded=True):
