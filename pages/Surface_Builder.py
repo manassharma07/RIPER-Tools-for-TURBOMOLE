@@ -275,12 +275,7 @@ if st.button("Generate Surface Slab"):
 
         # Visualization
         with st.expander("Visualize Slab Structure", expanded=True):
-            view = py3Dmol.view(width=800, height=400)
-            view.addModel(slab_pymatgen.to(fmt="cif"), "cif")
-            view.setStyle({'stick': {}})
-            view.zoomTo()
-            view.show()
-            components.html(view._make_html(), height=400)
+            visualize_structure(slab_pymatgen, "viz2.html")
 
         # Download option
         # cif_output = "surface_slab.cif"
