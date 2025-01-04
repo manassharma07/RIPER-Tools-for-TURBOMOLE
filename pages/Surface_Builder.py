@@ -254,7 +254,7 @@ else:
     st.error("The uploaded structure is not a bulk.")
     st.stop()
 
-if isinstance(bulk_structure, Structure):
+if isinstance(pymatgen_structure, Structure):
     # Add sliders for translation along a, b, and c lattice vectors
     # st.warning('Translation feature is still in development so may not work as expected!')
     st.subheader("Translate Structure Along Lattice Vectors")
