@@ -247,17 +247,18 @@ st.write(f"**Formula:** {pymatgen_structure.composition.reduced_formula}")
 display_structure_info(pymatgen_structure)
 
 if is_bulk(pymatgen_structure):
-        st.success("The uploaded structure is a bulk material.")
-        # Visualization
-        with st.expander("Visualize Bulk Structure", expanded=False):
-            view = py3Dmol.view(width=800, height=400)
-            view.addModel(pymatgen_structure.to(fmt="cif"), "cif")
-            view.setStyle({'stick': {}})
-            view.zoomTo()
-            view.show()
-            components.html(view._make_html(), height=400)
+    st.success("The uploaded structure is a bulk material.")
+    # Visualization
+    with st.expander("Visualize Bulk Structure", expanded=False):
+        view = py3Dmol.view(width=800, height=400)
+        view.addModel(pymatgen_structure.to(fmt="cif"), "cif")
+        view.setStyle({'stick': {}})
+        view.zoomTo()
+        view.show()
+        components.html(view._make_html(), height=400)
 else:
-    st.warning("The uploaded structure is a slab.")
+    st.error("The uploaded structure is not a bulk.")
+    st.stop()
 
 # Miller indices input
 miller_indices = st.text_input("Specify Miller Indices (e.g., 0 0 1):")
