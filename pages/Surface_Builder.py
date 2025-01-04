@@ -8,6 +8,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from pymatgen.core import Structure, Element, Molecule, Lattice
 from ase.build import surface, make_supercell
+from pymatgen.analysis.surface_analysis import SlabGenerator
 
 # Set page config
 st.set_page_config(page_title='Build surface/slab', layout='wide', page_icon="⚛️",
@@ -285,7 +286,7 @@ miller_indices = st.text_input("Specify Miller Indices (e.g., 0 0 1):")
 vacuum_size = st.slider("Vacuum size (Å):", min_value=0.0, max_value=50.0, value=15.0)
 
 # Number of layers input
-layers = st.slider("Number of layers:", min_value=1, max_value=15, value=5)
+layers = st.slider("Number of layers:", min_value=1, max_value=8, value=1)
 
 
 # Increase surface area (in-plane) by making a supercell (n_x x n_y x 1)
@@ -296,10 +297,15 @@ supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5,
 if st.button("Generate Surface Slab"):
     if miller_indices:
         miller = tuple(map(int, miller_indices.split()))
-        slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
-        slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
+        # slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
+        # slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
+        # Generate slabs with different terminations
+        slabgen = SlabGenerator(pymatgen_structure, miller_index=miller_indices.split(), min_slab_size=layers, min_vacuum_size=vacuum_size)
+        slabs = slabgen.get_slabs(symmetrize=True)
+        slab_pymatgen = slabs[0]
         st.success("Surface slab generated successfully.")
-        slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
+        # slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
+        slab = AseAtomsAdaptor.get_atoms(slab_pymatgen) # Convert to ASE Atoms object
 
         # Visualization
         with st.expander("Visualize Slab Structure", expanded=True):
