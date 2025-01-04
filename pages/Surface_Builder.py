@@ -266,10 +266,17 @@ vacuum_size = st.slider("Vacuum size (Å):", min_value=0.0, max_value=50.0, valu
 # Number of layers input
 layers = st.slider("Number of layers:", min_value=1, max_value=15, value=5)
 
+
+# Increase surface area (in-plane) by making a supercell (n_x x n_y x 1)
+supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1, max_value=5, value=1)
+supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5, value=1)
+
+
 if st.button("Generate Surface Slab"):
     if miller_indices:
         miller = tuple(map(int, miller_indices.split()))
         slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
+        slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         st.success("Surface slab generated successfully.")
         slab_pymatgen = AseAtomsAdaptor.get_structure(slab)
 
