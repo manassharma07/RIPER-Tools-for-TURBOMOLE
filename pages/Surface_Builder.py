@@ -290,16 +290,15 @@ layers = st.slider("Number of layers:", min_value=1, max_value=8, value=1)
 
 
 # Increase surface area (in-plane) by making a supercell (n_x x n_y x 1)
-supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
-supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
-supercell_size_nz = st.slider("Supercell size (n_z):", min_value=1.0, max_value=5.0, value=1.0, step=0.5)
+supercell_size_nx = st.slider("Supercell size (n_x):", min_value=1, max_value=5, value=1)
+supercell_size_ny = st.slider("Supercell size (n_y):", min_value=1, max_value=5, value=1)
 
 
 if st.button("Generate Surface Slab"):
     if miller_indices:
         miller = tuple(map(int, miller_indices.split()))
         slab = surface(bulk_structure, miller, layers, vacuum=vacuum_size)
-        slab = slab.repeat((supercell_size_nx, supercell_size_ny, supercell_size_nz))
+        slab = slab.repeat((supercell_size_nx, supercell_size_ny, 1))
         # Generate slabs with different terminations
         # slabgen = SlabGenerator(pymatgen_structure, miller_index=list(map(int, miller_indices.split())), min_slab_size=layers, min_vacuum_size=vacuum_size, primitive=False)
         # slabs = slabgen.get_slabs()
