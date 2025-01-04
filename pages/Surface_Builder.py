@@ -90,33 +90,33 @@ def download_packed_struture(packed_structure):
 
 # Function to visualize the structure using py3Dmol
 # @st.fragment
-def visualize_structure(structure, column, html_file_name='viz.html'):
-    with column:
-        spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
-        view = py3Dmol.view(width=500, height=400)
-        cif_for_visualization = structure.to(fmt="cif")
-        view.addModel(cif_for_visualization, 'cif')
-        # view.setStyle({'stick': {'radius': 0.2}})
-        view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
-                    'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
-        view.addUnitCell()
-        view.zoomTo()
-        view.spin(spin)
-        view.setClickable({'clickable': 'true'})
-        view.enableContextMenu({'contextMenuEnabled': 'true'})
-        view.show()
-        view.render()
-        # view.png()
-        t = view.js()
-        f = open(html_file_name, 'w')
-        f.write(t.startjs)
-        f.write(t.endjs)
-        f.close()
+def visualize_structure(structure, html_file_name='viz.html'):
+    
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="cif")
+    view.addModel(cif_for_visualization, 'cif')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.addUnitCell()
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
 
-        HtmlFile = open(html_file_name, 'r', encoding='utf-8')
-        source_code = HtmlFile.read()
-        components.html(source_code, height=300, width=500)
-        HtmlFile.close()
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=500)
+    HtmlFile.close()
 
 
 # Function to visualize the structure using py3Dmol
@@ -193,14 +193,10 @@ def display_structure_info(structure):
 
 # Function to check if the structure is a bulk or slab
 def is_bulk(structure):
-    lattice = structure.lattice.matrix
     lengths = structure.lattice.abc
     st.write(lengths)
     # If any lattice vector is significantly larger, it's likely a slab with vacuum
     if any(length > 30.0 for length in lengths):
-        st.write(lengths[0]>30)
-        st.write(lengths[1]>30)
-        st.write(lengths[2]>30)
         return False
     else :
         return True
@@ -257,12 +253,7 @@ if is_bulk(pymatgen_structure):
     st.success("The uploaded structure is a bulk material.")
     # Visualization
     with st.expander("Visualize Bulk Structure", expanded=False):
-        view = py3Dmol.view(width=800, height=400)
-        view.addModel(pymatgen_structure.to(fmt="cif"), "cif")
-        view.setStyle({'stick': {}})
-        view.zoomTo()
-        view.show()
-        components.html(view._make_html(), height=400)
+        visualize_structure(pymatgen_structure, "viz1.html")
 else:
     st.error("The uploaded structure is not a bulk.")
     st.stop()
