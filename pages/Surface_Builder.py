@@ -237,6 +237,9 @@ else:
         except Exception as e:
             st.error(f"Error reading CIF file: {str(e)}")
 
+if bulk_structure is None:
+    st.error("Please provide a CIF file for the bulk structure.")
+    st.stop()
 pymatgen_structure = AseAtomsAdaptor.get_structure(bulk_structure)
 
 st.subheader("Structure Info")
