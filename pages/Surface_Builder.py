@@ -194,7 +194,6 @@ def display_structure_info(structure):
 # Function to check if the structure is a bulk or slab
 def is_bulk(structure):
     lengths = structure.lattice.abc
-    st.write(lengths)
     # If any lattice vector is significantly larger, it's likely a slab with vacuum
     if any(length > 30.0 for length in lengths):
         return False
