@@ -79,7 +79,7 @@ def generate_lattice_text(structure):
 
 @st.fragment
 def download_packed_struture(packed_structure):
-    cif_output = "total_structure.cif"
+    cif_output = "slab_structure.cif"
     write(cif_output, packed_structure, format='cif')
     with open(cif_output, "rb") as f:
         st.download_button(
@@ -283,7 +283,7 @@ if isinstance(pymatgen_structure, Structure):
 miller_indices = st.text_input("Specify Miller Indices (e.g., 0 0 1):")
 
 # Vacuum size input
-vacuum_size = st.slider("Vacuum size (Å):", min_value=0.0, max_value=50.0, value=15.0)
+vacuum_size = st.slider("Vacuum size (Å):", min_value=0.0, max_value=50.0, value=7.5)
 
 # Number of layers input
 layers = st.slider("Number of layers:", min_value=1, max_value=8, value=1)
