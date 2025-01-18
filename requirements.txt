@@ -1,3 +1,4 @@
+orjson==3.10.14
 streamlit
 pymatgen
 mp-api
