@@ -150,7 +150,7 @@ def format_coord(molecule):
 
 device = "cpu" #"cuda"
 # Initialize the MACE-MP calculator
-mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float64")
+mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float32")
 
 st.title("PubChem ➡️ RIPER")
 
@@ -195,7 +195,11 @@ if compounds is not None:
         optimizer = BFGS(ase_atoms)
 
         # Run the optimization
-        optimizer.run(fmax=0.05, steps=100)  # Adjust fmax value as needed
+        optimizer.run(fmax=0.05, steps=20)  # Adjust fmax value as needed
+
+        st.write(optimizer.atoms)
+        st.write(optimizer.atoms.get_potential_energy())
+        st.write(optimizer.atoms.get_forces())
 
         # Get the optimized structure as Pymatgen structure
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
