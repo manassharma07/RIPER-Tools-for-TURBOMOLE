@@ -13,3 +13,4 @@ plotly
 openbabel-wheel
 abtem==1.0.0beta34
 rdkit
+https://github.com/ACEsuit/mace.git
