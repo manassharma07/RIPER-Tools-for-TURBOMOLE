@@ -11,6 +11,7 @@ from ase.optimize import BFGS
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from pymatgen.core.structure import Molecule
+from mace.calculators import mace_mp
 
 # Sidebar stuff
 st.sidebar.write('# About')
@@ -147,7 +148,9 @@ def format_coord(molecule):
     coord.append('$end')
     return "\n".join(coord)
 
-
+device = "cpu" #"cuda"
+# Initialize the MACE-MP calculator
+mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float64")
 
 st.title("PubChem ➡️ RIPER")
 
@@ -183,21 +186,19 @@ if compounds is not None:
                                "Y": selected_molecule.cart_coords[:, 1], "Z": selected_molecule.cart_coords[:, 2]}))
 
 
-    # opt_geom = st.checkbox(label= 'Optimize Geometry via ASE EMT calculator (Beta - Does not work well yet)', value=False)
-    # if opt_geom:
-    #     ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
-    #     # calc = SinglePointCalculator(ase_atoms, EMT())
-    #     # Set up the calculator for energy and forces using EMT (or other forcefield)
-    #     calc = EMT()
-    #     ase_atoms.set_calculator(calc)
-    #     # Set up the optimizer (BFGS in this example)
-    #     optimizer = BFGS(ase_atoms)
+    opt_geom = st.checkbox(label= 'Optimize Geometry via ML (MACE MP Foundation) Model (Beta - Does not work well yet)', value=False)
+    if opt_geom:
+        ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
+        # Set up the calculator for energy and forces using ML (or other forcefield)
+        ase_atoms.calc = mace_mp_calc
+        # Set up the optimizer (BFGS in this example)
+        optimizer = BFGS(ase_atoms)
 
-    #     # Run the optimization
-    #     optimizer.run(fmax=0.05, steps=10)  # Adjust fmax value as needed
+        # Run the optimization
+        optimizer.run(fmax=0.05, steps=100)  # Adjust fmax value as needed
 
-    #     # Get the optimized structure as Pymatgen structure
-    #     selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
+        # Get the optimized structure as Pymatgen structure
+        selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
     # Visualization
     visualize_structure(selected_molecule)
 
