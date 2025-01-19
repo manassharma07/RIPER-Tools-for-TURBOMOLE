@@ -148,9 +148,12 @@ def format_coord(molecule):
     coord.append('$end')
     return "\n".join(coord)
 
-device = "cpu" #"cuda"
+@st.cache_resource
+def get_mace_mp():
+    return mace_mp(model="https://github.com/ACEsuit/mace-mp/releases/download/mace_omat_0/mace-omat-0-medium.model", device="cpu", default_dtype="float32")
+# device = "cpu" #"cuda"
 # Initialize the MACE-MP calculator
-mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float32")
+# mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float32")
 
 st.title("PubChem ➡️ RIPER")
 
@@ -190,16 +193,52 @@ if compounds is not None:
     if opt_geom:
         ase_atoms = AseAtomsAdaptor().get_atoms(selected_molecule)
         # Set up the calculator for energy and forces using ML (or other forcefield)
-        ase_atoms.calc = mace_mp_calc
+        ase_atoms.calc = get_mace_mp()
         # Set up the optimizer (BFGS in this example)
         optimizer = BFGS(ase_atoms)
 
         # Run the optimization
         optimizer.run(fmax=0.05, steps=20)  # Adjust fmax value as needed
 
-        st.write(optimizer.atoms)
+        # Display the energies and forces at each step
+        for i, atoms in enumerate(optimizer.traj):
+            energy = atoms.get_potential_energy()
+            forces = atoms.get_forces()
+            st.write(f"Step {i + 1}: Energy = {energy:.4f} eV, Forces = {forces}")
+
+        # Visualization of the optimized structure
+        st.subheader("Optimized Geometry")
+        visualize_structure(AseAtomsAdaptor().get_molecule(ase_atoms), html_file_name="optimized_viz.html")
+
+        st.write('Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
         st.write(optimizer.atoms.get_potential_energy())
+        st.write('Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
         st.write(optimizer.atoms.get_forces())
+
+        # Display and download optimized coordinates
+        optimized_xyz = format_xyz(AseAtomsAdaptor().get_molecule(ase_atoms))
+        optimized_coord = format_coord(AseAtomsAdaptor().get_molecule(ase_atoms))
+
+        col1, col2 = st.columns(2)
+        col1.subheader("Optimized XYZ Format")
+        col1.code(optimized_xyz)
+        col2.subheader("Optimized Turbomole Coord Format")
+        col2.code(optimized_coord)
+
+        col1.download_button(
+            "Download Optimized XYZ",
+            data=optimized_xyz,
+            file_name="optimized_molecule_rdkit.xyz",
+            mime="chemical/x-xyz",
+        )
+
+        col2.download_button(
+            "Download Optimized Coord",
+            data=optimized_coord,
+            file_name="optimized_coord_rdkit",
+            mime="text/plain",
+        )
+
 
         # Get the optimized structure as Pymatgen structure
         selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
