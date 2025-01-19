@@ -12,6 +12,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from pymatgen.core.structure import Molecule
 from mace.calculators import mace_mp
+import numpy as np
 
 # Sidebar stuff
 st.sidebar.write('# About')
