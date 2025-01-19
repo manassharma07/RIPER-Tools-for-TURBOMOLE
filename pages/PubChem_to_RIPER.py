@@ -160,7 +160,22 @@ def log_energy_and_forces(atoms):
     """Log energy and forces directly to the console."""
     energy = atoms.get_potential_energy()
     forces = atoms.get_forces()
-    st.write(f"Energy = {energy:.4f} eV, Forces = {forces}")
+
+    
+    # Create a Pandas DataFrame for the forces
+    df_forces = pd.DataFrame(
+        forces,
+        columns=["Force X (eV/Å)", "Force Y (eV/Å)", "Force Z (eV/Å)"],
+        index=[f"Atom {i+1}" for i in range(len(forces))]
+    )
+    
+    # Display results in Streamlit
+    with st.expander(f"Step {optimizer.nsteps} - Energy = {energy:.6f} eV"):
+        st.write(f"Total Energy: **{energy:.6f} eV**")
+        st.write("Forces on atoms:")
+        st.dataframe(df_forces)
+
+
 
 st.title("PubChem ➡️ RIPER")
 
@@ -241,9 +256,9 @@ if compounds is not None:
         st.subheader("Optimized Geometry")
         visualize_structure(AseAtomsAdaptor().get_molecule(ase_atoms), html_file_name="optimized_viz.html")
 
-        st.write('Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        st.write('### Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
         st.write(optimizer.atoms.get_potential_energy())
-        st.write('Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        st.write('### Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
         st.write(optimizer.atoms.get_forces())
 
         # Display and download optimized coordinates
