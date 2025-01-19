@@ -255,7 +255,7 @@ if compounds is not None:
         optimizer.attach(lambda: log_energy_and_forces(ase_atoms), interval=1)  # Log every step
 
         # Run the optimization
-        optimizer.run(fmax=0.1, steps=20)  # Adjust fmax value as needed
+        optimizer.run(fmax=0.1, steps=15)  # Adjust fmax value as needed
 
 
         # Visualization of the optimized structure
@@ -300,38 +300,38 @@ if compounds is not None:
         )
 
 
-    if st.button("Optimize Geometry with RDKit UFF"):
-        with st.spinner("Optimizing geometry using RDKit UFF..."):
-            try:
-                optimized_molecule = optimize_geometry_rdkit(selected_smiles)
-                st.success("Geometry optimization with RDKit UFF completed!")
+    # if st.button("Optimize Geometry with RDKit UFF"):
+    #     with st.spinner("Optimizing geometry using RDKit UFF..."):
+    #         try:
+    #             optimized_molecule = optimize_geometry_rdkit(selected_smiles)
+    #             st.success("Geometry optimization with RDKit UFF completed!")
 
-                # Visualization of the optimized structure
-                st.subheader("Optimized Geometry")
-                visualize_structure(optimized_molecule, html_file_name="optimized_viz.html")
+    #             # Visualization of the optimized structure
+    #             st.subheader("Optimized Geometry")
+    #             visualize_structure(optimized_molecule, html_file_name="optimized_viz2.html")
 
-                # Display and download optimized coordinates
-                optimized_xyz = format_xyz(optimized_molecule)
-                optimized_coord = format_coord(optimized_molecule)
+    #             # Display and download optimized coordinates
+    #             optimized_xyz = format_xyz(optimized_molecule)
+    #             optimized_coord = format_coord(optimized_molecule)
 
-                col1, col2 = st.columns(2)
-                col1.subheader("Optimized XYZ Format")
-                col1.code(optimized_xyz)
-                col2.subheader("Optimized Turbomole Coord Format")
-                col2.code(optimized_coord)
+    #             col1, col2 = st.columns(2)
+    #             col1.subheader("Optimized XYZ Format")
+    #             col1.code(optimized_xyz)
+    #             col2.subheader("Optimized Turbomole Coord Format")
+    #             col2.code(optimized_coord)
 
-                col1.download_button(
-                    "Download Optimized XYZ",
-                    data=optimized_xyz,
-                    file_name="optimized_molecule_rdkit.xyz",
-                    mime="chemical/x-xyz",
-                )
+    #             col1.download_button(
+    #                 "Download Optimized XYZ",
+    #                 data=optimized_xyz,
+    #                 file_name="optimized_molecule_rdkit.xyz",
+    #                 mime="chemical/x-xyz",
+    #             )
 
-                col2.download_button(
-                    "Download Optimized Coord",
-                    data=optimized_coord,
-                    file_name="optimized_coord_rdkit",
-                    mime="text/plain",
-                )
-            except Exception as e:
-                st.error(f"Optimization failed: {str(e)}")
+    #             col2.download_button(
+    #                 "Download Optimized Coord",
+    #                 data=optimized_coord,
+    #                 file_name="optimized_coord_rdkit",
+    #                 mime="text/plain",
+    #             )
+    #         except Exception as e:
+    #             st.error(f"Optimization failed: {str(e)}")
