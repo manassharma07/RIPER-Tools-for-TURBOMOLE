@@ -156,6 +156,12 @@ def get_mace_mp():
 # Initialize the MACE-MP calculator
 # mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float32")
 
+def log_energy_and_forces(atoms):
+    """Log energy and forces directly to the console."""
+    energy = atoms.get_potential_energy()
+    forces = atoms.get_forces()
+    st.write(f"Energy = {energy:.4f} eV, Forces = {forces}")
+
 st.title("PubChem ➡️ RIPER")
 
 search_query = st.text_input("Enter molecule name or formula to search in the PubChem database", placeholder='Water / H2O')
@@ -198,8 +204,11 @@ if compounds is not None:
         # Set up the optimizer (BFGS in this example)
         optimizer = BFGS(ase_atoms)
 
+        # Attach the custom logger
+        optimizer.attach(log_energy_and_forces, interval=1)  # Log every step
+
         # Run the optimization
-        optimizer.run(fmax=0.05, steps=20)  # Adjust fmax value as needed
+        optimizer.run(fmax=0.1, steps=20)  # Adjust fmax value as needed
 
         # Display the energies and forces at each step
         for i, atoms in enumerate(optimizer.traj):
