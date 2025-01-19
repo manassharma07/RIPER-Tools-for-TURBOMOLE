@@ -205,16 +205,11 @@ if compounds is not None:
         optimizer = BFGS(ase_atoms)
 
         # Attach the custom logger
-        optimizer.attach(log_energy_and_forces, interval=1)  # Log every step
+        optimizer.attach(lambda: log_energy_and_forces(ase_atoms), interval=1)  # Log every step
 
         # Run the optimization
         optimizer.run(fmax=0.1, steps=20)  # Adjust fmax value as needed
 
-        # Display the energies and forces at each step
-        for i, atoms in enumerate(optimizer.traj):
-            energy = atoms.get_potential_energy()
-            forces = atoms.get_forces()
-            st.write(f"Step {i + 1}: Energy = {energy:.4f} eV, Forces = {forces}")
 
         # Visualization of the optimized structure
         st.subheader("Optimized Geometry")
