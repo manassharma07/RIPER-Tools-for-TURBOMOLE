@@ -195,6 +195,32 @@ if compounds is not None:
     st.dataframe(pd.DataFrame({"Atomic Symbol": selected_molecule.species, "X": selected_molecule.cart_coords[:, 0], 
                                "Y": selected_molecule.cart_coords[:, 1], "Z": selected_molecule.cart_coords[:, 2]}))
 
+    # Visualization
+    visualize_structure(selected_molecule)
+
+
+    # XYZ and Coord files
+    col1, col2 = st.columns(2)
+    col1.subheader("XYZ Format")
+    # col1.code(format_xyz(selected_molecule))
+    col1.code(xyz_str)
+
+    col2.subheader("Turbomole Coord Format")
+    col2.code(format_coord(selected_molecule))
+
+    col1.download_button(
+        "Download XYZ",
+        data=xyz_str,
+        file_name="molecule.xyz",
+        mime="chemical/x-xyz"
+    )
+
+    col2.download_button(
+        "Download Coord",
+        data=format_coord(selected_molecule),
+        file_name="coord",
+        mime="text/plain"
+    )
 
     opt_geom = st.checkbox(label= 'Optimize Geometry via ML (MACE MP Foundation) Model (Beta - Does not work well yet)', value=False)
     if opt_geom:
@@ -244,35 +270,6 @@ if compounds is not None:
             mime="text/plain",
         )
 
-
-        # Get the optimized structure as Pymatgen structure
-        selected_molecule = AseAtomsAdaptor().get_molecule(ase_atoms)
-    # Visualization
-    visualize_structure(selected_molecule)
-
-
-    # XYZ and Coord files
-    col1, col2 = st.columns(2)
-    col1.subheader("XYZ Format")
-    # col1.code(format_xyz(selected_molecule))
-    col1.code(xyz_str)
-
-    col2.subheader("Turbomole Coord Format")
-    col2.code(format_coord(selected_molecule))
-
-    col1.download_button(
-        "Download XYZ",
-        data=xyz_str,
-        file_name="molecule.xyz",
-        mime="chemical/x-xyz"
-    )
-
-    col2.download_button(
-        "Download Coord",
-        data=format_coord(selected_molecule),
-        file_name="coord",
-        mime="text/plain"
-    )
 
     if st.button("Optimize Geometry with RDKit UFF"):
         with st.spinner("Optimizing geometry using RDKit UFF..."):
