@@ -157,11 +157,14 @@ def get_mace_mp():
 # mace_mp_calc = mace_mp(model="small", device=device, default_dtype="float32")
 
 def log_energy_and_forces(atoms):
-    """Log energy and forces directly to the console."""
+    """Log energy, forces, and maximum force to Streamlit."""
+    # Get energy and forces
     energy = atoms.get_potential_energy()
     forces = atoms.get_forces()
-
     
+    # Calculate the maximum force magnitude
+    max_force = np.linalg.norm(forces, axis=1).max()
+
     # Create a Pandas DataFrame for the forces
     df_forces = pd.DataFrame(
         forces,
@@ -170,10 +173,12 @@ def log_energy_and_forces(atoms):
     )
     
     # Display results in Streamlit
-    with st.expander(f"Step {optimizer.nsteps} - Energy = {energy:.6f} eV"):
-        st.write(f"Total Energy: **{energy:.6f} eV**")
-        st.write("Forces on atoms:")
+    with st.expander(f"Step {optimizer.nsteps} - Energy = {energy:.6f} eV, Max Force = {max_force:.6f} eV/Å"):
+        st.write(f"**Total Energy:** {energy:.6f} eV")
+        st.write(f"**Maximum Force:** {max_force:.6f} eV/Å")
+        st.write("**Forces on Atoms:**")
         st.dataframe(df_forces)
+
 
 
 
@@ -256,10 +261,18 @@ if compounds is not None:
         st.subheader("Optimized Geometry")
         visualize_structure(AseAtomsAdaptor().get_molecule(ase_atoms), html_file_name="optimized_viz.html")
 
-        st.write('### Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        st.write('#### Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
         st.write(optimizer.atoms.get_potential_energy())
-        st.write('### Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
-        st.write(optimizer.atoms.get_forces())
+        st.write('#### Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        # st.write(optimizer.atoms.get_forces())
+
+        # Create a Pandas DataFrame for the forces
+        df_forces = pd.DataFrame(
+            optimizer.atoms.get_forces(),
+            columns=["Force X (eV/Å)", "Force Y (eV/Å)", "Force Z (eV/Å)"],
+            index=[f"Atom {i+1}" for i in range(len(optimizer.atoms.get_forces()))]
+        )
+        st.write(df_forces)
 
         # Display and download optimized coordinates
         optimized_xyz = format_xyz(AseAtomsAdaptor().get_molecule(ase_atoms))
