@@ -534,17 +534,17 @@ if contents != '':
         with col2:
             st.text_area("Add the following to your control file", value=lattice_text, height=300)
     
-    if st.button("Calculate energy with MACE (ML) model trained on OMAT Dataset"):
-        mace_mp = get_mace_mp()
-        # Convert pymatgen structure to ASE Atoms object and evaluate energy using mace model
-        structure_ase_temp = AseAtomsAdaptor().get_atoms(structure)
-        structure_ase_temp.set_calculator(mace_mp)
-        energy = structure_ase_temp.get_potential_energy()
-        st.write("Energy (eV): ", energy)
-        # write forces as a df table
-        forces = structure_ase_temp.get_forces()
-        st.write("Forces (eV/Ang): ")
-        st.write(forces)
+    # if st.button("Calculate energy with MACE (ML) model trained on OMAT Dataset"):
+    #     mace_mp = get_mace_mp()
+    #     # Convert pymatgen structure to ASE Atoms object and evaluate energy using mace model
+    #     structure_ase_temp = AseAtomsAdaptor().get_atoms(structure)
+    #     structure_ase_temp.set_calculator(mace_mp)
+    #     energy = structure_ase_temp.get_potential_energy()
+    #     st.write("Energy (eV): ", energy)
+    #     # write forces as a df table
+    #     forces = structure_ase_temp.get_forces()
+    #     st.write("Forces (eV/Ang): ")
+    #     st.write(forces)
 
     if isinstance(structure, Structure):
         # Add sliders for translation along a, b, and c lattice vectors
