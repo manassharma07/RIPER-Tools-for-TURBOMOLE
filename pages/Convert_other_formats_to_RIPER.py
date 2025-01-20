@@ -538,10 +538,11 @@ if contents != '':
         mace_mp = get_mace_mp()
         # Convert pymatgen structure to ASE Atoms object and evaluate energy using mace model
         structure_ase_temp = AseAtomsAdaptor().get_atoms(structure)
-        energy = mace_mp.get_energy(structure_ase_temp)
+        structure_ase_temp.set_calculator(mace_mp)
+        energy = structure_ase_temp.get_potential_energy()
         st.write("Energy (eV): ", energy)
         # write forces as a df table
-        forces = mace_mp.get_forces(structure_ase_temp)
+        forces = structure_ase_temp.get_forces()
         st.write("Forces (eV/Ang): ")
         st.write(forces)
 
