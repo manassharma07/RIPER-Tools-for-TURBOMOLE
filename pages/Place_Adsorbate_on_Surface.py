@@ -267,7 +267,9 @@ if base_structure is not None and molecule is not None:
     # base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # Translate molecule so its center of mass (COM) is at the origin
-    molecule.translate(-molecule.get_center_of_mass())
+    com_mol = molecule.get_center_of_mass()
+    molecule.translate(-com_mol)
+    st.write(com_mol)
     
     
     # Set up adsorbate parameters
@@ -285,9 +287,9 @@ if base_structure is not None and molecule is not None:
     # molecule.rotate(rotate_x, 'x', center=(0, 0, 0))
     # molecule.rotate(rotate_y, 'y', center=(0, 0, 0))
     # molecule.rotate(rotate_z, 'z', center=(0, 0, 0))
-    molecule.rotate(rotate_x, 'x', center=molecule.get_center_of_mass())
-    molecule.rotate(rotate_y, 'y', center=molecule.get_center_of_mass())
-    molecule.rotate(rotate_z, 'z', center=molecule.get_center_of_mass())
+    molecule.rotate(rotate_x, 'x', center=com_mol)
+    molecule.rotate(rotate_y, 'y', center=com_mol)
+    molecule.rotate(rotate_z, 'z', center=com_mol)
     
     # Convert fractional coordinates to Cartesian and apply translation
     adsorbate_position = (translate_x * base_structure.cell[0] +
@@ -295,7 +297,7 @@ if base_structure is not None and molecule is not None:
 
     # Add adsorbate onto the surface at a specified height
     adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
-    add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2])
+    add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[:2]-com_mol[:2])
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     
     col1.subheader("Structure Preview and Download")
