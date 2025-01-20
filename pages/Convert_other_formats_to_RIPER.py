@@ -19,6 +19,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from ase.io.dmol import read_dmol_car
 import re
 import numpy as np
+from mace.calculators import mace_mp
 
 # Set page config
 st.set_page_config(page_title='CIF/XYZ/CAR/POSCAR/PWSCF ➡️ RIPER', layout='wide', page_icon="⚛️",
@@ -41,6 +42,11 @@ st.sidebar.write('### *Contributors*')
 st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
+
+@st.cache_resource
+def get_mace_mp():
+    return mace_mp(model="https://github.com/ACEsuit/mace-mp/releases/download/mace_omat_0/mace-omat-0-medium.model", device="cpu", default_dtype="float32")
+    # return mace_mp(model="small", device="cpu", default_dtype="float32")
 
 # Function to format floating-point numbers with alignment
 def format_number(num, width=15, precision=8):
@@ -527,6 +533,15 @@ if contents != '':
         # Display the lattice parameters text in the second column
         with col2:
             st.text_area("Add the following to your control file", value=lattice_text, height=300)
+    
+    if st.button("Calculate energy with MACE (ML) model trained on OMAT Dataset"):
+        mace_mp = get_mace_mp()
+        energy = mace_mp.get_energy(structure)
+        st.write("Energy (eV): ", energy)
+        # write forces as a df table
+        forces = mace_mp.get_forces(structure)
+        st.write("Forces (eV/Ang): ")
+        st.write(forces)
 
     if isinstance(structure, Structure):
         # Add sliders for translation along a, b, and c lattice vectors
