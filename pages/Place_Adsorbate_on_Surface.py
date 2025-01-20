@@ -268,7 +268,7 @@ if base_structure is not None and molecule is not None:
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # Translate molecule so its center of mass (COM) is at the origin
     com_mol = molecule.get_center_of_mass()
-    # molecule.translate(-com_mol)
+    molecule.translate(-com_mol)
     st.write(com_mol)
     
     
