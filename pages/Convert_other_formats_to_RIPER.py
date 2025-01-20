@@ -536,10 +536,12 @@ if contents != '':
     
     if st.button("Calculate energy with MACE (ML) model trained on OMAT Dataset"):
         mace_mp = get_mace_mp()
-        energy = mace_mp.get_energy(structure)
+        # Convert pymatgen structure to ASE Atoms object and evaluate energy using mace model
+        structure_ase_temp = AseAtomsAdaptor().get_atoms(structure)
+        energy = mace_mp.get_energy(structure_ase_temp)
         st.write("Energy (eV): ", energy)
         # write forces as a df table
-        forces = mace_mp.get_forces(structure)
+        forces = mace_mp.get_forces(structure_ase_temp)
         st.write("Forces (eV/Ang): ")
         st.write(forces)
 
