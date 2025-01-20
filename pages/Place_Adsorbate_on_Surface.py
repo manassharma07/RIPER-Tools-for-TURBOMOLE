@@ -286,12 +286,12 @@ if base_structure is not None and molecule is not None:
     rotate_z = col2.slider("Rotate molecule around z-axis (degrees)", min_value=0, max_value=360, step=1)
 
     # Apply rotations to molecule
-    # molecule.rotate(rotate_x, 'x', center=(0, 0, 0))
-    # molecule.rotate(rotate_y, 'y', center=(0, 0, 0))
-    # molecule.rotate(rotate_z, 'z', center=(0, 0, 0))
-    molecule.rotate(rotate_x, 'x', center=com_mol)
-    molecule.rotate(rotate_y, 'y', center=com_mol)
-    molecule.rotate(rotate_z, 'z', center=com_mol)
+    molecule.rotate(rotate_x, 'x', center=(0, 0, 0))
+    molecule.rotate(rotate_y, 'y', center=(0, 0, 0))
+    molecule.rotate(rotate_z, 'z', center=(0, 0, 0))
+    # molecule.rotate(rotate_x, 'x', center=com_mol)
+    # molecule.rotate(rotate_y, 'y', center=com_mol)
+    # molecule.rotate(rotate_z, 'z', center=com_mol)
     
     # Convert fractional coordinates to Cartesian and apply translation
     adsorbate_position = (translate_x * base_structure.cell[0] +
