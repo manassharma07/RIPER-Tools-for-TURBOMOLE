@@ -296,7 +296,8 @@ if base_structure is not None and molecule is not None:
     # Translate molecule so its center of mass (COM) is at the origin
     # Calculate COM using custom function
     com_mol = molecule.get_center_of_mass()
-    st.write(f"Original COM: {com_mol}")
+    st.write("Original COM:")
+    st.write(com_mol)
     molecule.translate(-com_mol)
     
     # Set up adsorbate parameters
