@@ -295,14 +295,9 @@ if base_structure is not None and molecule is not None:
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # Translate molecule so its center of mass (COM) is at the origin
     # Calculate COM using custom function
-    com_custom = calculate_com(molecule)
-    st.write(f"COM calculated manually: {com_custom}")
     com_mol = molecule.get_center_of_mass()
     st.write(f"Original COM: {com_mol}")
     molecule.translate(-com_mol)
-    new_com = molecule.get_center_of_mass()
-    st.write(f"New COM after translation: {new_com}")
-    
     
     # Set up adsorbate parameters
     col2.subheader("Adjust Adsorbate Position")
