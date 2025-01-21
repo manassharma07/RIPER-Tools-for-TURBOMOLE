@@ -328,7 +328,7 @@ if base_structure is not None and molecule is not None:
 
     # Add adsorbate onto the surface at a specified height
     adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
-    add_adsorbate(base_structure, molecule, adsorbate_height, position=adsorbate_position[0:2], mol_index=None)
+    add_adsorbate(base_structure, molecule, adsorbate_height, position=(0,0), mol_index=None)
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     
     col1.subheader("Structure Preview and Download")
