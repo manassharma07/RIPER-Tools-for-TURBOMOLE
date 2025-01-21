@@ -8,6 +8,7 @@ import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 from pymatgen.core import Structure, Element, Molecule, Lattice
+from ase.data import atomic_masses
 
 # Set page config
 st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
@@ -191,6 +192,31 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
+def calculate_com(atoms):
+    """
+    Calculate the center of mass (COM) of a given ASE Atoms object.
+
+    Parameters:
+        atoms (ase.Atoms): The molecule or structure.
+
+    Returns:
+        list: COM coordinates [x, y, z].
+    """
+    total_mass = 0.0
+    weighted_positions = [0.0, 0.0, 0.0]
+
+    # Loop through all atoms
+    for atom in atoms:
+        mass = atomic_masses[atom.number]  # Get the atomic mass from ASE data
+        total_mass += mass
+        weighted_positions[0] += mass * atom.position[0]
+        weighted_positions[1] += mass * atom.position[1]
+        weighted_positions[2] += mass * atom.position[2]
+
+    # Compute the COM by dividing the weighted sum of positions by total mass
+    com = [pos / total_mass for pos in weighted_positions]
+    return com
+
 st.title("Place Adsorbate (molecule) on a Surface (periodic)")
 with st.expander('How to Use?', expanded=False):
     st.write("1. The tool works as follows.")
@@ -267,6 +293,9 @@ if base_structure is not None and molecule is not None:
     # base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     # molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
     # Translate molecule so its center of mass (COM) is at the origin
+    # Calculate COM using custom function
+    com_custom = calculate_com(molecule)
+    st.write(f"COM calculated manually: {com_custom}")
     com_mol = molecule.get_center_of_mass()
     st.write(f"Original COM: {com_mol}")
     molecule.translate(-com_mol)
