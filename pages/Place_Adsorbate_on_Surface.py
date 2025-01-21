@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit.components.v1 as components
 from pymatgen.core import Structure, Element, Molecule, Lattice
 from ase.data import atomic_masses
+import numpy as np
 
 # Set page config
 st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
@@ -327,7 +328,7 @@ if base_structure is not None and molecule is not None:
     # adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
     # add_adsorbate(base_structure, molecule, adsorbate_height, position=(0,0), mol_index=None)
     # packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
-    
+
     # Convert fractional coordinates to Cartesian
     adsorbate_position_cartesian = (
         translate_x * base_structure.cell[0] +
@@ -335,7 +336,7 @@ if base_structure is not None and molecule is not None:
     )
 
     # Add adsorbate's COM at the calculated position
-    adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
+    adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=np.max(base_structure.get_positions()[:, 2]), step=0.1)
     adsorbate_position_cartesian += [0, 0, adsorbate_height]
 
     # Translate molecule to the desired position
