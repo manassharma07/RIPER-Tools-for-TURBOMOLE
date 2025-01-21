@@ -318,17 +318,33 @@ if base_structure is not None and molecule is not None:
     molecule.rotate(rotate_x, 'x', center=(0, 0, 0))
     molecule.rotate(rotate_y, 'y', center=(0, 0, 0))
     molecule.rotate(rotate_z, 'z', center=(0, 0, 0))
-    # molecule.rotate(rotate_x, 'x', center=com_mol)
-    # molecule.rotate(rotate_y, 'y', center=com_mol)
-    # molecule.rotate(rotate_z, 'z', center=com_mol)
     
-    # Convert fractional coordinates to Cartesian and apply translation
-    adsorbate_position = (translate_x * base_structure.cell[0] +
-                          translate_y * base_structure.cell[1])
+    # # Convert fractional coordinates to Cartesian and apply translation
+    # adsorbate_position = (translate_x * base_structure.cell[0] +
+    #                       translate_y * base_structure.cell[1])
 
-    # Add adsorbate onto the surface at a specified height
+    # # Add adsorbate onto the surface at a specified height
+    # adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
+    # add_adsorbate(base_structure, molecule, adsorbate_height, position=(0,0), mol_index=None)
+    # packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
+    
+    # Convert fractional coordinates to Cartesian
+    adsorbate_position_cartesian = (
+        translate_x * base_structure.cell[0] +
+        translate_y * base_structure.cell[1]
+    )
+
+    # Add adsorbate's COM at the calculated position
     adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
-    add_adsorbate(base_structure, molecule, adsorbate_height, position=(0,0), mol_index=None)
+    adsorbate_position_cartesian += [0, 0, adsorbate_height]
+
+    # Translate molecule to the desired position
+    molecule.translate(adsorbate_position_cartesian)
+
+    # Combine adsorbate with base structure
+    for atom in molecule:
+        base_structure.append(atom)
+
     packed_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
     
     col1.subheader("Structure Preview and Download")
