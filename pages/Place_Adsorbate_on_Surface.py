@@ -338,8 +338,8 @@ if base_structure is not None and molecule is not None:
     max_z_atom = np.max(base_structure.get_positions()[:, 2])
 
     # Add adsorbate's COM at the calculated position
-    adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=max_z_atom-10.0, max_value=max_z_atom+15.0, value=max_z_atom+2, step=0.1)
-    adsorbate_position_cartesian += [0, 0, adsorbate_height]
+    adsorbate_height = col2.slider("Adsorbate Height (Å)", min_value=-10.0, max_value=15.0, value=2.0, step=0.1)
+    adsorbate_position_cartesian += [0, 0, max_z_atom + adsorbate_height]
 
     # Translate molecule to the desired position
     molecule.translate(adsorbate_position_cartesian)
