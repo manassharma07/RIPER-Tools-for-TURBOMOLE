@@ -550,9 +550,9 @@ if contents != '':
         # Add sliders for translation along a, b, and c lattice vectors
         # st.warning('Translation feature is still in development so may not work as expected!')
         st.subheader("Translate Structure Along Lattice Vectors")
-        translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
-        translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
-        translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.05, value=0.0)
+        translate_a = st.slider("Translate along a", min_value=-1.0, max_value=1.0, step=0.01, value=0.0)
+        translate_b = st.slider("Translate along b", min_value=-1.0, max_value=1.0, step=0.01, value=0.0)
+        translate_c = st.slider("Translate along c", min_value=-1.0, max_value=1.0, step=0.01, value=0.0)
 
         translated_structure = structure.copy()
         # Apply the translation to the structure
