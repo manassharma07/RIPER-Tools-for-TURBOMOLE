@@ -19,7 +19,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from ase.io.dmol import read_dmol_car
 import re
 import numpy as np
-from mace.calculators import mace_mp
+# from mace.calculators import mace_mp
 
 # Set page config
 st.set_page_config(page_title='CIF/XYZ/CAR/POSCAR/PWSCF ➡️ RIPER', layout='wide', page_icon="⚛️",
