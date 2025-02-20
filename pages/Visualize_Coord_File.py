@@ -266,7 +266,7 @@ def parse_coord(file_contents):
                     break
                 parts = coord_line.split()
                 
-                if len(parts) == 4:
+                if len(parts) == 4 or (len(parts) == 5 and parts[4] == 'f'):
                     x, y, z = map(float, parts[:3])
                     atomic_species.append(parts[3].capitalize())
                     coords.append([x, y, z])
