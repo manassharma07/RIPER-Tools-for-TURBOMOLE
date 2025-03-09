@@ -81,7 +81,27 @@ references = [
         'Title': 'Efficient Implementation of Density Functional Theory Based Embedding for Molecular and Periodic Systems Using Gaussian Basis Functions.',
         'Journal': 'J. Chem. Theory Comput. 2022, 18, 6892-6904',
         'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.2c00380'
+    },
+    {
+        'Author': 'Franzke, Y.; Schosser, W.; Pauly, F.',
+        'Title': 'Efficient treatment of relativistic effects with periodic density functional methods: Energies, gradients, and stress tensors.',
+        'Journal': 'Phys. Rev. B 109, 165144',
+        'URL': 'https://journals.aps.org/prb/abstract/10.1103/PhysRevB.109.165144'
+    },
+    {
+        'Author': 'Franzke, Y.; Holzer, C.',
+        'Title': 'Current density functional framework for spin–orbit coupling: Extension to periodic systems.',
+        'Journal': 'J. Chem. Phys. 160, 184101 ',
+        'URL': 'https://doi.org/10.1063/5.0209704'
+    },
+    {
+        'Author': 'Franzke, Y.; Pausch, A; Holzer, C.',
+        'Title': 'Application of the noncollinear Scalmani–Frisch formalism to current density functional theory.',
+        'Journal': 'J. Chem. Theory Comput. 2022, 18, 6880-6891',
+        'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.2c00379'
     }
+
+
 ]
 
 df = pd.DataFrame(references)
