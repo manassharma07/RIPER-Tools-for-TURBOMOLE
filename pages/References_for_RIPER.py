@@ -83,6 +83,12 @@ references = [
         'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.2c00380'
     },
     {
+        'Author': 'Sharma, M.; Sierka, M.',
+        'Title': 'Optical Gaps of Ionic Materials from GW/BSE-in-DFT and CC2-in-DFT.',
+        'Journal': 'J. Chem. Theory Comput. 2024, 20, 21, 9592–9605',
+        'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.4c00819'
+    },
+    {
         'Author': 'Franzke, Y.; Schosser, W.; Pauly, F.',
         'Title': 'Efficient treatment of relativistic effects with periodic density functional methods: Energies, gradients, and stress tensors.',
         'Journal': 'Phys. Rev. B 109, 165144',
@@ -97,8 +103,8 @@ references = [
     {
         'Author': 'Franzke, Y.; Pausch, A; Holzer, C.',
         'Title': 'Application of the noncollinear Scalmani–Frisch formalism to current density functional theory.',
-        'Journal': 'J. Chem. Theory Comput. 2022, 18, 6880-6891',
-        'URL': 'https://pubs.acs.org/doi/10.1021/acs.jctc.2c00379'
+        'Journal': 'J. Chem. Phys. 162, 084104',
+        'URL': 'https://doi.org/10.1063/5.0246433'
     }
 
 
