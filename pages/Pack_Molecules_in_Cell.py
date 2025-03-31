@@ -213,7 +213,7 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
     mol_center = original_positions.mean(axis=0)
     cell = base_structure.get_cell().lengths()
 
-    max_attempts = 50  # Limit to avoid infinite loops
+    max_attempts = 200  # Limit to avoid infinite loops
     with st.expander("Packing...", expanded=False):
         # Loop to add molecules
         for i in range(num_molecules):
