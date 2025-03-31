@@ -139,42 +139,58 @@ def display_structure_info(structure):
 #     np.fill_diagonal(distances, np.inf)
 #     return np.min(distances) < tolerance
 
+# def random_rotation_matrix():
+#     """Generate a random rotation matrix using quaternions."""
+#     # Random rotation angles
+#     angles = np.random.rand(3) * 2 * np.pi
+    
+#     # Create rotation matrix using quaternions for better numerical stability
+#     qx = np.array([[1, 0, 0],
+#                    [0, np.cos(angles[0]), -np.sin(angles[0])],
+#                    [0, np.sin(angles[0]), np.cos(angles[0])]])
+    
+#     qy = np.array([[np.cos(angles[1]), 0, np.sin(angles[1])],
+#                    [0, 1, 0],
+#                    [-np.sin(angles[1]), 0, np.cos(angles[1])]])
+    
+#     qz = np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0],
+#                    [np.sin(angles[2]), np.cos(angles[2]), 0],
+#                    [0, 0, 1]])
+    
+#     return qz @ qy @ qx
+
+# def has_overlap(base_structure, molecule, tolerance):
+#     """Check if there's an overlap between base structure atoms and molecule atoms."""
+#     # Get number of atoms in each structure
+#     n_base = len(base_structure)
+#     n_mol = len(molecule)
+    
+#     # Get all distances between base structure and molecule atoms only
+#     combined = base_structure + molecule
+#     distances = combined.get_all_distances(mic=True)
+    
+#     # Extract only the distances between base structure and molecule
+#     # This is the submatrix of size (n_base x n_mol) from the distances matrix
+#     relevant_distances = distances[:n_base, n_base:]
+    
+#     # Check if any distance is less than tolerance
+#     return np.min(relevant_distances) < tolerance
+
 def random_rotation_matrix():
-    """Generate a random rotation matrix using quaternions."""
-    # Random rotation angles
-    angles = np.random.rand(3) * 2 * np.pi
-    
-    # Create rotation matrix using quaternions for better numerical stability
-    qx = np.array([[1, 0, 0],
-                   [0, np.cos(angles[0]), -np.sin(angles[0])],
-                   [0, np.sin(angles[0]), np.cos(angles[0])]])
-    
-    qy = np.array([[np.cos(angles[1]), 0, np.sin(angles[1])],
-                   [0, 1, 0],
-                   [-np.sin(angles[1]), 0, np.cos(angles[1])]])
-    
-    qz = np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0],
-                   [np.sin(angles[2]), np.cos(angles[2]), 0],
-                   [0, 0, 1]])
-    
-    return qz @ qy @ qx
+    """Generate a random rotation matrix using scipy Rotation."""
+    return R.random().as_matrix()
 
 def has_overlap(base_structure, molecule, tolerance):
-    """Check if there's an overlap between base structure atoms and molecule atoms."""
-    # Get number of atoms in each structure
-    n_base = len(base_structure)
-    n_mol = len(molecule)
+    """Check if there's an overlap between base structure atoms and molecule atoms using KDTree."""
+    base_positions = base_structure.get_positions()
+    mol_positions = molecule.get_positions()
     
-    # Get all distances between base structure and molecule atoms only
-    combined = base_structure + molecule
-    distances = combined.get_all_distances(mic=True)
+    if len(base_positions) == 0:
+        return False
     
-    # Extract only the distances between base structure and molecule
-    # This is the submatrix of size (n_base x n_mol) from the distances matrix
-    relevant_distances = distances[:n_base, n_base:]
-    
-    # Check if any distance is less than tolerance
-    return np.min(relevant_distances) < tolerance
+    tree = cKDTree(base_positions)
+    distances, _ = tree.query(mol_positions, distance_upper_bound=tolerance)
+    return np.any(distances < tolerance)
 
 def pack_structure(base_structure, molecule, num_molecules, tolerance):
     """Pack molecule into the base structure without overlaps."""
@@ -323,7 +339,7 @@ if molecule is not None:
 if base_structure is not None and molecule is not None:
     st.write(f"Number of atoms in base structure: {len(base_structure)}")
     st.write(f"Number of atoms in molecule: {len(molecule)}")
-    if len(base_structure)<=500 and len(molecule)<=20:
+    if len(base_structure)<=1500 and len(molecule)<=20:
         st.header("Packing Parameters")
         num_molecules = st.slider(
             "Number of molecules to add",
@@ -364,6 +380,6 @@ if base_structure is not None and molecule is not None:
                 except Exception as e:
                     st.error(f"Error during packing: {str(e)}")
     else:
-        st.info('The web app can only allow using base structure with less than 500 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
+        st.info('The web app can only allow using base structure with less than 1500 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
 else:
     st.info("Please provide both the base structure (CIF) and molecule structure (XYZ) to continue.")
