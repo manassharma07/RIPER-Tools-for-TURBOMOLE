@@ -342,7 +342,7 @@ if molecule is not None:
 if base_structure is not None and molecule is not None:
     st.write(f"Number of atoms in base structure: {len(base_structure)}")
     st.write(f"Number of atoms in molecule: {len(molecule)}")
-    if len(base_structure)<=1500 and len(molecule)<=20:
+    if len(base_structure)<=800 and len(molecule)<=20:
         st.header("Packing Parameters")
         num_molecules = st.slider(
             "Number of molecules to add",
@@ -383,6 +383,6 @@ if base_structure is not None and molecule is not None:
                 except Exception as e:
                     st.error(f"Error during packing: {str(e)}")
     else:
-        st.info('The web app can only allow using base structure with less than 1500 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
+        st.info('The web app can only allow using base structure with less than 800 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
 else:
     st.info("Please provide both the base structure (CIF) and molecule structure (XYZ) to continue.")
