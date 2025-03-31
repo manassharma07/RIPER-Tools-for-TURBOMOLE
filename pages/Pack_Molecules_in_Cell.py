@@ -206,7 +206,8 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
     
     # Get molecule center for proper rotation
     mol_center = original_positions.mean(axis=0)
-    
+    cell = base_structure.get_cell().lengths()
+
     max_attempts = 50  # Limit to avoid infinite loops
     with st.expander("Packing...", expanded=False):
         # Loop to add molecules
@@ -234,7 +235,7 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
                 current_molecule.set_positions(final_positions)
                 
                 # Check for overlaps
-                if not has_overlap(packed_structure, current_molecule, tolerance):
+                if not has_overlap(packed_structure, current_molecule, tolerance, cell):
                     packed_structure += current_molecule.copy()  # Add molecule to the packed structure
                     added = True
                     st.write(f"Molecule copy #{i+1} added successfully at position {displacement} after {attempt} attempts.")
