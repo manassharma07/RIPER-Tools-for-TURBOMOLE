@@ -183,16 +183,17 @@ def random_rotation_matrix():
     """Generate a random rotation matrix using scipy Rotation."""
     return R.random().as_matrix()
 
-def has_overlap(base_structure, molecule, tolerance):
-    """Check if there's an overlap between base structure atoms and molecule atoms using KDTree."""
+def has_overlap(base_structure, molecule, tolerance, cell):
+    """Check if there's an overlap between base structure atoms and molecule atoms using KDTree with periodic boundary conditions."""
     base_positions = base_structure.get_positions()
     mol_positions = molecule.get_positions()
     
     if len(base_positions) == 0:
         return False
     
-    tree = cKDTree(base_positions)
-    distances, _ = tree.query(mol_positions, distance_upper_bound=tolerance)
+    # Use minimum image convention (mic) for periodic systems
+    base_tree = cKDTree(base_positions, boxsize=cell)
+    distances, _ = base_tree.query(mol_positions, distance_upper_bound=tolerance)
     return np.any(distances < tolerance)
 
 def pack_structure(base_structure, molecule, num_molecules, tolerance):
