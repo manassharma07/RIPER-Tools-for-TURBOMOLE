@@ -179,16 +179,18 @@ def display_structure_info(structure):
 #     # Check if any distance is less than tolerance
 #     return np.min(relevant_distances) < tolerance
 
+def apply_pbc(positions, cell):
+    """Apply periodic boundary conditions to keep positions inside the simulation cell."""
+    return positions % cell
+
 def random_rotation_matrix():
     """Generate a random rotation matrix using scipy Rotation."""
     return R.random().as_matrix()
 
 def has_overlap(base_structure, molecule, tolerance, cell):
     """Check if there's an overlap between base structure atoms and molecule atoms using KDTree with periodic boundary conditions."""
-    structure = base_structure.copy()
-    structure = structure.wrap()
-    base_positions = structure.get_positions()
-    mol_positions = molecule.get_positions()
+    base_positions = base_structure.get_positions()
+    mol_positions = apply_pbc(molecule.get_positions(), cell)
     
     if len(base_positions) == 0:
         return False
@@ -196,7 +198,7 @@ def has_overlap(base_structure, molecule, tolerance, cell):
     # Use minimum image convention (mic) for periodic systems
     base_tree = cKDTree(base_positions, boxsize=cell)
     distances, _ = base_tree.query(mol_positions, distance_upper_bound=tolerance)
-    return np.any(distances < tolerance)
+    return np.any(distances < tolerance)s
 
 def pack_structure(base_structure, molecule, num_molecules, tolerance):
     """Pack molecule into the base structure without overlaps."""
