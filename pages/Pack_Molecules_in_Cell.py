@@ -185,7 +185,8 @@ def random_rotation_matrix():
 
 def has_overlap(base_structure, molecule, tolerance, cell):
     """Check if there's an overlap between base structure atoms and molecule atoms using KDTree with periodic boundary conditions."""
-    base_positions = base_structure.get_positions()
+    structure = base_structure.wrap()
+    base_positions = structure.get_positions()
     mol_positions = molecule.get_positions()
     
     if len(base_positions) == 0:
