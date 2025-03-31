@@ -9,6 +9,9 @@ import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 
+from scipy.spatial.transform import Rotation as R
+from scipy.spatial import cKDTree
+
 # Set page config
 st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
                    menu_items={
