@@ -198,7 +198,7 @@ def has_overlap(base_structure, molecule, tolerance, cell):
     # Use minimum image convention (mic) for periodic systems
     base_tree = cKDTree(base_positions, boxsize=cell)
     distances, _ = base_tree.query(mol_positions, distance_upper_bound=tolerance)
-    return np.any(distances < tolerance)s
+    return np.any(distances < tolerance)
 
 def pack_structure(base_structure, molecule, num_molecules, tolerance):
     """Pack molecule into the base structure without overlaps."""
