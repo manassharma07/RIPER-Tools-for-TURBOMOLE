@@ -1,0 +1,82 @@
+$title
+$symmetry c1
+$user-defined bonds    file=coord
+$coord    file=coord
+$optimize
+ internal   off
+ redundant  off
+ cartesian  on
+$atoms
+    basis =pob-TZVP-rev2
+    jbas  =universal
+mo 1
+    ecp   =mo dhf-ecp
+$basis    file=basis
+$ecp    file=basis
+$scfmo   file=mos
+$scfiterlimit       30
+$thize     0.10000000E-04
+$thime        5
+$scfdamp   start=0.300  step=0.050  min=0.100
+$scfintunit
+ unit=30       size=0        file=twoint
+$scfdiis
+$maxcor    500 MiB  per_core
+$scforbitalshift  automatic=.1
+$drvopt
+   cartesian  on
+   basis      off
+   global     off
+   hessian    on
+   dipole     on
+   nuclear polarizability
+$interconversion  off
+   qconv=1.d-7
+   maxiter=25
+$coordinateupdate
+   dqmax=0.3
+   interpolate  on
+   statistics    5
+$forceupdate
+   ahlrichs numgeo=0  mingeo=3 maxgeo=4 modus=<g|dq> dynamic fail=0.3
+   threig=0.005  reseig=0.005  thrbig=3.0  scale=1.00  damping=0.0
+$forceinit on
+   diag=default
+$forceapprox    file=forceapprox
+$ricore      50000
+$rij
+$cell angs
+  3.31974879   3.31974879   120.00000000000001
+$periodic 2
+$kpoints
+    nkpoints 33 33
+    kptlines 3
+    recipr    0.000000    0.000000    0.500000    0.000000    40
+    recipr    0.500000    0.000000    0.333333    0.333333    40
+    recipr    0.333333    0.333333    0.000000    0.000000    40
+$dft
+    functional scan0
+    gridsize   m5
+$curswitchengage
+$soghf
+$kramers
+$scfconv   7
+$rundimensions
+   natoms=3
+   nbf(CAO)=131
+   nbf(AO)=117
+$xctype hybrid-MGGA X= 0.25000 (not to be modified here)
+$last SCF energy change = -.86412156E-05
+$uhfmo_alpha    file=alpha
+$uhfmo_beta    file=beta
+$closed shells
+ a       1-41                                   ( 2 )
+$energy    file=energy
+$grad    file=gradient
+$last step     riper
+$jbas file=auxbasis
+$spinor_real       file=spinor.r
+$spinor_imag       file=spinor.i
+$spinor shells
+ a       1-82                                   ( 1 )
+$end
