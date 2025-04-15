@@ -262,9 +262,9 @@ if compounds is not None:
         st.subheader("Optimized Geometry")
         visualize_structure(AseAtomsAdaptor().get_molecule(ase_atoms), html_file_name="optimized_viz.html")
 
-        st.write('#### Total Energy (eV) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        st.write('#### Total Energy (eV) from [Small MACE ML model trained on Materials Project](https://github.com/ACEsuit/mace-mp/)')
         st.write(optimizer.atoms.get_potential_energy())
-        st.write('#### Forces (eV/Angs) from [MACE ML model trained on OMAT24 from Meta](https://github.com/ACEsuit/mace-mp/releases/tag/mace_omat_0)')
+        st.write('#### Forces (eV/Angs) from [Small MACE ML model trained on Materials Project](https://github.com/ACEsuit/mace-mp/)')
         # st.write(optimizer.atoms.get_forces())
 
         # Create a Pandas DataFrame for the forces
