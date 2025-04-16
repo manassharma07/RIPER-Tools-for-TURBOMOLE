@@ -15,4 +15,4 @@ openbabel-wheel
 abtem==1.0.0beta34
 rdkit
 torch==2.4.1
-https://github.com/ACEsuit/mace.git
+mace-torch==0.3.12
