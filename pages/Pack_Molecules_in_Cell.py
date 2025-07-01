@@ -117,8 +117,14 @@ def display_structure_info(structure):
         st.table(df_vectors)
 
     # Create a list of atomic coordinates
+    import random
+    import string
+    
+    # Generate a random 6-character string
+    random_suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+
     with st.expander("Atomic Coordinates", expanded=False):
-        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key='selectbox'+structure.composition.reduced_formula)
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key='selectbox'+structure.composition.reduced_formula+ '_' + random_suffix)
         if coord_type == 'Cartesian':
             atomic_coords = []
             for site in structure.sites:
