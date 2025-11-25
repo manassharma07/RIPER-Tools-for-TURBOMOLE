@@ -11,6 +11,8 @@ menu_items={
 st.sidebar.write('# About')
 st.sidebar.write(' Originally Made By [Manas Sharma](https://manas.bragitoff.com)')
 st.sidebar.write(' In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
+st.sidebar.write('## Cite us:')
+st.sidebar.write('[J. Phys. Chem. A 2025, 129, 39, 9062–9083](https://doi.org/10.1021/acs.jpca.5c02937)')
 st.sidebar.write('### *Powered by*')
 st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
 st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
