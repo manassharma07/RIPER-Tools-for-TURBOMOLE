@@ -302,12 +302,12 @@ if docs is not None:
 
     # Display the coordinate text in the first column
     with col1:
-        st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key='coords_text')
-        st.download_button('Download coord file', coords_text, file_name='coord', key='coord_download_button_')
+        st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300)
+        st.download_button('Download coord file', coords_text, file_name='coord')
 
     # Display the lattice parameters text in the second column
     with col2:
-        st.text_area("Add the following to your control file", value=lattice_text, height=300, key='control_text')
+        st.text_area("Add the following to your control file", value=lattice_text, height=300)
 
 
     # Create supercells
@@ -350,10 +350,10 @@ if docs is not None:
 
     # Display the coordinate text in the first column
     with col1:
-        st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_super, height=300, key='supercell_text_coord')
-        st.download_button('Download coord file', coords_text_super, file_name='coord')
+        st.text_area("Coord file contents of the supercell (Cartesian coordinates in Bohr)", value=coords_text_super, height=300)
+        st.download_button('Download coord file for supercell', coords_text_super, file_name='coord')
 
     # Display the lattice parameters text in the second column
     with col2:
-        st.text_area("Add the following to your control file", value=lattice_text_super, height=300, key='supercell_text_control')
+        st.text_area("Add the following to your control file (supercell)", value=lattice_text_super, height=300)
 
