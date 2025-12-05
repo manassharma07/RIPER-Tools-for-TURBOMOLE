@@ -286,6 +286,7 @@ if docs is not None:
         coords_bohr = convert_to_bohr(primitive_structure)
     else:
         coords_bohr = convert_to_bohr(conventional_structure)
+    print(coords_bohr)
 
     # Generate the coordinate text
     coords_text = generate_coord_text(coords_bohr)
@@ -294,6 +295,7 @@ if docs is not None:
         lattice_text = generate_lattice_text(primitive_structure)
     else:
         lattice_text = generate_lattice_text(conventional_structure)
+    print(coords_text)
 
     # Create two columns for text boxes
     col1, col2 = st.columns(2)
