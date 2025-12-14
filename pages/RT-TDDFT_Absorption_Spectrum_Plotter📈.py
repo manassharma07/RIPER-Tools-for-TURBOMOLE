@@ -101,9 +101,23 @@ if content:
     lxlim = float(lxlim)
     uxlim = lim_col2.text_input(label='Enter the upper limit for x-axis', value=str(max(omega)),key='uxlim')
     uxlim = float(uxlim)
-    lylim = lim_col3.text_input(label='Enter the lower limit for y-axis', value=str(min(osc_strength) - 0.1*max(osc_strength)))
+    # --- Mask data inside x-limits ---
+    xmask = (omega >= lxlim) & (omega <= uxlim)
+
+    # Fallback in case the range is empty
+    if np.any(xmask):
+        osc_in_range = osc_strength[xmask]
+        ymin = np.min(osc_in_range)
+        ymax = np.max(osc_in_range)
+    else:
+        ymin = np.min(osc_strength)
+        ymax = np.max(osc_strength)
+
+    # Add padding (10%)
+    ypad = 0.1 * (ymax - ymin if ymax > ymin else ymax)
+    lylim = lim_col3.text_input(label='Enter the lower limit for y-axis', value=str(ymin - ypad))
     lylim = float(lylim)
-    uylim = lim_col4.text_input(label='Enter the upper limit for y-axis', value=str(max(osc_strength) + 0.1*max(osc_strength)))
+    uylim = lim_col4.text_input(label='Enter the upper limit for y-axis', value=str(ymax + ypad))
     uylim = float(uylim)
 
     title_col1, title_col2, title_col3 = st.columns(3)
