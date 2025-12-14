@@ -101,9 +101,9 @@ if content:
     lxlim = float(lxlim)
     uxlim = lim_col2.text_input(label='Enter the upper limit for x-axis', value=str(max(omega)),key='uxlim')
     uxlim = float(uxlim)
-    lylim = lim_col3.text_input(label='Enter the lower limit for y-axis', value=str(min(osc_strength) - 0.1*max(osc_strength)),key='lylim')
+    lylim = lim_col3.text_input(label='Enter the lower limit for y-axis', value=str(min(osc_strength) - 0.1*max(osc_strength)))
     lylim = float(lylim)
-    uylim = lim_col4.text_input(label='Enter the upper limit for y-axis', value=str(max(osc_strength) + 0.1*max(osc_strength)),key='uylim')
+    uylim = lim_col4.text_input(label='Enter the upper limit for y-axis', value=str(max(osc_strength) + 0.1*max(osc_strength)))
     uylim = float(uylim)
 
     title_col1, title_col2, title_col3 = st.columns(3)
