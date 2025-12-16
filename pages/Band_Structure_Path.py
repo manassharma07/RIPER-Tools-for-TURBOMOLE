@@ -14,7 +14,7 @@ import re
 
 
 # Set page config
-st.set_page_config(page_title='CIF/XYZ/CAR/POSCAR/PWSCF ➡️ RIPER', layout='wide', page_icon="⚛️",
+st.set_page_config(page_title='Band Structure Path Calculator', layout='wide', page_icon="⚛️",
                    menu_items={
                        'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
                    })
