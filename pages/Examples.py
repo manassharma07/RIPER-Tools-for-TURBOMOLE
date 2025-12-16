@@ -5,6 +5,12 @@ import py3Dmol
 import pandas as pd
 import streamlit.components.v1 as components
 
+# Set page config
+st.set_page_config(page_title='Examples for RIPER', layout='wide', page_icon="⚛️",
+menu_items={
+         'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
+     })
+
 # Sidebar stuff
 st.sidebar.write('# About')
 st.sidebar.write(' Originally Made By [Manas Sharma](https://manas.bragitoff.com)')
@@ -22,6 +28,7 @@ st.sidebar.write('### *Contributors*')
 st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
 st.sidebar.write('### *Source Code*')
 st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
+
 
 
 
