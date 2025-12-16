@@ -46,7 +46,7 @@ def parse_rtspectrum_content(content):
 st.title('RT-TDDFT Absorption Spectrum Plotter')
 st.write('This utility helps you plot the RT-TDDFT spectrum as saved in the `rtspec` file after running an Absorption Spectrum calculation using `RIPER`.')
 
-st.sidebar.write('### Input Data')
+#st.sidebar.write('### Input Data')
 uploaded_file = st.file_uploader('Upload the `rtspec` file')
 pasted_content = st.text_area('or paste the contents of the `rtspec` file here:', height=400)
 
