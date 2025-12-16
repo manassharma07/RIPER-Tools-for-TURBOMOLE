@@ -7,7 +7,7 @@ from scipy.interpolate import interp1d
 import io
 
 # Set page config
-st.set_page_config(page_title='RT-TDDFT Absorption Spectrum Plotter 📈', layout='wide', page_icon="⚛️",
+st.set_page_config(page_title='LR-TDDFT UV/Vis Plotter 📈', layout='wide', page_icon="⚛️",
 menu_items={
          'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
      })
