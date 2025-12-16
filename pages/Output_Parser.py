@@ -9,6 +9,8 @@ from pymatgen.io.cif import CifWriter
 import py3Dmol
 import streamlit.components.v1 as components
 
+st.set_page_config(page_title='OUTPUT Parser for RIPER', layout='wide', page_icon="⚛️")
+
 # Sidebar stuff
 st.sidebar.write('# About')
 st.sidebar.write('Made By [Manas Sharma](https://manas.bragitoff.com)')
