@@ -10,7 +10,7 @@ filename = "bands.xyz"
 energy_range_min = -2.5  # Modify this according to your desired range
 energy_range_max = 3   # Modify this according to your desired range
 # User-provided energy shift value (in au)
-energy_shift =  -0.166225#-0.088521#-0.094143#-0.035363#-0.09
+energy_shift =  -0.166225
 # Num k-points for each band
 num_k_points = 240
 # K-point labels
