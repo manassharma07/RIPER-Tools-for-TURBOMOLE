@@ -101,6 +101,6 @@ plt.axhline(y=0, color='black', linestyle='--', linewidth=1.7)  # Add a horizont
 # Disable horizontal grid lines
 plt.grid(which='major', axis='x', linestyle='-', linewidth=1.8, color='gray')
 plt.xlim(kpoint_ticks[0], kpoint_ticks[-1])
-plt.ylim(energy_range_min-energy_shift, energy_range_max-energy_shift)
+plt.ylim(energy_range_min, energy_range_max)
 plt.tight_layout()
 plt.show()
