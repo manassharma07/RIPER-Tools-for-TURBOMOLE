@@ -35,7 +35,7 @@ st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Too
 
 
 st.title('Turbomole RT-TDDFT High Harmonic Generation (HHG) Spectrum Calculator')
-st.write('This tool allows you to calculate the HHG spectra by entering the contents of the `rtdipo` file as well as the `control` file.')
+st.write('This tool allows you to calculate the HHG spectra by entering the contents of the `rtdipo` file and providing the electric field details used in the `control` file.')
 
 
 # read the sample rtdipo_HHG_Sample file and put its contents in a string variable to be used as a placeholder in the text area for rtdipo input
