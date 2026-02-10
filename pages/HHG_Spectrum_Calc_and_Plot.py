@@ -9,11 +9,33 @@ from scipy.fft import fft
 import os
 from numba import njit, jit
 
+# Set page config
+st.set_page_config(page_title='HHG Spectrum Calculator and Plotter', layout='wide', page_icon="⚛️",
+menu_items={
+         'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
+     })
+
+# Sidebar stuff
+st.sidebar.write('# About')
+st.sidebar.write(' Made By [Manas Sharma](https://manas.bragitoff.com)')
+st.sidebar.write(' In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
+st.sidebar.write('## Cite us:')
+st.sidebar.write('[J. Phys. Chem. A 2025, 129, 39, 9062–9083](https://doi.org/10.1021/acs.jpca.5c02937)')
+st.sidebar.write('### *Powered by*')
+st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
+st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
+st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Representations')
+st.sidebar.write('* [PubChempy](https://pypi.org/project/PubChemPy/1.0/) for Accessing the PubChem Database')
+st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the Materials Project Database')
+st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
+st.sidebar.write('### *Contributors*')
+st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
+st.sidebar.write('### *Source Code*')
+st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
 
-
-st.write('## Turbomole RT-TDDFT High Harmonic Generation (HHG) Spectrum Calculator')
-st.write('This online tool allows you to calculate the HHG spectra by entering the contents of the `rtdipo` file as well as the `control` file.')
+st.title('Turbomole RT-TDDFT High Harmonic Generation (HHG) Spectrum Calculator')
+st.write('This tool allows you to calculate the HHG spectra by entering the contents of the `rtdipo` file as well as the `control` file.')
 
 
 # read the sample rtdipo_HHG_Sample file and put its contents in a string variable to be used as a placeholder in the text area for rtdipo input
