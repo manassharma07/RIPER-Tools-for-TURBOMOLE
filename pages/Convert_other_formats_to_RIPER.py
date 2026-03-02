@@ -594,15 +594,13 @@ if contents != '':
 
         # Display the coordinate text in the first column
         with col1:
-            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_translated, height=300,
-                         key='translated_text_coord')
+            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_translated, height=300)
 
             st.download_button('Download coord file', coords_text_translated, file_name='coord')
 
         # Display the lattice parameters text in the second column
         with col2:
-            st.text_area("Add the following to your control file", value=lattice_text_translated, height=300,
-                         key='translated_text_control')
+            st.text_area("Add the following to your control file", value=lattice_text_translated, height=300)
         
 
 
@@ -643,12 +641,10 @@ if contents != '':
 
         # Display the coordinate text in the first column
         with col1:
-            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_super, height=300,
-                         key='supercell_text_coord')
+            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_super, height=300)
 
             st.download_button('Download coord file', coords_text_super, file_name='coord', key='download_coord_button_supercell')
 
         # Display the lattice parameters text in the second column
         with col2:
-            st.text_area("Add the following to your control file", value=lattice_text_super, height=300,
-                         key='supercell_text_control')
+            st.text_area("Add the following to your control file", value=lattice_text_super, height=300)
