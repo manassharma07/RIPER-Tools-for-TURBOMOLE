@@ -442,7 +442,7 @@ def parse_car_ase(stringio):
                 in_atoms = True
         
         z_range = max(z_coords) - min(z_coords) if z_coords else 0.0
-        c_vacuum = max(500.0, z_range + 500.0)
+        c_vacuum = max(20.0, z_range + 20.0)
         
         # Replace PBC=2D with PBC=ON and rewrite PBC line with 6 parameters
         # so ASE's read_dmol_car can parse it
