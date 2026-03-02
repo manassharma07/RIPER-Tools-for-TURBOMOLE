@@ -380,7 +380,7 @@ def parse_car_ase(stringio):
     atoms = read_dmol_car(stringio)
 
     # Convert ASE Atoms to pymatgen Structure (determine if CAR file is 3D periodicity or not)
-    if all(atoms.pbc):
+    if any(atoms.pbc):
         structure = AseAtomsAdaptor().get_structure(atoms)
     else:
         structure = AseAtomsAdaptor().get_molecule(atoms)
