@@ -52,7 +52,7 @@ def get_mace_mp():
     # return mace_mp(model="small", device="cpu", default_dtype="float32")
 
 # Function to format floating-point numbers with alignment
-def format_number(num, width=15, precision=8):
+def format_number(num, width=17, precision=10):
     # Handles positive/negative numbers while maintaining alignment
     # Adjusting the width based on the sign to ensure alignment
     return f"{num:>{width}.{precision}f}"
