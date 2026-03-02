@@ -376,70 +376,95 @@ def parse_cif_ase(stringio):
     structure = AseAtomsAdaptor().get_structure(atoms)
     return structure
 
+from ase.io.dmol import read_dmol_car
+from pymatgen.io.ase import AseAtomsAdaptor
+import io
+import re
+import numpy as np
+
+
 def parse_car_ase(stringio):
     """Parse a CAR file, handling PBC=2D, PBC=3D, and non-periodic cases."""
     
-    # Read the content to detect PBC type
     content = stringio.read()
-    stringio.seek(0)  # Reset for reading
+    stringio.seek(0)
     
     # Detect PBC dimensionality
     pbc_match = re.search(r'PBC=(\S+)', content)
     pbc_type = pbc_match.group(1) if pbc_match else None
     
     if pbc_type == '2D':
-        # For 2D PBC, we need to modify the file to look like 3D so ASE can parse it
-        # Replace PBC=2D with PBC=ON so ASE's parser can handle it
-        modified_content = content.replace('PBC=2D', 'PBC=ON')
+        lines = content.splitlines()
+        
+        # Find and parse the 2D PBC line
+        # Format: PBC    a    b    gamma(space_group)
+        pbc_line_idx = None
+        a_2d = b_2d = gamma_2d = None
+        space_group_str = ""
+        
+        for i, line in enumerate(lines):
+            if line.startswith('PBC') and not line.startswith('PBC='):
+                pbc_line_idx = i
+                parts = line.split()
+                a_2d = float(parts[1])
+                b_2d = float(parts[2])
+                # The third value may have space group appended: "93.0000(p 1)"
+                # Rejoin remaining parts in case space group has spaces: "93.0000(p 1)"
+                remainder = ' '.join(parts[3:])
+                angle_match = re.match(r'([0-9.eE+-]+)(.*)', remainder)
+                if angle_match:
+                    gamma_2d = float(angle_match.group(1))
+                    space_group_str = angle_match.group(2).strip()
+                else:
+                    gamma_2d = float(parts[3])
+                break
+        
+        if pbc_line_idx is None or a_2d is None:
+            raise ValueError("Could not parse 2D PBC line from CAR file.")
+        
+        # Set a large vacuum in z; we need to scan atom z-coords first
+        z_coords = []
+        in_atoms = False
+        for line in lines:
+            stripped = line.strip()
+            if stripped == 'end':
+                break
+            # Atom lines have coordinates; they come after the PBC line
+            # Atom line format: Label x y z GroupName ResNum ResName Element Charge
+            if in_atoms and stripped and not stripped.startswith('!'):
+                parts = stripped.split()
+                if len(parts) >= 4:
+                    try:
+                        z_coords.append(float(parts[3]))
+                    except ValueError:
+                        pass
+            if line.startswith('PBC') and not line.startswith('PBC='):
+                in_atoms = True
+        
+        z_range = max(z_coords) - min(z_coords) if z_coords else 0.0
+        c_vacuum = max(500.0, z_range + 500.0)
+        
+        # Replace PBC=2D with PBC=ON and rewrite PBC line with 6 parameters
+        # so ASE's read_dmol_car can parse it
+        new_pbc_line = f"PBC   {a_2d:.6f}   {b_2d:.6f}   {c_vacuum:.6f}   90.000000   90.000000   {gamma_2d:.6f} {space_group_str}"
+        
+        modified_lines = []
+        for i, line in enumerate(lines):
+            if 'PBC=2D' in line:
+                modified_lines.append(line.replace('PBC=2D', 'PBC=ON'))
+            elif i == pbc_line_idx:
+                modified_lines.append(new_pbc_line)
+            else:
+                modified_lines.append(line)
+        
+        modified_content = '\n'.join(modified_lines)
         modified_stringio = io.StringIO(modified_content)
         
         atoms = read_dmol_car(modified_stringio)
         
-        # Parse the PBC line to get 2D lattice parameters
-        # Format: PBC    a    b    angle (space_group)
-        pbc_line = None
-        for line in content.splitlines():
-            if line.startswith('PBC') and not line.startswith('PBC='):
-                pbc_line = line
-                break
+        # Override to set 2D periodicity
+        atoms.set_pbc([True, True, False])
         
-        if pbc_line is not None:
-            # Extract lattice parameters from PBC line
-            # For 2D: PBC  a  b  gamma(space_group)
-            parts = pbc_line.split()
-            # parts[0] = 'PBC', then a, b, gamma(sg)
-            a = float(parts[1])
-            b = float(parts[2])
-            # The angle might have the space group appended like "93.0000(p 1)"
-            angle_str = parts[3]
-            gamma = float(re.match(r'([0-9.]+)', angle_str).group(1))
-            
-            # Set 2D periodicity (periodic in a, b; non-periodic in c)
-            import numpy as np
-            
-            # Build 2D lattice vectors in xy-plane
-            ax = a
-            ay = 0.0
-            bx = b * np.cos(np.radians(gamma))
-            by = b * np.sin(np.radians(gamma))
-            
-            # Set a large vacuum in z direction
-            # Find the range of z coordinates to set appropriate vacuum
-            z_coords = atoms.positions[:, 2]
-            z_range = z_coords.max() - z_coords.min()
-            c_vacuum = max(20.0, z_range + 15.0)  # At least 20 Å or z_range + 15 Å
-            
-            cell = np.array([
-                [ax, ay, 0.0],
-                [bx, by, 0.0],
-                [0.0, 0.0, c_vacuum]
-            ])
-            
-            atoms.set_cell(cell)
-            atoms.set_pbc([True, True, False])
-        
-        # Convert to pymatgen Structure with 2D periodicity
-        # Since pymatgen Structure requires 3D periodicity, we treat it as a slab
         structure = AseAtomsAdaptor().get_structure(atoms)
         return structure
     
