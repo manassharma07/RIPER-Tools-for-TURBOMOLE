@@ -19,6 +19,7 @@ from pymatgen.io.ase import AseAtomsAdaptor
 from ase.io.dmol import read_dmol_car
 import re
 import numpy as np
+import io
 # from mace.calculators import mace_mp
 
 # Set page config
@@ -376,15 +377,92 @@ def parse_cif_ase(stringio):
     return structure
 
 def parse_car_ase(stringio):
-    # Read CAR
-    atoms = read_dmol_car_custom(stringio)
-
-    # Convert ASE Atoms to pymatgen Structure (determine if CAR file is 3D periodicity or not)
-    if any(atoms.pbc):
+    """Parse a CAR file, handling PBC=2D, PBC=3D, and non-periodic cases."""
+    
+    # Read the content to detect PBC type
+    content = stringio.read()
+    stringio.seek(0)  # Reset for reading
+    
+    # Detect PBC dimensionality
+    pbc_match = re.search(r'PBC=(\S+)', content)
+    pbc_type = pbc_match.group(1) if pbc_match else None
+    
+    if pbc_type == '2D':
+        # For 2D PBC, we need to modify the file to look like 3D so ASE can parse it
+        # Replace PBC=2D with PBC=ON so ASE's parser can handle it
+        modified_content = content.replace('PBC=2D', 'PBC=ON')
+        modified_stringio = io.StringIO(modified_content)
+        
+        atoms = read_dmol_car(modified_stringio)
+        
+        # Parse the PBC line to get 2D lattice parameters
+        # Format: PBC    a    b    angle (space_group)
+        pbc_line = None
+        for line in content.splitlines():
+            if line.startswith('PBC') and not line.startswith('PBC='):
+                pbc_line = line
+                break
+        
+        if pbc_line is not None:
+            # Extract lattice parameters from PBC line
+            # For 2D: PBC  a  b  gamma(space_group)
+            parts = pbc_line.split()
+            # parts[0] = 'PBC', then a, b, gamma(sg)
+            a = float(parts[1])
+            b = float(parts[2])
+            # The angle might have the space group appended like "93.0000(p 1)"
+            angle_str = parts[3]
+            gamma = float(re.match(r'([0-9.]+)', angle_str).group(1))
+            
+            # Set 2D periodicity (periodic in a, b; non-periodic in c)
+            import numpy as np
+            
+            # Build 2D lattice vectors in xy-plane
+            ax = a
+            ay = 0.0
+            bx = b * np.cos(np.radians(gamma))
+            by = b * np.sin(np.radians(gamma))
+            
+            # Set a large vacuum in z direction
+            # Find the range of z coordinates to set appropriate vacuum
+            z_coords = atoms.positions[:, 2]
+            z_range = z_coords.max() - z_coords.min()
+            c_vacuum = max(20.0, z_range + 15.0)  # At least 20 Å or z_range + 15 Å
+            
+            cell = np.array([
+                [ax, ay, 0.0],
+                [bx, by, 0.0],
+                [0.0, 0.0, c_vacuum]
+            ])
+            
+            atoms.set_cell(cell)
+            atoms.set_pbc([True, True, False])
+        
+        # Convert to pymatgen Structure with 2D periodicity
+        # Since pymatgen Structure requires 3D periodicity, we treat it as a slab
         structure = AseAtomsAdaptor().get_structure(atoms)
+        return structure
+    
     else:
-        structure = AseAtomsAdaptor().get_molecule(atoms)
-    return structure
+        # Standard 3D or non-periodic case
+        atoms = read_dmol_car(stringio)
+        
+        if any(atoms.pbc):
+            structure = AseAtomsAdaptor().get_structure(atoms)
+        else:
+            structure = AseAtomsAdaptor().get_molecule(atoms)
+        return structure
+
+# def parse_car_ase(stringio):
+#     # Read CAR
+#     atoms = read_dmol_car_custom(stringio)
+
+#     # Convert ASE Atoms to pymatgen Structure (determine if CAR file is 3D periodicity or not)
+#     if any(atoms.pbc):
+#         structure = AseAtomsAdaptor().get_structure(atoms)
+#     else:
+#         structure = AseAtomsAdaptor().get_molecule(atoms)
+#     return structure
 
 def read_dmol_car_custom(stringio):
     """
