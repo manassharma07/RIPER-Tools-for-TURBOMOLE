@@ -574,7 +574,7 @@ if contents != '':
 
         # Download CIF files
         if isinstance(translated_structure, Structure):
-            st.subheader("Download CIF File for the translatedd structure")
+            st.subheader("Download CIF File for the translated structure")
 
             convert_to_cif(translated_structure, "translated_structure.cif")
             st.download_button('Download CIF', data=read_file("translated_structure.cif"), file_name='translated_structure.cif', key='cif_button_translated_structure')
@@ -641,10 +641,10 @@ if contents != '':
 
         # Display the coordinate text in the first column
         with col1:
-            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_super, height=300)
+            st.text_area("Coord file contents (Supercell Cartesian coordinates in Bohr)", value=coords_text_super, height=300)
 
-            st.download_button('Download coord file', coords_text_super, file_name='coord')
+            st.download_button('Download supercell coord file', coords_text_super, file_name='coord')
 
         # Display the lattice parameters text in the second column
         with col2:
-            st.text_area("Add the following to your control file", value=lattice_text_super, height=300)
+            st.text_area("Add the following to your control file (Supercell)", value=lattice_text_super, height=300)
