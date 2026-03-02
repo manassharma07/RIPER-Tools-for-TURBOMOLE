@@ -377,7 +377,7 @@ def parse_cif_ase(stringio):
 
 def parse_car_ase(stringio):
     # Read CAR
-    atoms = read_dmol_car(stringio)
+    atoms = read_dmol_car_custom(stringio)
 
     # Convert ASE Atoms to pymatgen Structure (determine if CAR file is 3D periodicity or not)
     if any(atoms.pbc):
@@ -386,6 +386,86 @@ def parse_car_ase(stringio):
         structure = AseAtomsAdaptor().get_molecule(atoms)
     return structure
 
+def read_dmol_car_custom(stringio):
+    """
+    Parse a .car file and return an ASE Atoms object supporting 0, 1, 2, or 3D PBC.
+    
+    ASE's read_dmol_car only supports 000 or 111 PBC. This custom parser
+    reads the PBC and cell vectors directly from the file header.
+    """
+    import numpy as np
+    from ase import Atoms
+
+    lines = stringio.read().splitlines()
+
+    # --- Parse header ---
+    pbc = [False, False, False]
+    cell = None
+    periodicity_map = {
+        "cluster":    [False, False, False],
+        "polymer":    [True,  False, False],
+        "slab":       [True,  True,  False],
+        "crystal":    [True,  True,  True],
+    }
+
+    i = 0
+    for i, line in enumerate(lines):
+        stripped = line.strip().lower()
+
+        # Periodicity keyword (line starting with "!DATE" marks end of header)
+        for keyword, pbc_val in periodicity_map.items():
+            if stripped.startswith(keyword):
+                pbc = pbc_val
+                break
+
+        # Cell vectors: lines starting with "PBC" contain a, b, c, alpha, beta, gamma
+        if stripped.startswith("pbc") and not stripped.startswith("pbc="):
+            parts = line.split()
+            if len(parts) >= 7:
+                try:
+                    a, b, c = float(parts[1]), float(parts[2]), float(parts[3])
+                    alpha, beta, gamma = float(parts[4]), float(parts[5]), float(parts[6])
+                    from ase.geometry import cellpar_to_cell
+                    cell = cellpar_to_cell([a, b, c, alpha, beta, gamma])
+                except ValueError:
+                    pass
+
+        if stripped.startswith("!date"):
+            i += 1  # atom lines start after this
+            break
+
+    # --- Parse atom lines ---
+    symbols = []
+    positions = []
+
+    for line in lines[i:]:
+        stripped = line.strip()
+        if not stripped or stripped.lower().startswith("end"):
+            break
+        parts = stripped.split()
+        # CAR atom line format: name x y z mol_name resname resnum element charge
+        if len(parts) < 8:
+            continue
+        try:
+            x, y, z = float(parts[1]), float(parts[2]), float(parts[3])
+        except ValueError:
+            continue
+
+        # Element symbol is in column index 7
+        element = parts[7]
+        # Strip trailing digits (e.g. "C1" -> "C")
+        element = ''.join(c for c in element if c.isalpha())
+        symbols.append(element)
+        positions.append([x, y, z])
+
+    atoms = Atoms(
+        symbols=symbols,
+        positions=positions,
+        cell=cell if cell is not None else np.zeros((3, 3)),
+        pbc=pbc,
+    )
+
+    return atoms
 
 
 # return filecontents
