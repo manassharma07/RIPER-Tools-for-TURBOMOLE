@@ -525,10 +525,10 @@ if contents != '':
         structure = parse_xyz(contents)
     elif file_format == "CAR (Materials Studio)":
         stringio_obj_car = StringIO(contents)
-        try:
-            structure = parse_car_ase(stringio_obj_car)
-        except Exception:
-            raise Exception("Wrong CAR format or PBC is not set to ON or OFF (PBC=2D is not supported here).")
+        # try:
+        structure = parse_car_ase(stringio_obj_car)
+        # except Exception:
+        #     raise Exception("Wrong CAR format or PBC is not set to ON or OFF (PBC=2D is not supported here).")
     elif file_format == "POSCAR":
         structure = parse_poscar(contents)
     elif file_format == "Quantum ESPRESSO (PWSCF)":
