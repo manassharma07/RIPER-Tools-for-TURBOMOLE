@@ -102,9 +102,9 @@ def generate_coord_text(coords_bohr):
     for coord in coords_bohr:
         # Aligning all coordinates and ensuring the element symbol is aligned to the left
         coord_text += (
-            f"{format_number(coord[0], width=15, precision=8)} "
-            f"{format_number(coord[1], width=15, precision=8)} "
-            f"{format_number(coord[2], width=15, precision=8)} "
+            f"{format_number(coord[0], width=17, precision=10)} "
+            f"{format_number(coord[1], width=17, precision=10)} "
+            f"{format_number(coord[2], width=17, precision=10)} "
             f"{coord[3]:<2s}\n"
         )
     coord_text += "$end"
@@ -116,7 +116,7 @@ def generate_lattice_text(structure):
     lattice_params = structure.lattice.abc
     angles = structure.lattice.angles
     lattice_text = "$cell angs\n"
-    lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    lattice_text += f"  {lattice_params[0]:.10f}   {lattice_params[1]:.10f}   {lattice_params[2]:.10f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
     lattice_text += "$periodic 3\n"
     lattice_text += "$kpoints\n"
     lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
