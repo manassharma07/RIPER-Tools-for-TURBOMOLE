@@ -643,7 +643,7 @@ if contents != '':
         with col1:
             st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text_super, height=300)
 
-            st.download_button('Download coord file', coords_text_super, file_name='coord', key='download_coord_button_supercell')
+            st.download_button('Download coord file', coords_text_super, file_name='coord')
 
         # Display the lattice parameters text in the second column
         with col2:
