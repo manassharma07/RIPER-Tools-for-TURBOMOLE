@@ -45,7 +45,7 @@ def convert_to_bohr(structure):
 def generate_coord_text(coords_bohr):
     coord_text = "$coord\n"
     for coord in coords_bohr:
-        coord_text += f"    {coord[0]:.8f}   {coord[1]:.8f}   {coord[2]:.8f}    {coord[3]}\n"
+        coord_text += f"    {coord[0]:.10f}   {coord[1]:.10f}   {coord[2]:.10f}    {coord[3]}\n"
     coord_text += "$end"
     return coord_text
 
@@ -54,7 +54,7 @@ def generate_lattice_text(structure):
     lattice_params = structure.lattice.abc
     angles = structure.lattice.angles
     lattice_text = "$cell angs\n"
-    lattice_text += f"  {lattice_params[0]:.8f}   {lattice_params[1]:.8f}   {lattice_params[2]:.8f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    lattice_text += f"  {lattice_params[0]:.10f}   {lattice_params[1]:.10f}   {lattice_params[2]:.10f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
     lattice_text += "$periodic 3\n"
     lattice_text += "$kpoints\n"
     lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
