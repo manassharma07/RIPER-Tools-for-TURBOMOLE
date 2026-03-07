@@ -102,17 +102,10 @@ cleaned_input = clean_input_str(input_rtdipo_str)
 
 # pd.set_option("display.precision", 14)
 st.write('### Parsed dipole moments along x, y and z at different timesteps')
-# df = pd.read_csv(io.StringIO(cleaned_input), delim_whitespace=True, names=['Time step', 'x direction', 'y direction', 'z direction'])
-# df = pd.read_csv(io.StringIO(cleaned_input), index_col = False,sep="   ", header=0,names=['Time step', 'x direction', 'y direction', 'z direction'])
 df = pd.read_csv(io.StringIO(cleaned_input), skiprows=1, delim_whitespace=True, names=['Time step', 'x direction', 'y direction', 'z direction'])
 # Insert the actual time column in the dataframe object
 df.insert(1,'Time (a.u.)', time_step*df['Time step'])
-# df = df.set_index('Time step')
-# st.dataframe(df.style.format("{:.8%}"))
-# Set precision for printing
 st.dataframe(df.style.format({"E": "{:.2f}"}))
-# st.dataframe(df)
-# st.write(input_rtdipo_str)
 
 
 # determining the name of the file
@@ -122,7 +115,6 @@ export_rtdipo_file_name = 'rtdipo.xlsx'
 df.to_excel(export_rtdipo_file_name)
 with open(export_rtdipo_file_name, 'rb') as f:
      st.download_button('Download EXCEL file', f, file_name=export_rtdipo_file_name)  
-# st.write('rtdipo is written to Excel File successfully.')
 
 
 # Plotting the dipole moments
@@ -273,14 +265,10 @@ if isSmoothingOn:
        isSinsqSmoothing = False 
        isCossqSmoothing = False
        isFalvosqSmoothing = True
-   # The tau parameter defines the time value till which 
-   # no smoothing/damping should be applied. Ex: tau = 0.9*T
-   # means that the smoothing will only be applied to the 
-   # dipole moment during the last 10% of the laser pulse.
    tau = st.text_input(label = 'Enter the value of tau such that the smoothing is applied to (1-tau)*Total_pulse_time', value='0.75',key='tau')
-   tau = float(d_omega)*pulse_duration
-   # The time step (int) from which smoothing/damping is required
+   tau = float(tau)*pulse_duration  # ← FIXED: was float(d_omega)*pulse_duration
    tau_step = int(tau/time_step)
+
 # Use window functions for removing spectral leakage from Fourier transform
 isWindowing = st.checkbox('Use windowing', value=True)
 windowType = 'hann'
@@ -324,13 +312,11 @@ ti = time[0:max_time_step]
 
 # Smooth termination of dipole moment
 if isSmoothingOn:
-   # Smoothing is only applied to the dipole moment during the last T-tau duration of the pulse
    if isSinsqSmoothing:
        x_comp[tau_step:] = x_comp[tau_step:]*(np.sin(np.pi*(pulse_duration-ti[tau_step:])/(2*pulse_duration)))**2
        y_comp[tau_step:] = y_comp[tau_step:]*(np.sin(np.pi*(pulse_duration-ti[tau_step:])/(2*pulse_duration)))**2
        z_comp[tau_step:] = z_comp[tau_step:]*(np.sin(np.pi*(pulse_duration-ti[tau_step:])/(2*pulse_duration)))**2
    if isCossqSmoothing:
-       # This is actually same as before (sinsq)
        x_comp[tau_step:] = x_comp[tau_step:]*np.cos( np.pi/2 * (ti[tau_step:]-tau)/(pulse_duration-tau) )**2
        y_comp[tau_step:] = y_comp[tau_step:]*np.cos( np.pi/2 * (ti[tau_step:]-tau)/(pulse_duration-tau) )**2
        z_comp[tau_step:] = z_comp[tau_step:]*np.cos( np.pi/2 * (ti[tau_step:]-tau)/(pulse_duration-tau) )**2
@@ -350,11 +336,10 @@ if isWindowing:
 
 i=0
 for omegai in omega:
-   # sumP = 0.0
    sumP1 = np.array([0.0, 0.0, 0.0])
    sumP2 = np.array([0.0, 0.0, 0.0])
-   temp1 = np.sin(omegai*ti)#*time_step
-   temp2 = np.cos(omegai*ti)#*time_step
+   temp1 = np.sin(omegai*ti)
+   temp2 = np.cos(omegai*ti)
    sumP1[0] = trapezoid(x_comp*temp1, dx=ti[1]-ti[0]) 
    sumP2[0] = trapezoid(x_comp*temp2, dx=ti[1]-ti[0]) 
    sumP1[1] = trapezoid(y_comp*temp1, dx=ti[1]-ti[0]) 
@@ -376,8 +361,36 @@ osc_strength = Intensity
 omega = omega*unit_conv_factor
 
 
+# ============================================================
+# FIX 1: Compute dynamic default limits from the current data
+#         BEFORE creating the limit input widgets.
+# ============================================================
+default_lxlim = float(min(omega))
+default_uxlim = float(max(omega))
+default_lylim = float(np.nanmin(osc_strength) - 0.1 * abs(np.nanmax(osc_strength)))
+default_uylim = float(np.nanmax(osc_strength) + 0.1 * abs(np.nanmax(osc_strength)))
 
+# ============================================================
+# Build a "fingerprint" of all settings that affect the data.
+# When any of them change we need to reset the axis-limit
+# widgets so they pick up the new defaults.
+# ============================================================
+current_settings_hash = (
+    isSavgol, gauge, isSmoothingOn, isWindowing, isMovingAverages,
+    omega_min, omega_max, d_omega, energy_units, max_time,
+    amp_x, amp_y, amp_z,
+    # add more settings here if needed
+)
 
+if "prev_settings_hash" not in st.session_state:
+    st.session_state.prev_settings_hash = current_settings_hash
+
+# If any processing setting changed, delete the cached widget
+# values so the text_inputs re-initialise with fresh defaults.
+if st.session_state.prev_settings_hash != current_settings_hash:
+    for k in ("lxlim", "uxlim", "lylim", "uylim"):
+        st.session_state.pop(k, None)
+    st.session_state.prev_settings_hash = current_settings_hash
 
 
 ## Plot the absorption spectrum
@@ -398,22 +411,47 @@ isNormalize = normalize_col1.checkbox('Normalize', value=True)
 norm_factor = normalize_col2.text_input(label='Value by which to normalize the highest peak', value='0', key='norm_factor')
 norm_factor = float(norm_factor)
 
+# ============================================================
+# FIX 2: Normalize by the ABSOLUTE value of the highest peak
+#         so the spectrum never gets inverted.
+# ============================================================
 if isNormalize:
      peak_indices, dict_peak = signal.find_peaks(osc_strength, prominence=prominence_val)
-     highest_peak_val = np.max(osc_strength[peak_indices])
-     # st.write(highest_peak_val)
-     osc_strength = osc_strength/highest_peak_val
-     # st.write(np.max(osc_strength))
+     if len(peak_indices) > 0:
+          highest_peak_val = np.max(osc_strength[peak_indices])
+     else:
+          highest_peak_val = np.nanmax(np.abs(osc_strength))
+     # Use abs() to avoid sign flip when highest_peak_val < 0
+     if not np.isclose(highest_peak_val, 0.0):
+          osc_strength = osc_strength / abs(highest_peak_val)
+     # Recompute default y-limits after normalization
+     default_lylim = float(np.nanmin(osc_strength) - 0.1 * abs(np.nanmax(osc_strength)))
+     default_uylim = float(np.nanmax(osc_strength) + 0.1 * abs(np.nanmax(osc_strength)))
+
+# ============================================================
+# Also reset limits if normalization state changed
+# ============================================================
+current_norm_hash = (isNormalize, isFP, prominence_val)
+if "prev_norm_hash" not in st.session_state:
+    st.session_state.prev_norm_hash = current_norm_hash
+if st.session_state.prev_norm_hash != current_norm_hash:
+    for k in ("lxlim", "uxlim", "lylim", "uylim"):
+        st.session_state.pop(k, None)
+    st.session_state.prev_norm_hash = current_norm_hash
 
 
 lim_col1, lim_col2, lim_col3, lim_col4 = st.columns(4)
-lxlim = lim_col1.text_input(label='Enter the lower limit for x-axis', value=str(min(omega)),key='lxlim')
+lxlim = lim_col1.text_input(label='Enter the lower limit for x-axis',
+                             value=str(default_lxlim), key='lxlim')
 lxlim = float(lxlim)
-uxlim = lim_col2.text_input(label='Enter the upper limit for x-axis', value=str(max(omega)),key='uxlim')
+uxlim = lim_col2.text_input(label='Enter the upper limit for x-axis',
+                             value=str(default_uxlim), key='uxlim')
 uxlim = float(uxlim)
-lylim = lim_col3.text_input(label='Enter the lower limit for y-axis', value=str(min(osc_strength) - 0.1*max(osc_strength)),key='lylim')
+lylim = lim_col3.text_input(label='Enter the lower limit for y-axis',
+                             value=str(default_lylim), key='lylim')
 lylim = float(lylim)
-uylim = lim_col4.text_input(label='Enter the upper limit for y-axis', value=str(max(osc_strength) + 0.1*max(osc_strength)),key='uylim')
+uylim = lim_col4.text_input(label='Enter the upper limit for y-axis',
+                             value=str(default_uylim), key='uylim')
 uylim = float(uylim)
 
 title_col1, title_col2, title_col3 = st.columns(3)
@@ -434,11 +472,7 @@ line_width = plot_col3.slider('Line Width', 0.4, 10., 1.5, step=0.1)
 isGrids = plot_col4.checkbox('Grids', value=False)
 
 
-
-
-
 fig, ax = plt.subplots(figsize=[figsize_width, figsize_height])
- # We change the fontsize of minor ticks label 
 ax.tick_params(axis='both', which='major', labelsize=22)
 ax.tick_params(axis='both', which='minor', labelsize=22)
 ax.plot(omega, osc_strength, color=plot_color, lw=line_width)
@@ -448,8 +482,7 @@ ax.set_ylabel(ytitle, fontsize=22)
 ax.set_xlim([lxlim, uxlim])
 ax.set_ylim([lylim, uylim])
 ax.set_title(plot_title, fontsize=27)
-ax2 = ax.twiny()   # mirror the current x axis
-# ax2.tick_params(axis='both', which='minor', labelsize=22)
+ax2 = ax.twiny()
 if isGrids:
    ax2.grid(True)
 ax2.set_xlabel('Harmonic Order $\omega/\omega_0$', fontsize=22)
@@ -470,8 +503,6 @@ with open('spectrumHHG.png', 'rb') as f:
 ## Create a dataframe object with the spectrum data
 chart_data = pd.DataFrame(omega, columns=['Energy ('+energy_units+')'])
 chart_data.insert(loc=1, column='Intensity', value=osc_strength)
-# chart_data = chart_data.set_index('Frequency')
-# st.line_chart(chart_data)
 st.write('### OUTPUT RT-TDDFT HHG Spectrum (hhgspec)')
 st.write(chart_data)
 # determining the name of the file
@@ -480,7 +511,6 @@ export_rtspec_file_name = 'hhgspec.xlsx'
 chart_data.to_excel(export_rtspec_file_name)
 with open(export_rtspec_file_name, 'rb') as f:
      st.download_button('Download EXCEL file', f, file_name=export_rtspec_file_name)  
-# st.write('rtspec is written to Excel File successfully.')
 rtspec_str = chart_data.to_string(header=False, index=False)
 rtspec_str = '$hhgspec\nEnergy ('+energy_units+')\t Intensity\n' + rtspec_str
 rtspec_str = rtspec_str + '\n$end'
