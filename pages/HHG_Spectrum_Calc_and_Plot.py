@@ -8,6 +8,7 @@ import numpy as np
 from scipy.fft import fft
 import os
 from numba import njit, jit
+from scipy.integrate import trapezoid
 
 # Set page config
 st.set_page_config(page_title='HHG Spectrum Calculator and Plotter', layout='wide', page_icon="⚛️",
@@ -354,12 +355,12 @@ for omegai in omega:
    sumP2 = np.array([0.0, 0.0, 0.0])
    temp1 = np.sin(omegai*ti)#*time_step
    temp2 = np.cos(omegai*ti)#*time_step
-   sumP1[0] = np.trapz(x_comp*temp1, dx=ti[1]-ti[0]) 
-   sumP2[0] = np.trapz(x_comp*temp2, dx=ti[1]-ti[0]) 
-   sumP1[1] = np.trapz(y_comp*temp1, dx=ti[1]-ti[0]) 
-   sumP2[1] = np.trapz(y_comp*temp2, dx=ti[1]-ti[0]) 
-   sumP1[2] = np.trapz(z_comp*temp1, dx=ti[1]-ti[0]) 
-   sumP2[2] = np.trapz(z_comp*temp2, dx=ti[1]-ti[0]) 
+   sumP1[0] = trapezoid(x_comp*temp1, dx=ti[1]-ti[0]) 
+   sumP2[0] = trapezoid(x_comp*temp2, dx=ti[1]-ti[0]) 
+   sumP1[1] = trapezoid(y_comp*temp1, dx=ti[1]-ti[0]) 
+   sumP2[1] = trapezoid(y_comp*temp2, dx=ti[1]-ti[0]) 
+   sumP1[2] = trapezoid(z_comp*temp1, dx=ti[1]-ti[0]) 
+   sumP2[2] = trapezoid(z_comp*temp2, dx=ti[1]-ti[0]) 
    P[i]=sumP1[0]**2 + sumP2[0]**2 + sumP1[1]**2 + sumP2[1]**2 + sumP1[2]**2 + sumP2[2]**2
    i=i+1
 
