@@ -237,7 +237,7 @@ else:
 
 isSavgol = st.checkbox('Savgol', value=False)
 gauge = st.selectbox('Select the gauge',
-     ( 'length','velocity', 'acceleration' ))
+     ( 'length','velocity', 'acceleration' ), index=2)
 if gauge=='length':
     isAG=False
     isVG=False
