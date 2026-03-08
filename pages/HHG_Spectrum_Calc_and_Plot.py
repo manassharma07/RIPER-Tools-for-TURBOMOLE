@@ -407,7 +407,7 @@ if isFP:
      highest_peak_val = np.max(osc_strength[peak_indices])
 
 normalize_col1, normalize_col2 = st.columns(2)
-isNormalize = normalize_col1.checkbox('Normalize', value=True)
+isNormalize = normalize_col1.checkbox('Normalize', value=False)
 norm_factor = normalize_col2.text_input(label='Value by which to normalize the highest peak', value='0', key='norm_factor')
 norm_factor = float(norm_factor)
 
