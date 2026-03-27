@@ -219,7 +219,7 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance, frac_rang
     # Keep a running array of all base atom Cartesian positions (avoids repeated get_positions)
     all_base_positions = packed_structure.get_positions().copy()
 
-    max_attempts = 200  # Limit to avoid infinite loops
+    max_attempts = 500  # Limit to avoid infinite loops
     with st.expander("Packing...", expanded=False):
         # Loop to add molecules
         for i in range(num_molecules):
