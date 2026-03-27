@@ -144,6 +144,31 @@ def display_structure_info(structure):
         st.table(df_coords)
 
 
+# Function to convert atomic coordinates to Bohr units
+def convert_to_bohr(structure):
+    coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
+    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
+
+# Function to generate coordinate text
+def generate_coord_text(coords_bohr):
+    coord_text = "$coord\n"
+    for coord in coords_bohr:
+        coord_text += f"    {coord[0]:.10f}   {coord[1]:.10f}   {coord[2]:.10f}    {coord[3]}\n"
+    coord_text += "$end"
+    return coord_text
+
+# Function to generate lattice parameter text
+def generate_lattice_text(structure):
+    lattice_params = structure.lattice.abc
+    angles = structure.lattice.angles
+    lattice_text = "$cell angs\n"
+    lattice_text += f"  {lattice_params[0]:.10f}   {lattice_params[1]:.10f}   {lattice_params[2]:.10f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
+    lattice_text += "$periodic 3\n"
+    lattice_text += "$kpoints\n"
+    lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
+    return lattice_text
+
+
 def random_rotation_matrix():
     """Generate a random rotation matrix using scipy Rotation."""
     return R.random().as_matrix()
@@ -174,8 +199,12 @@ def has_overlap(base_positions, mol_positions, tolerance, cell_matrix):
     return np.any(distances < tolerance)
 
 
-def pack_structure(base_structure, molecule, num_molecules, tolerance):
-    """Pack molecule into the base structure without overlaps."""
+def pack_structure(base_structure, molecule, num_molecules, tolerance, frac_range=None):
+    """Pack molecule into the base structure without overlaps.
+    
+    frac_range: optional dict with keys 'a', 'b', 'c', each being a tuple (min, max) 
+                in fractional coordinates to constrain molecule placement.
+    """
     # start_time = time.time()  # Start timing
     
     # Create a mutable copy of the base structure
@@ -210,7 +239,15 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
                 rotated_positions = (rotation_matrix @ centered_positions.T).T
                 
                 # 3. Generate random displacement uniformly in fractional space, convert to Cartesian
-                frac_displacement = np.random.rand(3)
+                # If frac_range is specified, constrain the fractional coordinates
+                if frac_range is not None:
+                    frac_displacement = np.array([
+                        np.random.uniform(frac_range['a'][0], frac_range['a'][1]),
+                        np.random.uniform(frac_range['b'][0], frac_range['b'][1]),
+                        np.random.uniform(frac_range['c'][0], frac_range['c'][1]),
+                    ])
+                else:
+                    frac_displacement = np.random.rand(3)
                 displacement = frac_displacement @ cell_matrix
                 
                 # 4. Apply displacement and set new positions
@@ -228,7 +265,8 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
                 print(f"Added the {i+1} th molecule at {attempt}th attempt")
             else:
                 st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts.")
-                
+                # st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts. Stopping.")
+                # break  # No point continuing; the cell is likely full
     
     return packed_structure
 
@@ -244,48 +282,119 @@ def download_packed_struture(packed_structure):
             mime="chemical/x-cif"
         )
 
+
+def estimate_cell_from_density(molecule, num_molecules, density):
+    """Estimate a cubic cell parameter from target density and number of molecules.
+    
+    density: target density in g/cm^3
+    Returns cell edge length in Angstroms for a cubic cell.
+    """
+    from ase.data import atomic_masses, atomic_numbers
+    # Calculate molecular mass in g/mol
+    mol_mass = sum(atomic_masses[atomic_numbers[sym]] for sym in molecule.get_chemical_symbols())
+    # Total mass in grams
+    total_mass_g = (num_molecules * mol_mass) / 6.02214076e23
+    # Volume in cm^3
+    volume_cm3 = total_mass_g / density
+    # Volume in Angstrom^3 (1 cm = 1e8 Angstrom)
+    volume_A3 = volume_cm3 * 1e24
+    # Cubic cell edge
+    cell_edge = volume_A3 ** (1.0 / 3.0)
+    return cell_edge
+
+
 # # Streamlit interface
 
 st.title("Pack Molecules in a Cell")
 st.write('1. The tool works as follows.')
-st.write('   - Provide a `CIF` file of the cell in which you want to pack a number of some specific molecule.')
+st.write('   - Provide a `CIF` file of the cell (e.g., a substrate or monolayer) in which you want to pack molecules, **OR** specify the cell parameters manually, **OR** specify the target density and number of molecules to auto-determine a cubic cell.')
 st.write('   - Provide the `XYZ` file of the molecule to pack the cell with.')
 st.write('2. For both the cell and the molecule, you can either:')
 st.write('   - Paste the file contents directly in the text area')
 st.write('   - Upload the file using the file uploader')
 st.write('3. Specify the number of molecules to be packed and the tolerance distance.')
+st.write('4. Optionally, restrict the packing region using fractional coordinate ranges along a, b, and c.')
 
-# CIF input section
-st.header("Base Structure (CIF)")
-cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method")
+# Base structure input section
+st.header("Base Structure")
+cell_input_method = st.radio(
+    "Choose how to define the cell",
+    ["CIF File", "Manual Cell Parameters", "Auto from Density"],
+    key="cell_method"
+)
 
 base_structure = None
-if cif_input_method == "Paste Content":
-    cif_content = st.text_area(
-        label='Enter the contents of the CIF file',
-        value='',
-        placeholder='Paste your CIF file contents here...',
-        height=200,
-        key='cif_text_area'
-    )
-    if cif_content.strip():
-        try:
-            base_structure = read(io.StringIO(cif_content), format='cif')
-            st.success("Base structure loaded from pasted content.")
-        except Exception as e:
-            st.error(f"Error reading CIF content: {str(e)}")
-else:
-    cif_file = st.file_uploader("Upload CIF file", type=["cif"], key="cif_uploader")
-    if cif_file:
-        try:
-            base_structure = read(cif_file, format='cif')
-            st.success("Base structure loaded from file.")
-        except Exception as e:
-            st.error(f"Error reading CIF file: {str(e)}")
-if base_structure is not None:
+
+if cell_input_method == "CIF File":
+    # CIF input section
+    st.subheader("CIF Input")
+    cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method")
+
+    if cif_input_method == "Paste Content":
+        cif_content = st.text_area(
+            label='Enter the contents of the CIF file',
+            value='',
+            placeholder='Paste your CIF file contents here...',
+            height=200,
+            key='cif_text_area'
+        )
+        if cif_content.strip():
+            try:
+                base_structure = read(io.StringIO(cif_content), format='cif')
+                st.success("Base structure loaded from pasted content.")
+            except Exception as e:
+                st.error(f"Error reading CIF content: {str(e)}")
+    else:
+        cif_file = st.file_uploader("Upload CIF file", type=["cif"], key="cif_uploader")
+        if cif_file:
+            try:
+                base_structure = read(cif_file, format='cif')
+                st.success("Base structure loaded from file.")
+            except Exception as e:
+                st.error(f"Error reading CIF file: {str(e)}")
+
+elif cell_input_method == "Manual Cell Parameters":
+    st.subheader("Cell Parameters")
+    col_a, col_b, col_c = st.columns(3)
+    with col_a:
+        cell_a = st.number_input("a (Å)", min_value=0.1, value=10.0, step=0.1, key="cell_a")
+    with col_b:
+        cell_b = st.number_input("b (Å)", min_value=0.1, value=10.0, step=0.1, key="cell_b")
+    with col_c:
+        cell_c = st.number_input("c (Å)", min_value=0.1, value=10.0, step=0.1, key="cell_c")
+    col_alpha, col_beta, col_gamma = st.columns(3)
+    with col_alpha:
+        cell_alpha = st.number_input("α (°)", min_value=1.0, max_value=179.0, value=90.0, step=1.0, key="cell_alpha")
+    with col_beta:
+        cell_beta = st.number_input("β (°)", min_value=1.0, max_value=179.0, value=90.0, step=1.0, key="cell_beta")
+    with col_gamma:
+        cell_gamma = st.number_input("γ (°)", min_value=1.0, max_value=179.0, value=90.0, step=1.0, key="cell_gamma")
+    
+    # Create an empty ASE Atoms object with the specified cell
+    from ase.cell import Cell
+    cell = Cell.fromcellpar([cell_a, cell_b, cell_c, cell_alpha, cell_beta, cell_gamma])
+    base_structure = Atoms(cell=cell, pbc=True)
+    st.success(f"Empty cell created: a={cell_a}, b={cell_b}, c={cell_c}, α={cell_alpha}, β={cell_beta}, γ={cell_gamma}")
+
+elif cell_input_method == "Auto from Density":
+    st.subheader("Density-based Cell")
+    st.write("Specify the target density and the number of molecules. A cubic cell will be determined automatically.")
+    st.info("You need to provide the molecule (XYZ) below first, then come back and click 'Generate Cell'.")
+    auto_density = st.number_input("Target density (g/cm³)", min_value=0.01, value=1.0, step=0.01, key="auto_density")
+    auto_num_molecules = st.number_input("Number of molecules (for cell estimation)", min_value=1, value=10, step=1, key="auto_num_mol")
+    # base_structure will be set after molecule is loaded (see below)
+
+if base_structure is not None and cell_input_method != "Auto from Density":
     base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
-    display_structure_info(base_structure_pymatgen)
-    visualize_structure(base_structure_pymatgen, "viz1.html")
+    if len(base_structure) > 0:
+        display_structure_info(base_structure_pymatgen)
+        visualize_structure(base_structure_pymatgen, "viz1.html")
+    else:
+        st.write("Empty cell (no atoms). Lattice parameters:")
+        a, b, c = base_structure_pymatgen.lattice.abc
+        alpha, beta, gamma = base_structure_pymatgen.lattice.angles
+        st.write(f"a={a:.4f} Å, b={b:.4f} Å, c={c:.4f} Å, α={alpha:.1f}°, β={beta:.1f}°, γ={gamma:.1f}°")
+
 # XYZ input section
 st.header("Molecule Structure (XYZ)")
 xyz_input_method = st.radio("Choose input method for XYZ", ["Paste Content", "Upload File"], key="xyz_method")
@@ -319,6 +428,19 @@ if molecule is not None:
     # display_structure_info(molecule)
     visualize_molecule(molecule_pymatgen, "viz2.html")
 
+# Handle "Auto from Density" cell generation after molecule is loaded
+if cell_input_method == "Auto from Density" and molecule is not None:
+    if st.button("Generate Cell from Density"):
+        cell_edge = estimate_cell_from_density(molecule, auto_num_molecules, auto_density)
+        base_structure = Atoms(cell=[cell_edge, cell_edge, cell_edge], pbc=True)
+        st.success(f"Cubic cell generated: a = b = c = {cell_edge:.4f} Å (density ≈ {auto_density} g/cm³ for {auto_num_molecules} molecules)")
+        st.session_state['auto_base_structure'] = base_structure
+
+# Retrieve auto-generated base structure from session state if applicable
+if cell_input_method == "Auto from Density" and base_structure is None:
+    if 'auto_base_structure' in st.session_state:
+        base_structure = st.session_state['auto_base_structure']
+
 # Parameters and packing section
 if base_structure is not None and molecule is not None:
     st.write(f"Number of atoms in base structure: {len(base_structure)}")
@@ -340,6 +462,27 @@ if base_structure is not None and molecule is not None:
             step=0.1
         )
 
+        # Fractional coordinate range for packing region
+        st.subheader("Packing Region (Fractional Coordinates)")
+        use_frac_range = st.checkbox("Restrict packing to a specific region?", value=False, key="use_frac_range")
+        frac_range = None
+        if use_frac_range:
+            col_fa, col_fb, col_fc = st.columns(3)
+            with col_fa:
+                frac_a_min = st.number_input("a min", min_value=0.0, max_value=1.0, value=0.0, step=0.01, key="frac_a_min")
+                frac_a_max = st.number_input("a max", min_value=0.0, max_value=1.0, value=1.0, step=0.01, key="frac_a_max")
+            with col_fb:
+                frac_b_min = st.number_input("b min", min_value=0.0, max_value=1.0, value=0.0, step=0.01, key="frac_b_min")
+                frac_b_max = st.number_input("b max", min_value=0.0, max_value=1.0, value=1.0, step=0.01, key="frac_b_max")
+            with col_fc:
+                frac_c_min = st.number_input("c min", min_value=0.0, max_value=1.0, value=0.0, step=0.01, key="frac_c_min")
+                frac_c_max = st.number_input("c max", min_value=0.0, max_value=1.0, value=1.0, step=0.01, key="frac_c_max")
+            frac_range = {
+                'a': (frac_a_min, frac_a_max),
+                'b': (frac_b_min, frac_b_max),
+                'c': (frac_c_min, frac_c_max),
+            }
+
         isWrap = st.toggle("Wrap structure?", True)
 
         if st.button("Pack Structure"):
@@ -347,7 +490,7 @@ if base_structure is not None and molecule is not None:
             
             with st.spinner("Packing molecules..."):
                 try:
-                    packed_structure = pack_structure(base_structure, molecule, num_molecules, tolerance)
+                    packed_structure = pack_structure(base_structure, molecule, num_molecules, tolerance, frac_range=frac_range)
                     st.success("Packed structure generated successfully!")
                     st.write(f"Total packing time: {time.time() - overall_start_time:.2f} seconds")
                     if packed_structure is not None:
@@ -361,9 +504,23 @@ if base_structure is not None and molecule is not None:
 
                     # Download option
                     download_packed_struture(packed_structure)
+
+                    # TURBOMOLE RIPER output
+                    st.subheader("RIPER Files")
+                    coords_bohr = convert_to_bohr(packed_structure_pymatgen)
+                    coords_text = generate_coord_text(coords_bohr)
+                    lattice_text = generate_lattice_text(packed_structure_pymatgen)
+
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300, key="riper_coord")
+                        st.download_button('Download coord file', coords_text, file_name='coord', key="dl_coord")
+                    with col2:
+                        st.text_area("Add the following to your control file", value=lattice_text, height=300, key="riper_control")
+
                 except Exception as e:
                     st.error(f"Error during packing: {str(e)}")
     else:
         st.info('The web app can only allow using base structure with less than 800 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
 else:
-    st.info("Please provide both the base structure (CIF) and molecule structure (XYZ) to continue.")
+    st.info("Please provide both the base structure (cell) and molecule structure (XYZ) to continue.")
