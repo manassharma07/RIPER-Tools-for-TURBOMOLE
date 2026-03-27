@@ -143,71 +143,36 @@ def display_structure_info(structure):
         # st.write("Atomic Coordinates:")
         st.table(df_coords)
 
-# def has_overlap(base_structure, molecule, tolerance):
-#     """Check if there's an overlap by calculating distances between the base structure and molecule."""
-#     combined = base_structure + molecule
-#     distances = combined.get_all_distances(mic=True)
-#     np.fill_diagonal(distances, np.inf)
-#     return np.min(distances) < tolerance
-
-# def random_rotation_matrix():
-#     """Generate a random rotation matrix using quaternions."""
-#     # Random rotation angles
-#     angles = np.random.rand(3) * 2 * np.pi
-    
-#     # Create rotation matrix using quaternions for better numerical stability
-#     qx = np.array([[1, 0, 0],
-#                    [0, np.cos(angles[0]), -np.sin(angles[0])],
-#                    [0, np.sin(angles[0]), np.cos(angles[0])]])
-    
-#     qy = np.array([[np.cos(angles[1]), 0, np.sin(angles[1])],
-#                    [0, 1, 0],
-#                    [-np.sin(angles[1]), 0, np.cos(angles[1])]])
-    
-#     qz = np.array([[np.cos(angles[2]), -np.sin(angles[2]), 0],
-#                    [np.sin(angles[2]), np.cos(angles[2]), 0],
-#                    [0, 0, 1]])
-    
-#     return qz @ qy @ qx
-
-# def has_overlap(base_structure, molecule, tolerance):
-#     """Check if there's an overlap between base structure atoms and molecule atoms."""
-#     # Get number of atoms in each structure
-#     n_base = len(base_structure)
-#     n_mol = len(molecule)
-    
-#     # Get all distances between base structure and molecule atoms only
-#     combined = base_structure + molecule
-#     distances = combined.get_all_distances(mic=True)
-    
-#     # Extract only the distances between base structure and molecule
-#     # This is the submatrix of size (n_base x n_mol) from the distances matrix
-#     relevant_distances = distances[:n_base, n_base:]
-    
-#     # Check if any distance is less than tolerance
-#     return np.min(relevant_distances) < tolerance
-
-def apply_pbc(positions, cell):
-    """Apply periodic boundary conditions to keep positions inside the simulation cell."""
-    return positions % cell
 
 def random_rotation_matrix():
     """Generate a random rotation matrix using scipy Rotation."""
     return R.random().as_matrix()
 
-def has_overlap(base_structure, molecule, tolerance, cell):
-    """Check if there's an overlap between base structure atoms and molecule atoms using KDTree with periodic boundary conditions."""
-    # base_positions = base_structure.get_positions()
-    base_positions = apply_pbc(base_structure.get_positions(), cell)
-    mol_positions = apply_pbc(molecule.get_positions(), cell)
-    
+
+def _get_all_image_positions(positions, cell_matrix):
+    """Replicate positions into 27 periodic images (3x3x3) for minimum image overlap check."""
+    shifts = np.array(np.meshgrid([-1, 0, 1], [-1, 0, 1], [-1, 0, 1])).T.reshape(-1, 3)
+    # shifts is (27, 3) in fractional space
+    cart_shifts = shifts @ cell_matrix  # (27, 3) in Cartesian
+    # positions is (N, 3); result is (27*N, 3)
+    all_positions = (positions[np.newaxis, :, :] + cart_shifts[:, np.newaxis, :]).reshape(-1, 3)
+    return all_positions
+
+
+def has_overlap(base_positions, mol_positions, tolerance, cell_matrix):
+    """Check if there's an overlap between base structure atoms and molecule atoms
+    using KDTree with 27-image replication for correct periodic boundary handling."""
     if len(base_positions) == 0:
         return False
-    
-    # Use minimum image convention (mic) for periodic systems
-    base_tree = cKDTree(base_positions, boxsize=cell)
+
+    # Replicate base positions into 27 images so that minimum-image distances are captured
+    base_images = _get_all_image_positions(base_positions, cell_matrix)
+
+    # Build tree on the (larger) replicated base; query with the intact molecule
+    base_tree = cKDTree(base_images)
     distances, _ = base_tree.query(mol_positions, distance_upper_bound=tolerance)
     return np.any(distances < tolerance)
+
 
 def pack_structure(base_structure, molecule, num_molecules, tolerance):
     """Pack molecule into the base structure without overlaps."""
@@ -219,7 +184,11 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
     
     # Get molecule center for proper rotation
     mol_center = original_positions.mean(axis=0)
-    cell = base_structure.get_cell().lengths()
+    cell_matrix = np.array(base_structure.get_cell())  # 3x3 matrix
+    inv_cell = np.linalg.inv(cell_matrix)
+
+    # Keep a running array of all base atom Cartesian positions (avoids repeated get_positions)
+    all_base_positions = packed_structure.get_positions().copy()
 
     max_attempts = 200  # Limit to avoid infinite loops
     with st.expander("Packing...", expanded=False):
@@ -236,33 +205,30 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
                 # 1. Center the molecule at origin
                 centered_positions = original_positions - mol_center
                 
-                # 2. Apply random rotation
+                # 2. Apply random rotation (correct column-vector convention)
                 rotation_matrix = random_rotation_matrix()
-                rotated_positions = centered_positions @ rotation_matrix
+                rotated_positions = (rotation_matrix @ centered_positions.T).T
                 
-                # 3. Generate random displacement within cell
-                displacement = np.random.rand(3) * packed_structure.cell.lengths()
+                # 3. Generate random displacement uniformly in fractional space, convert to Cartesian
+                frac_displacement = np.random.rand(3)
+                displacement = frac_displacement @ cell_matrix
                 
                 # 4. Apply displacement and set new positions
                 final_positions = rotated_positions + displacement
                 current_molecule.set_positions(final_positions)
                 
-                # Check for overlaps
-                if not has_overlap(packed_structure, current_molecule, tolerance, cell):
+                # Check for overlaps using the intact molecule positions (no per-atom PBC wrap)
+                if not has_overlap(all_base_positions, final_positions, tolerance, cell_matrix):
                     packed_structure += current_molecule.copy()  # Add molecule to the packed structure
+                    # Update the running base positions array
+                    all_base_positions = np.vstack([all_base_positions, final_positions])
                     added = True
                     st.write(f"Molecule copy #{i+1} added successfully at position {displacement} after {attempt} attempts.")
-                # else:
-                    # st.write(f"Attempt {attempt} for molecule {i+1} resulted in overlap; retrying.")
-                # if attempt == max_attempts - 1:
-                #     i = i - 1
             if added:
                 print(f"Added the {i+1} th molecule at {attempt}th attempt")
             else:
-                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts.")
-                # Debug: Time for each molecule addition
-                # st.write(f"Time to add molecule {i+1}: {time.time() - start_time:.2f} seconds")
-                # start_time = time.time()  # Reset start time for next molecule
+                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts. Stopping.")
+                break  # No point continuing; the cell is likely full
     
     return packed_structure
 
