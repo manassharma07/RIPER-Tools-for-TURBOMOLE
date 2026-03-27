@@ -227,8 +227,9 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance):
             if added:
                 print(f"Added the {i+1} th molecule at {attempt}th attempt")
             else:
-                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts. Stopping.")
-                break  # No point continuing; the cell is likely full
+                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts.")
+                # st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts. Stopping.")
+                # break  # No point continuing; the cell is likely full
     
     return packed_structure
 
