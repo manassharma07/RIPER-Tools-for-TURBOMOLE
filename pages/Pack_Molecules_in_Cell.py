@@ -1,276 +1,369 @@
 import streamlit as st
-import subprocess
-import os
-import tempfile
-from pymatgen.core import Structure, Lattice
-from pymatgen.io.cif import CifWriter
-import py3Dmol
+from ase import Atoms
+from ase.io import read, write
 import numpy as np
+import io
+import time  # For timing debug statements
+from pymatgen.io.ase import AseAtomsAdaptor
+import py3Dmol
+import pandas as pd
+import streamlit.components.v1 as components
 
-# ---- Helper functions for TURBOMOLE (RIPER) output ----
+from scipy.spatial.transform import Rotation as R
+from scipy.spatial import cKDTree
 
-# Function to convert atomic coordinates to Bohr units
-def convert_to_bohr(structure):
-    coords = [(site.coords[0], site.coords[1], site.coords[2], site.species_string) for site in structure.sites]
-    return [(x * 1.88972612456506, y * 1.88972612456506, z * 1.88972612456506, element.lower()) for x, y, z, element in coords]
+# Set page config
+st.set_page_config(page_title='Pack Molecules in Cell', layout='wide', page_icon="⚛️",
+                   menu_items={
+                       'About': "A web app to help you with DFT related calculations using the RIPER module of [TURBOMOLE](https://www.turbomole.org/)"
+                   })
 
-# Function to generate coordinate text
-def generate_coord_text(coords_bohr):
-    coord_text = "$coord\n"
-    for coord in coords_bohr:
-        coord_text += f"    {coord[0]:.10f}   {coord[1]:.10f}   {coord[2]:.10f}    {coord[3]}\n"
-    coord_text += "$end"
-    return coord_text
+# Sidebar stuff
+st.sidebar.write('# About')
+st.sidebar.write('Made By [Manas Sharma](https://manas.bragitoff.com)')
+st.sidebar.write('In the group of [Prof. Dr. Marek Sierka](https://cmsg.uni-jena.de)')
+st.sidebar.write('## Cite us:')
+st.sidebar.write('[J. Phys. Chem. A 2025, 129, 39, 9062–9083](https://doi.org/10.1021/acs.jpca.5c02937)')
+st.sidebar.write('### *Powered by*')
+st.sidebar.write('* [Py3Dmol](https://3dmol.csb.pitt.edu/) for Chemical System Visualizations')
+st.sidebar.write('* [Streamlit](https://streamlit.io/) for making of the Web App')
+st.sidebar.write('* [PyMatgen](https://pymatgen.org/) for Periodic Structure Representations')
+st.sidebar.write('* [PubChempy](https://pypi.org/project/PubChemPy/1.0/) for Accessing the PubChem Database')
+st.sidebar.write('* [MP-API](https://pypi.org/project/mp-api/) for Accessing the Materials Project Database')
+st.sidebar.write('* [ASE](https://wiki.fysik.dtu.dk/ase/) for File Format Conversions')
+st.sidebar.write('### *Contributors*')
+st.sidebar.write('[Ya-Fan Chen ](https://github.com/Lexachoc)')
+st.sidebar.write('### *Source Code*')
+st.sidebar.write('[GitHub Repository](https://github.com/manassharma07/RIPER-Tools-for-TURBOMOLE)')
 
-# Function to generate lattice parameter text
-def generate_lattice_text(structure):
-    lattice_params = structure.lattice.abc
-    angles = structure.lattice.angles
-    lattice_text = "$cell angs\n"
-    lattice_text += f"  {lattice_params[0]:.10f}   {lattice_params[1]:.10f}   {lattice_params[2]:.10f}   {angles[0]}   {angles[1]}   {angles[2]}\n"
-    lattice_text += "$periodic 3\n"
-    lattice_text += "$kpoints\n"
-    lattice_text += "    nkpoints 1 1 1 # Gamma point calculation"
-    return lattice_text
+# Function to visualize the structure using py3Dmol
+def visualize_structure(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="cif")
+    view.addModel(cif_for_visualization, 'cif')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.addUnitCell()
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
 
-# ---- End helper functions ----
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=500)
+    HtmlFile.close()
 
-st.title("Molecular Packing with Packmol")
 
-st.markdown("""
-### Instructions
-1. **Cell Definition**: Choose how to define the unit cell:
-   - **Upload a CIF file**: Use this if you want to add molecules on a substrate/monolayer or add solvent molecules to an existing structure.
-   - **Specify cell parameters manually**: Use this if you want to pack molecules into an empty cell with known dimensions.
-   - **Determine cell from density**: Use this if you know the desired density and number of molecules. The cell parameters will be computed automatically (cubic cell).
-2. **Packing Range (Fractional)**: Optionally restrict where molecules are packed along each axis using fractional coordinate ranges. For example, if your CIF has a monolayer at 0.5 along the c-axis and you only want molecules between 0.5 and 0.7 in fractional coordinates along c, set the c-range to (0.5, 0.7).
-3. **Upload one or more XYZ files** of the molecules you want to pack.
-4. **Set the number of molecules** for each uploaded molecule type.
-5. **Set the tolerance** (minimum distance between molecules in Å).
-6. Click **Run Packmol** to generate the packed structure.
-7. The resulting structure is shown as a 3D visualization and available for download as a CIF file and TURBOMOLE RIPER files.
-""")
+# Function to visualize the structure using py3Dmol
+def visualize_molecule(structure, html_file_name='viz.html'):
+    spin = st.checkbox('Spin', value=False, key='key' + html_file_name)
+    view = py3Dmol.view(width=500, height=400)
+    cif_for_visualization = structure.to(fmt="xyz")
+    view.addModel(cif_for_visualization, 'xyz')
+    # view.setStyle({'stick': {'radius': 0.2}})
+    view.setStyle({'sphere': {'colorscheme': 'Jmol', 'scale': 0.3},
+                   'stick': {'colorscheme': 'Jmol', 'radius': 0.2}})
+    view.zoomTo()
+    view.spin(spin)
+    view.setClickable({'clickable': 'true'})
+    view.enableContextMenu({'contextMenuEnabled': 'true'})
+    view.show()
+    view.render()
+    # view.png()
+    t = view.js()
+    f = open(html_file_name, 'w')
+    f.write(t.startjs)
+    f.write(t.endjs)
+    f.close()
 
-# ---- Feature 1: Cell definition method ----
-cell_method = st.radio(
-    "How would you like to define the unit cell?",
-    ["Upload a CIF file", "Specify cell parameters manually", "Determine cell from density"],
-    index=0
-)
+    HtmlFile = open(html_file_name, 'r', encoding='utf-8')
+    source_code = HtmlFile.read()
+    components.html(source_code, height=300, width=500)
+    HtmlFile.close()
 
-cif_structure = None
-a, b, c = 10.0, 10.0, 10.0
-alpha, beta, gamma = 90.0, 90.0, 90.0
 
-if cell_method == "Upload a CIF file":
-    cif_file = st.file_uploader("Upload CIF file", type=["cif"])
+# Function to display structure information
+@st.fragment
+def display_structure_info(structure):
+    st.subheader("Structure Information")
+    st.write("Formula: ", structure.composition.reduced_formula)
+
+    # Display lattice parameters
+    a, b, c = structure.lattice.abc
+    alpha, beta, gamma = structure.lattice.angles
+
+    # Create a DataFrame for the lattice parameters and angles
+    data = {
+        "Lattice Parameters": [a, b, c, alpha, beta, gamma]
+    }
+    df_latt_params = pd.DataFrame(data, index=["a", "b", "c", "alpha", "beta", "gamma"])
+    with st.expander("Lattice Parameters", expanded=False):
+        st.table(df_latt_params)
+
+    # Display lattice vectors
+    lattice_vectors = structure.lattice.matrix
+    df_vectors = pd.DataFrame(lattice_vectors, columns=["X", "Y", "Z"], index=["a", "b", "c"])
+    with st.expander("Lattice Vectors", expanded=True):
+        # st.write("Lattice Vectors:")
+        st.table(df_vectors)
+
+    # Create a list of atomic coordinates
+    import random
+    import string
+    
+    # Generate a random 6-character string
+    random_suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+
+    with st.expander("Atomic Coordinates", expanded=False):
+        coord_type = st.selectbox('Coordinate type', ['Cartesian', 'Fractional/Crystal'], key='selectbox'+structure.composition.reduced_formula+ '_' + random_suffix)
+        if coord_type == 'Cartesian':
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.coords))
+        else:
+            atomic_coords = []
+            for site in structure.sites:
+                atomic_coords.append([site.species_string] + list(site.frac_coords))
+
+        # Create a Pandas DataFrame from the atomic coordinates list
+        df_coords = pd.DataFrame(atomic_coords, columns=["Element", "X", "Y", "Z"])
+
+        # Display the atomic coordinates as a table
+        # st.write("Atomic Coordinates:")
+        st.table(df_coords)
+
+
+def random_rotation_matrix():
+    """Generate a random rotation matrix using scipy Rotation."""
+    return R.random().as_matrix()
+
+
+def _get_all_image_positions(positions, cell_matrix):
+    """Replicate positions into 27 periodic images (3x3x3) for minimum image overlap check."""
+    shifts = np.array(np.meshgrid([-1, 0, 1], [-1, 0, 1], [-1, 0, 1])).T.reshape(-1, 3)
+    # shifts is (27, 3) in fractional space
+    cart_shifts = shifts @ cell_matrix  # (27, 3) in Cartesian
+    # positions is (N, 3); result is (27*N, 3)
+    all_positions = (positions[np.newaxis, :, :] + cart_shifts[:, np.newaxis, :]).reshape(-1, 3)
+    return all_positions
+
+
+def has_overlap(base_positions, mol_positions, tolerance, cell_matrix):
+    """Check if there's an overlap between base structure atoms and molecule atoms
+    using KDTree with 27-image replication for correct periodic boundary handling."""
+    if len(base_positions) == 0:
+        return False
+
+    # Replicate base positions into 27 images so that minimum-image distances are captured
+    base_images = _get_all_image_positions(base_positions, cell_matrix)
+
+    # Build tree on the (larger) replicated base; query with the intact molecule
+    base_tree = cKDTree(base_images)
+    distances, _ = base_tree.query(mol_positions, distance_upper_bound=tolerance)
+    return np.any(distances < tolerance)
+
+
+def pack_structure(base_structure, molecule, num_molecules, tolerance):
+    """Pack molecule into the base structure without overlaps."""
+    # start_time = time.time()  # Start timing
+    
+    # Create a mutable copy of the base structure
+    packed_structure = base_structure.copy()
+    original_positions = molecule.get_positions()
+    
+    # Get molecule center for proper rotation
+    mol_center = original_positions.mean(axis=0)
+    cell_matrix = np.array(base_structure.get_cell())  # 3x3 matrix
+    inv_cell = np.linalg.inv(cell_matrix)
+
+    # Keep a running array of all base atom Cartesian positions (avoids repeated get_positions)
+    all_base_positions = packed_structure.get_positions().copy()
+
+    max_attempts = 200  # Limit to avoid infinite loops
+    with st.expander("Packing...", expanded=False):
+        # Loop to add molecules
+        for i in range(num_molecules):
+            attempt = 0
+            added = False
+            while not added and attempt < max_attempts:
+                print(i, attempt)
+                attempt += 1
+                # Create a new copy of the molecule for this attempt
+                current_molecule = molecule.copy()
+                
+                # 1. Center the molecule at origin
+                centered_positions = original_positions - mol_center
+                
+                # 2. Apply random rotation (correct column-vector convention)
+                rotation_matrix = random_rotation_matrix()
+                rotated_positions = (rotation_matrix @ centered_positions.T).T
+                
+                # 3. Generate random displacement uniformly in fractional space, convert to Cartesian
+                frac_displacement = np.random.rand(3)
+                displacement = frac_displacement @ cell_matrix
+                
+                # 4. Apply displacement and set new positions
+                final_positions = rotated_positions + displacement
+                current_molecule.set_positions(final_positions)
+                
+                # Check for overlaps using the intact molecule positions (no per-atom PBC wrap)
+                if not has_overlap(all_base_positions, final_positions, tolerance, cell_matrix):
+                    packed_structure += current_molecule.copy()  # Add molecule to the packed structure
+                    # Update the running base positions array
+                    all_base_positions = np.vstack([all_base_positions, final_positions])
+                    added = True
+                    st.write(f"Molecule copy #{i+1} added successfully at position {displacement} after {attempt} attempts.")
+            if added:
+                print(f"Added the {i+1} th molecule at {attempt}th attempt")
+            else:
+                st.write(f"Failed to add the {i+1}th copy of the molecule after {max_attempts} attempts. Stopping.")
+                break  # No point continuing; the cell is likely full
+    
+    return packed_structure
+
+@st.fragment
+def download_packed_struture(packed_structure):
+    cif_output = "packed_structure.cif"
+    write(cif_output, packed_structure, format='cif')
+    with open(cif_output, "rb") as f:
+        st.download_button(
+            label="Download Packed Structure (CIF)",
+            data=f,
+            file_name="packed_structure.cif",
+            mime="chemical/x-cif"
+        )
+
+# # Streamlit interface
+
+st.title("Pack Molecules in a Cell")
+st.write('1. The tool works as follows.')
+st.write('   - Provide a `CIF` file of the cell in which you want to pack a number of some specific molecule.')
+st.write('   - Provide the `XYZ` file of the molecule to pack the cell with.')
+st.write('2. For both the cell and the molecule, you can either:')
+st.write('   - Paste the file contents directly in the text area')
+st.write('   - Upload the file using the file uploader')
+st.write('3. Specify the number of molecules to be packed and the tolerance distance.')
+
+# CIF input section
+st.header("Base Structure (CIF)")
+cif_input_method = st.radio("Choose input method for CIF", ["Paste Content", "Upload File"], key="cif_method")
+
+base_structure = None
+if cif_input_method == "Paste Content":
+    cif_content = st.text_area(
+        label='Enter the contents of the CIF file',
+        value='',
+        placeholder='Paste your CIF file contents here...',
+        height=200,
+        key='cif_text_area'
+    )
+    if cif_content.strip():
+        try:
+            base_structure = read(io.StringIO(cif_content), format='cif')
+            st.success("Base structure loaded from pasted content.")
+        except Exception as e:
+            st.error(f"Error reading CIF content: {str(e)}")
+else:
+    cif_file = st.file_uploader("Upload CIF file", type=["cif"], key="cif_uploader")
     if cif_file:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".cif") as tmp:
-            tmp.write(cif_file.read())
-            tmp_cif_path = tmp.name
-        cif_structure = Structure.from_file(tmp_cif_path)
-        a, b, c = cif_structure.lattice.abc
-        alpha, beta, gamma = cif_structure.lattice.angles
-        st.write(f"Loaded CIF with lattice parameters: a={a:.4f}, b={b:.4f}, c={c:.4f}, α={alpha:.2f}, β={beta:.2f}, γ={gamma:.2f}")
+        try:
+            base_structure = read(cif_file, format='cif')
+            st.success("Base structure loaded from file.")
+        except Exception as e:
+            st.error(f"Error reading CIF file: {str(e)}")
+if base_structure is not None:
+    base_structure_pymatgen = AseAtomsAdaptor().get_structure(base_structure)
+    display_structure_info(base_structure_pymatgen)
+    visualize_structure(base_structure_pymatgen, "viz1.html")
+# XYZ input section
+st.header("Molecule Structure (XYZ)")
+xyz_input_method = st.radio("Choose input method for XYZ", ["Paste Content", "Upload File"], key="xyz_method")
 
-elif cell_method == "Specify cell parameters manually":
-    col_a, col_b, col_c = st.columns(3)
-    with col_a:
-        a = st.number_input("a (Å)", value=10.0, min_value=0.1, format="%.4f")
-    with col_b:
-        b = st.number_input("b (Å)", value=10.0, min_value=0.1, format="%.4f")
-    with col_c:
-        c = st.number_input("c (Å)", value=10.0, min_value=0.1, format="%.4f")
-    col_al, col_be, col_ga = st.columns(3)
-    with col_al:
-        alpha = st.number_input("α (°)", value=90.0, min_value=1.0, max_value=179.0, format="%.2f")
-    with col_be:
-        beta = st.number_input("β (°)", value=90.0, min_value=1.0, max_value=179.0, format="%.2f")
-    with col_ga:
-        gamma = st.number_input("γ (°)", value=90.0, min_value=1.0, max_value=179.0, format="%.2f")
-    cif_structure = None
+molecule = None
+if xyz_input_method == "Paste Content":
+    xyz_content = st.text_area(
+        label='Enter the contents of the XYZ file',
+        value='',
+        placeholder='Paste your XYZ file contents here...',
+        height=200,
+        key='xyz_text_area'
+    )
+    if xyz_content.strip():
+        try:
+            molecule = read(io.StringIO(xyz_content), format='xyz')
+            st.success("Molecule structure loaded from pasted content.")
+        except Exception as e:
+            st.error(f"Error reading XYZ content: {str(e)}")
+else:
+    xyz_file = st.file_uploader("Upload XYZ file", type=["xyz"], key="xyz_uploader")
+    if xyz_file:
+        try:
+            xyz_content = xyz_file.getvalue().decode("utf-8")
+            molecule = read(io.StringIO(xyz_content), format='xyz')
+            st.success("Molecule structure loaded from file.")
+        except Exception as e:
+            st.error(f"Error reading XYZ file: {str(e)}")
+if molecule is not None:
+    molecule_pymatgen = AseAtomsAdaptor().get_molecule(molecule)
+    # display_structure_info(molecule)
+    visualize_molecule(molecule_pymatgen, "viz2.html")
 
-elif cell_method == "Determine cell from density":
-    st.markdown("Provide the desired density, molecular weight, and number of molecules. A **cubic cell** will be generated.")
-    density = st.number_input("Density (g/cm³)", value=1.0, min_value=0.01, format="%.4f")
-    mol_weight = st.number_input("Molecular weight of one molecule (g/mol)", value=18.015, min_value=0.1, format="%.4f")
-    num_mol_density = st.number_input("Number of molecules", value=10, min_value=1, step=1)
+# Parameters and packing section
+if base_structure is not None and molecule is not None:
+    st.write(f"Number of atoms in base structure: {len(base_structure)}")
+    st.write(f"Number of atoms in molecule: {len(molecule)}")
+    if len(base_structure)<=800 and len(molecule)<=20:
+        st.header("Packing Parameters")
+        num_molecules = st.slider(
+            "Number of molecules to add",
+            min_value=1,
+            max_value=100,
+            value=1,
+            step=1
+        )
+        tolerance = st.slider(
+            "Tolerance distance between atoms (Å)",
+            min_value=1.0,
+            max_value=5.0,
+            value=2.0,
+            step=0.1
+        )
 
-    # Calculate volume: V = (n * M) / (rho * N_A)
-    # n = number of molecules, M = molecular weight (g/mol), rho = density (g/cm^3), N_A = Avogadro's number
-    N_A = 6.02214076e23
-    volume_cm3 = (num_mol_density * mol_weight) / (density * N_A)  # in cm^3
-    volume_A3 = volume_cm3 * 1e24  # convert cm^3 to Å^3
-    a = volume_A3 ** (1.0 / 3.0)
-    b, c = a, a
-    alpha, beta, gamma = 90.0, 90.0, 90.0
-    st.write(f"Computed cubic cell: a = b = c = {a:.4f} Å, Volume = {volume_A3:.2f} ų")
-    cif_structure = None
+        isWrap = st.toggle("Wrap structure?", True)
 
-# Build the lattice from whatever method was chosen
-lattice = Lattice.from_parameters(a, b, c, alpha, beta, gamma)
+        if st.button("Pack Structure"):
+            overall_start_time = time.time()
+            
+            with st.spinner("Packing molecules..."):
+                try:
+                    packed_structure = pack_structure(base_structure, molecule, num_molecules, tolerance)
+                    st.success("Packed structure generated successfully!")
+                    st.write(f"Total packing time: {time.time() - overall_start_time:.2f} seconds")
+                    if packed_structure is not None:
+                        
+                        if isWrap:
+                            packed_structure.wrap()
+                        packed_structure_pymatgen = AseAtomsAdaptor().get_structure(packed_structure)
+                        # packed_structure_pymatgen.apply_strain(1.0)
+                        display_structure_info(packed_structure_pymatgen)
+                        visualize_structure(packed_structure_pymatgen, "viz3.html")
 
-# ---- Feature 2: Packing range in fractional coordinates ----
-st.subheader("Packing Range (Fractional Coordinates)")
-st.markdown("Restrict where molecules are placed along each axis. Default is the full cell (0.0 to 1.0).")
-
-col_fx, col_fy, col_fz = st.columns(3)
-with col_fx:
-    frac_x_min = st.number_input("a min (frac)", value=0.0, min_value=0.0, max_value=1.0, format="%.4f", key="fxmin")
-    frac_x_max = st.number_input("a max (frac)", value=1.0, min_value=0.0, max_value=1.0, format="%.4f", key="fxmax")
-with col_fy:
-    frac_y_min = st.number_input("b min (frac)", value=0.0, min_value=0.0, max_value=1.0, format="%.4f", key="fymin")
-    frac_y_max = st.number_input("b max (frac)", value=1.0, min_value=0.0, max_value=1.0, format="%.4f", key="fymax")
-with col_fz:
-    frac_z_min = st.number_input("c min (frac)", value=0.0, min_value=0.0, max_value=1.0, format="%.4f", key="fzmin")
-    frac_z_max = st.number_input("c max (frac)", value=1.0, min_value=0.0, max_value=1.0, format="%.4f", key="fzmax")
-
-# Convert fractional ranges to Cartesian ranges for Packmol
-# For a general cell, we convert the 8 corners of the fractional box to Cartesian
-# and use the axis-aligned bounding box
-frac_corners = [
-    [fx, fy, fz]
-    for fx in [frac_x_min, frac_x_max]
-    for fy in [frac_y_min, frac_y_max]
-    for fz in [frac_z_min, frac_z_max]
-]
-cart_corners = np.array([lattice.get_cartesian_coords(fc) for fc in frac_corners])
-pack_min = cart_corners.min(axis=0)  # [x_min, y_min, z_min]
-pack_max = cart_corners.max(axis=0)  # [x_max, y_max, z_max]
-
-st.write(f"Packing region (Cartesian, Å): x=[{pack_min[0]:.4f}, {pack_max[0]:.4f}], y=[{pack_min[1]:.4f}, {pack_max[1]:.4f}], z=[{pack_min[2]:.4f}, {pack_max[2]:.4f}]")
-
-# ---- Molecule uploads ----
-xyz_files = st.file_uploader("Upload XYZ file(s) of molecules", type=["xyz"], accept_multiple_files=True)
-
-molecule_data = []
-if xyz_files:
-    for i, xyz_file in enumerate(xyz_files):
-        st.write(f"**Molecule {i+1}: {xyz_file.name}**")
-        num_molecules = st.number_input(f"Number of '{xyz_file.name}' molecules", value=10, min_value=1, step=1, key=f"num_mol_{i}")
-        molecule_data.append((xyz_file, num_molecules))
-
-tolerance = st.number_input("Tolerance (minimum distance between molecules, Å)", value=2.0, min_value=0.5, format="%.2f")
-
-if st.button("Run Packmol"):
-    if not molecule_data:
-        st.error("Please upload at least one XYZ file.")
+                    # Download option
+                    download_packed_struture(packed_structure)
+                except Exception as e:
+                    st.error(f"Error during packing: {str(e)}")
     else:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            # Write molecule XYZ files to temp directory
-            mol_paths = []
-            for i, (xyz_file, num_mol) in enumerate(molecule_data):
-                mol_path = os.path.join(tmpdir, f"molecule_{i}.xyz")
-                with open(mol_path, "w") as f:
-                    f.write(xyz_file.getvalue().decode("utf-8"))
-                mol_paths.append(mol_path)
-
-            output_path = os.path.join(tmpdir, "packed_output.xyz")
-
-            # Build Packmol input
-            packmol_input = f"tolerance {tolerance}\nfiletype xyz\noutput {output_path}\n\n"
-
-            # If we have a CIF structure, fix those atoms first
-            if cif_structure is not None:
-                fixed_xyz_path = os.path.join(tmpdir, "fixed_structure.xyz")
-                # Write the CIF structure atoms as a fixed XYZ
-                with open(fixed_xyz_path, "w") as f:
-                    f.write(f"{len(cif_structure)}\n")
-                    f.write("Fixed atoms from CIF\n")
-                    for site in cif_structure:
-                        f.write(f"{site.species_string} {site.coords[0]:.6f} {site.coords[1]:.6f} {site.coords[2]:.6f}\n")
-                packmol_input += f"structure {fixed_xyz_path}\n"
-                packmol_input += f"  number 1\n"
-                packmol_input += f"  fixed 0. 0. 0. 0. 0. 0.\n"
-                packmol_input += f"end structure\n\n"
-
-            # Add each molecule type with the packing region
-            for i, (mol_path, (_, num_mol)) in enumerate(zip(mol_paths, molecule_data)):
-                packmol_input += f"structure {mol_path}\n"
-                packmol_input += f"  number {num_mol}\n"
-                packmol_input += f"  inside box {pack_min[0]:.6f} {pack_min[1]:.6f} {pack_min[2]:.6f} {pack_max[0]:.6f} {pack_max[1]:.6f} {pack_max[2]:.6f}\n"
-                packmol_input += f"end structure\n\n"
-
-            # Write Packmol input file
-            input_path = os.path.join(tmpdir, "packmol.inp")
-            with open(input_path, "w") as f:
-                f.write(packmol_input)
-
-            st.text("Packmol Input:")
-            st.code(packmol_input)
-
-            # Run Packmol
-            try:
-                result = subprocess.run(
-                    ["packmol"],
-                    input=packmol_input,
-                    capture_output=True,
-                    text=True,
-                    cwd=tmpdir,
-                    timeout=120
-                )
-                st.text("Packmol Output:")
-                st.code(result.stdout)
-                if result.returncode != 0:
-                    st.error("Packmol failed. See output above.")
-                    st.code(result.stderr)
-                else:
-                    # Read output XYZ
-                    if os.path.exists(output_path):
-                        with open(output_path, "r") as f:
-                            xyz_content = f.read()
-
-                        # Parse XYZ to pymatgen Structure with the lattice
-                        lines = xyz_content.strip().split("\n")
-                        n_atoms = int(lines[0])
-                        species = []
-                        coords = []
-                        for line in lines[2:2+n_atoms]:
-                            parts = line.split()
-                            species.append(parts[0])
-                            coords.append([float(parts[1]), float(parts[2]), float(parts[3])])
-
-                        packed_structure = Structure(
-                            lattice,
-                            species,
-                            coords,
-                            coords_are_cartesian=True
-                        )
-
-                        # Show 3D visualization
-                        st.subheader("Packed Structure Visualization")
-                        cif_writer = CifWriter(packed_structure)
-                        cif_string = str(cif_writer)
-
-                        view = py3Dmol.view(width=600, height=400)
-                        view.addModel(cif_string, "cif")
-                        view.setStyle({"stick": {}, "sphere": {"radius": 0.3}})
-                        view.addUnitCell()
-                        view.zoomTo()
-                        st.components.v1.html(view._make_html(), height=420, width=620)
-
-                        # Download CIF
-                        st.download_button("Download packed structure as CIF", cif_string, file_name="packed_structure.cif")
-
-                        # Download XYZ
-                        st.download_button("Download packed structure as XYZ", xyz_content, file_name="packed_structure.xyz")
-
-                        # ---- TURBOMOLE (RIPER) output ----
-                        st.subheader("RIPER Files")
-                        coords_bohr = convert_to_bohr(packed_structure)
-                        coords_text = generate_coord_text(coords_bohr)
-                        lattice_text = generate_lattice_text(packed_structure)
-
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            st.text_area("Coord file contents (Cartesian coordinates in Bohr)", value=coords_text, height=300)
-                            st.download_button('Download coord file', coords_text, file_name='coord')
-                        with col2:
-                            st.text_area("Add the following to your control file", value=lattice_text, height=300)
-
-                    else:
-                        st.error("Output file not found.")
-            except FileNotFoundError:
-                st.error("Packmol is not installed or not found in PATH. Please install Packmol.")
-            except subprocess.TimeoutExpired:
-                st.error("Packmol timed out. Try reducing the number of molecules or increasing the cell size.")
+        st.info('The web app can only allow using base structure with less than 800 atoms and molecule with less than 20 atoms. This is because of limited computational capacity of the server. For no cocnstraints download the source code from GitHub and run the code locally.')
+else:
+    st.info("Please provide both the base structure (CIF) and molecule structure (XYZ) to continue.")
