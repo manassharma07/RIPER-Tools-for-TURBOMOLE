@@ -272,15 +272,35 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance, frac_rang
 
 @st.fragment
 def download_packed_struture(packed_structure):
-    cif_output = "packed_structure.cif"
-    write(cif_output, packed_structure, format='cif')
-    with open(cif_output, "rb") as f:
-        st.download_button(
-            label="Download Packed Structure (CIF)",
-            data=f,
-            file_name="packed_structure.cif",
-            mime="chemical/x-cif"
-        )
+    # CIF
+    cif_buffer = io.StringIO()
+    write(cif_buffer, packed_structure, format='cif')
+    st.download_button(
+        label="Download Packed Structure (CIF)",
+        data=cif_buffer.getvalue(),
+        file_name="packed_structure.cif",
+        mime="chemical/x-cif"
+    )
+
+    # Extended XYZ
+    extxyz_buffer = io.StringIO()
+    write(extxyz_buffer, packed_structure, format='extxyz')
+    st.download_button(
+        label="Download Packed Structure (extXYZ)",
+        data=extxyz_buffer.getvalue(),
+        file_name="packed_structure.xyz",
+        mime="chemical/x-xyz"
+    )
+
+    # POSCAR
+    poscar_buffer = io.StringIO()
+    write(poscar_buffer, packed_structure, format='vasp')
+    st.download_button(
+        label="Download Packed Structure (POSCAR)",
+        data=poscar_buffer.getvalue(),
+        file_name="POSCAR",
+        mime="text/plain"
+    )
 
 
 def estimate_cell_from_density(molecule, num_molecules, density):
