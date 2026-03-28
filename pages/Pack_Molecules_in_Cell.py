@@ -273,7 +273,7 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance, frac_rang
 @st.fragment
 def download_packed_struture(packed_structure):
     # CIF
-    cif_buffer = io.StringIO()
+    cif_buffer = io.BytesIO()
     write(cif_buffer, packed_structure, format='cif')
     st.download_button(
         label="Download Packed Structure (CIF)",
@@ -283,7 +283,7 @@ def download_packed_struture(packed_structure):
     )
 
     # Extended XYZ
-    extxyz_buffer = io.StringIO()
+    extxyz_buffer = io.BytesIO()
     write(extxyz_buffer, packed_structure, format='extxyz')
     st.download_button(
         label="Download Packed Structure (extXYZ)",
@@ -293,7 +293,7 @@ def download_packed_struture(packed_structure):
     )
 
     # POSCAR
-    poscar_buffer = io.StringIO()
+    poscar_buffer = io.BytesIO()
     write(poscar_buffer, packed_structure, format='vasp')
     st.download_button(
         label="Download Packed Structure (POSCAR)",
