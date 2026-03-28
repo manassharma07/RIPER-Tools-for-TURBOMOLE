@@ -272,35 +272,47 @@ def pack_structure(base_structure, molecule, num_molecules, tolerance, frac_rang
 
 @st.fragment
 def download_packed_struture(packed_structure):
+    import tempfile
+    import os
+
     # CIF
-    cif_buffer = io.BytesIO()
-    write(cif_buffer, packed_structure, format='cif')
-    st.download_button(
-        label="Download Packed Structure (CIF)",
-        data=cif_buffer.getvalue(),
-        file_name="packed_structure.cif",
-        mime="chemical/x-cif"
-    )
+    with tempfile.NamedTemporaryFile(suffix='.cif', delete=False) as tmp:
+        tmp_cif = tmp.name
+    write(tmp_cif, packed_structure, format='cif')
+    with open(tmp_cif, 'rb') as f:
+        st.download_button(
+            label="Download Packed Structure (CIF)",
+            data=f,
+            file_name="packed_structure.cif",
+            mime="chemical/x-cif"
+        )
+    os.unlink(tmp_cif)
 
     # Extended XYZ
-    extxyz_buffer = io.BytesIO()
-    write(extxyz_buffer, packed_structure, format='extxyz')
-    st.download_button(
-        label="Download Packed Structure (extXYZ)",
-        data=extxyz_buffer.getvalue(),
-        file_name="packed_structure.xyz",
-        mime="chemical/x-xyz"
-    )
+    with tempfile.NamedTemporaryFile(suffix='.xyz', delete=False) as tmp:
+        tmp_extxyz = tmp.name
+    write(tmp_extxyz, packed_structure, format='extxyz')
+    with open(tmp_extxyz, 'rb') as f:
+        st.download_button(
+            label="Download Packed Structure (extXYZ)",
+            data=f,
+            file_name="packed_structure.xyz",
+            mime="chemical/x-xyz"
+        )
+    os.unlink(tmp_extxyz)
 
     # POSCAR
-    poscar_buffer = io.BytesIO()
-    write(poscar_buffer, packed_structure, format='vasp')
-    st.download_button(
-        label="Download Packed Structure (POSCAR)",
-        data=poscar_buffer.getvalue(),
-        file_name="POSCAR",
-        mime="text/plain"
-    )
+    with tempfile.NamedTemporaryFile(suffix='.vasp', delete=False) as tmp:
+        tmp_poscar = tmp.name
+    write(tmp_poscar, packed_structure, format='vasp')
+    with open(tmp_poscar, 'rb') as f:
+        st.download_button(
+            label="Download Packed Structure (POSCAR)",
+            data=f,
+            file_name="POSCAR",
+            mime="text/plain"
+        )
+    os.unlink(tmp_poscar)
 
 
 def estimate_cell_from_density(molecule, num_molecules, density):
