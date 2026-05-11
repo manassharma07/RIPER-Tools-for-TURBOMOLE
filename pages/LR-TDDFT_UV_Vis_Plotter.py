@@ -146,8 +146,8 @@ if raw_input:
                                          value=1000, step=100)
     
     # Create broadened spectrum
-    minOmega = min(omega0) - abs(0.1 * (max(omega0) - min(omega0)))
-    maxOmega = max(omega0) + abs(0.1 * (max(omega0) - min(omega0)))
+    minOmega = 0 #min(omega0) - abs(0.1 * (max(omega0) - min(omega0)))
+    maxOmega = max(omega0) + 3 #max(omega0) + abs(0.1 * (max(omega0) - min(omega0)))
     
     # Handle reversed scales (nm)
     if minOmega > maxOmega:
