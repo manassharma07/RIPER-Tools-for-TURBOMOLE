@@ -109,8 +109,13 @@ if raw_input:
     
     # Parse the data
     st.write('### Parsed LR-TDDFT Spectrum')
-    df = pd.read_csv(io.StringIO(cleaned_input), delim_whitespace=True, 
-                     names=['Energy', 'Intensity'], header=None)
+    df = pd.read_csv(
+        io.StringIO(cleaned_input),
+        sep=r"\s+",
+        engine="python",
+        names=["Energy", "Intensity"],
+        header=None
+        )
     
     # Show original data
     df_display = df.copy()
