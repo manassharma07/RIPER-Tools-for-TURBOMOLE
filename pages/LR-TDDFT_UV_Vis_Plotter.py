@@ -107,15 +107,36 @@ if raw_input:
     cleaned_lines = [line for line in lines if not line.strip().startswith('#')]
     cleaned_input = '\n'.join(cleaned_lines)
     
-    # Parse the data
+    # Parse the data — supports both escf (2 cols: energy, f_length)
+    # and RIPER native (3 cols: energy_eV, osc_len, osc_vel)
     st.write('### Parsed LR-TDDFT Spectrum')
-    df = pd.read_csv(
+    df_raw = pd.read_csv(
         io.StringIO(cleaned_input),
         sep=r"\s+",
         engine="python",
-        names=["Energy", "Intensity"],
         header=None
         )
+
+    if df_raw.shape[1] >= 3:
+        # RIPER native format: energy_eV, osc_len, osc_vel
+        df_raw = df_raw.iloc[:, :3]
+        df_raw.columns = ["Energy", "osc_len", "osc_vel"]
+        # Default to the non-zero gauge (periodic -> velocity, molecular -> length)
+        default_gauge = "osc_vel" if df_raw["osc_vel"].abs().sum() >= df_raw["osc_len"].abs().sum() else "osc_len"
+        gauge = st.selectbox(
+            "Oscillator-strength gauge (RIPER file has both)",
+            ["osc_len", "osc_vel"],
+            index=["osc_len", "osc_vel"].index(default_gauge),
+            help="RIPER prints length (osc_len) and velocity (osc_vel). "
+                 "Periodic systems use velocity (length is zero); molecules use length."
+        )
+        df = df_raw[["Energy", gauge]].copy()
+        df.columns = ["Energy", "Intensity"]
+    else:
+        # TURBOMOLE escf format: energy, oscillator strength
+        df_raw = df_raw.iloc[:, :2]
+        df_raw.columns = ["Energy", "Intensity"]
+        df = df_raw.copy()
     
     # Show original data
     df_display = df.copy()
