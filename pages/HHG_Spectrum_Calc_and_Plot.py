@@ -102,7 +102,33 @@ cleaned_input = clean_input_str(input_rtdipo_str)
 
 # pd.set_option("display.precision", 14)
 st.write('### Parsed dipole moments along x, y and z at different timesteps')
-df = pd.read_csv(io.StringIO(cleaned_input), skiprows=1, delim_whitespace=True, names=['Time step', 'x direction', 'y direction', 'z direction'])
+# df = pd.read_csv(io.StringIO(cleaned_input), skiprows=1, delim_whitespace=True, names=['Time step', 'x direction', 'y direction', 'z direction'])
+column_names = [
+    'Time step',
+    'x direction',
+    'y direction',
+    'z direction',
+]
+
+try:
+    df = pd.read_csv(
+        io.StringIO(cleaned_input),
+        sep=r'\s+',
+        header=None,
+        names=column_names,
+        dtype=float,
+    )
+except (TypeError, ValueError, pd.errors.ParserError) as exc:
+    st.error(
+        "The rtdipo input could not be parsed. Each data row must contain "
+        "four numeric values: time-step, mu_x, mu_y, and mu_z."
+    )
+    st.exception(exc)
+    st.stop()
+
+if df.empty:
+    st.error("No dipole-moment data were found in the rtdipo input.")
+    st.stop()
 # Insert the actual time column in the dataframe object
 df.insert(1,'Time (a.u.)', time_step*df['Time step'])
 st.dataframe(df.style.format({"E": "{:.2f}"}))
