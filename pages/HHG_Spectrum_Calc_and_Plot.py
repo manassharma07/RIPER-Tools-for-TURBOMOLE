@@ -159,6 +159,14 @@ df.insert(
     time_step * df['Time step'],
 )
 
+st.dataframe(
+    df.style.format({
+        'Time (a.u.)': '{:.6f}',
+        'x direction': '{:.10e}',
+        'y direction': '{:.10e}',
+        'z direction': '{:.10e}',
+    })
+)
 
 # determining the name of the file
 export_rtdipo_file_name = 'rtdipo.xlsx'
