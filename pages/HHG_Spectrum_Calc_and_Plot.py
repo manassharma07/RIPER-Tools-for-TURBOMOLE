@@ -108,9 +108,9 @@ def clean_input_str(input_rtdipo_str):
 
         # Skip headers or malformed rows by verifying every field is numeric
         try:
-            [float(field) for field in converted_fields]
-        except ValueError:
-            continue
+             _ = [float(field) for field in converted_fields]
+         except ValueError:
+             continue
 
         cleaned_lines.append(' '.join(converted_fields))
 
