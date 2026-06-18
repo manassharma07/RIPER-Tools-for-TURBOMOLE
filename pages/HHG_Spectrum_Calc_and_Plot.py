@@ -84,14 +84,25 @@ st.write('### INPUT (rtdipo)')
 input_rtdipo_str = st.text_area(label='Enter the contents of `rtdipo` here', value = placeholder_rtdipo_str, placeholder = 'Put your text here', height=400)
 
 def clean_input_str(input_rtdipo_str):
-     cleaned_lines = []
-     for line in input_rtdipo_str.splitlines():
-          # Remove comments (# and $)
-          line = line.partition('#')[0].partition('$')[0].rstrip()
-          # Keep non-empty lines
-          if line:
-               cleaned_lines.append(line)
-     return os.linesep.join(cleaned_lines)
+    cleaned_lines = []
+
+    for raw_line in input_rtdipo_str.splitlines():
+        # Remove inline comments.
+        line = raw_line.split('#', maxsplit=1)[0].strip()
+
+        # Ignore empty lines and TURBOMOLE data-group markers.
+        if not line or line.startswith('$'):
+            continue
+
+        # Convert Fortran D exponents to standard E exponents.
+        fields = [
+            field.replace('D', 'E').replace('d', 'e')
+            for field in line.split()
+        ]
+
+        cleaned_lines.append(' '.join(fields))
+
+    return '\n'.join(cleaned_lines)
 
 
 
