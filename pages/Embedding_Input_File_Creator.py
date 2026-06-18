@@ -200,7 +200,13 @@ print(type(input_geom_str))
 # Separate into lines and remove the first two lines
 inp_geom_str_splitlines = input_geom_str.splitlines()[2:]
 INPUT_GEOM_DATA = StringIO("\n".join(inp_geom_str_splitlines))
-df = pd.read_csv(INPUT_GEOM_DATA, delim_whitespace=True, names=['atom','x','y','z'])
+# df = pd.read_csv(INPUT_GEOM_DATA, delim_whitespace=True, names=['atom','x','y','z'])
+df = pd.read_csv(
+    INPUT_GEOM_DATA,
+    sep=r'\s+',
+    header=None,
+    names=['atom', 'x', 'y', 'z']
+)
 # df.reindex(index=range(1, natoms_tot+1))
 df.index += 1 
 coords_Tot_np_arr = df[['x','y','z']].to_numpy()
