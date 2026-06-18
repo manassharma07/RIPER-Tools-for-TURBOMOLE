@@ -87,39 +87,51 @@ def clean_input_str(input_rtdipo_str):
     cleaned_lines = []
 
     for raw_line in input_rtdipo_str.splitlines():
-        # Remove inline comments.
+        # Remove inline comments and surrounding whitespace
         line = raw_line.split('#', maxsplit=1)[0].strip()
 
-        # Ignore empty lines and TURBOMOLE data-group markers.
+        # Skip blank lines and TURBOMOLE data-group markers
         if not line or line.startswith('$'):
             continue
 
-        # Convert Fortran D exponents to standard E exponents.
-        fields = [
+        fields = line.split()
+
+        # A valid rtdipo data row must contain exactly four columns
+        if len(fields) != 4:
+            continue
+
+        # Support Fortran D/d scientific notation
+        converted_fields = [
             field.replace('D', 'E').replace('d', 'e')
-            for field in line.split()
+            for field in fields
         ]
 
-        cleaned_lines.append(' '.join(fields))
+        # Skip headers or malformed rows by verifying every field is numeric
+        try:
+            [float(field) for field in converted_fields]
+        except ValueError:
+            continue
+
+        cleaned_lines.append(' '.join(converted_fields))
 
     return '\n'.join(cleaned_lines)
 
 
-
 cleaned_input = clean_input_str(input_rtdipo_str)
 
-
-
-
-# pd.set_option("display.precision", 14)
-st.write('### Parsed dipole moments along x, y and z at different timesteps')
-# df = pd.read_csv(io.StringIO(cleaned_input), skiprows=1, delim_whitespace=True, names=['Time step', 'x direction', 'y direction', 'z direction'])
 column_names = [
     'Time step',
     'x direction',
     'y direction',
     'z direction',
 ]
+
+if not cleaned_input.strip():
+    st.error(
+        "No valid dipole-moment rows were found. Each data row must contain "
+        "four numeric values: time step, x, y, and z."
+    )
+    st.stop()
 
 try:
     df = pd.read_csv(
@@ -132,17 +144,20 @@ try:
 except (TypeError, ValueError, pd.errors.ParserError) as exc:
     st.error(
         "The rtdipo input could not be parsed. Each data row must contain "
-        "four numeric values: time-step, mu_x, mu_y, and mu_z."
+        "four numeric values: time step, x, y, and z."
     )
     st.exception(exc)
     st.stop()
 
-if df.empty:
-    st.error("No dipole-moment data were found in the rtdipo input.")
-    st.stop()
-# Insert the actual time column in the dataframe object
-df.insert(1,'Time (a.u.)', time_step*df['Time step'])
-st.dataframe(df.style.format({"E": "{:.2f}"}))
+# Time-step indices should be integers
+df['Time step'] = df['Time step'].astype(int)
+
+# Insert the physical time column
+df.insert(
+    1,
+    'Time (a.u.)',
+    time_step * df['Time step'],
+)
 
 
 # determining the name of the file
