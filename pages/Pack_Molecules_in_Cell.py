@@ -482,7 +482,7 @@ if base_structure is not None and molecule is not None:
         num_molecules = st.slider(
             "Number of molecules to add",
             min_value=1,
-            max_value=200,
+            max_value=500,
             value=1,
             step=1
         )
