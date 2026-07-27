@@ -477,7 +477,7 @@ if cell_input_method == "Auto from Density" and base_structure is None:
 if base_structure is not None and molecule is not None:
     st.write(f"Number of atoms in base structure: {len(base_structure)}")
     st.write(f"Number of atoms in molecule: {len(molecule)}")
-    if len(base_structure)<=800 and len(molecule)<=40:
+    if len(base_structure)<=1500 and len(molecule)<=40:
         st.header("Packing Parameters")
         num_molecules = st.slider(
             "Number of molecules to add",
