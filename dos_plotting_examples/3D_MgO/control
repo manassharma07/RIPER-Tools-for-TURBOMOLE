@@ -1,0 +1,46 @@
+$title
+MgO rocksalt (8-atom conventional cell) - PBE/pob-DZVP-rev2 - DOS and PDOS example
+$symmetry c1
+$coord    file=coord
+$optimize
+ internal   off
+ redundant  off
+ cartesian  on
+$atoms
+    basis =pob-DZVP-rev2
+    jbas  =universal
+$basis    file=basis
+$scfmo    file=mos
+$closed shells
+ a       1-40                                   ( 2 )
+$scfiterlimit      100
+$scfdamp   start=0.300  step=0.050  min=0.100
+$scfdiis
+$maxcor   2500 MiB  per_core
+$scforbitalshift  automatic=.1
+$energy    file=energy
+$grad    file=gradient
+$dft
+    functional   pbe
+    gridsize   3
+$scfconv   7
+$ricore     3000
+$rij
+$jbas    file=auxbasis
+$rundimensions
+   natoms=8
+$periodic 3
+$cell file=coord
+$kpoints
+  nkpoints 4 4 4
+$dosper width=0.008 npt=1200 fermishift emin=-0.45 emax=0.95
+$pdosper
+  atoms    1,5
+  elements mg,o
+  resolve  shell
+$riper
+  lenonly on
+$last step     riper
+$xctype GGA (not to be modified here)
+$last SCF energy change = -.39153747E-09
+$end
