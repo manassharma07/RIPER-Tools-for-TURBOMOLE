@@ -369,6 +369,38 @@ if B['projected']:
         '*element ... s / p* buckets to see the orbital character of each element.',
         B['buckets'], default=default_sel[:4])
 
+    with st.expander('How to interpret the fat-band markers', expanded=False):
+        st.markdown("""
+The **area of a circle is the Mulliken weight** of that bucket for that particular state
+(band *n* at k-point *k*): half the area means half the weight. The size therefore changes
+*along* a band whenever the character of the state changes with k — this k-dependence is
+exactly the information the projection adds over a plain band plot.
+
+**Example (MgO):** the lowest conduction band is a ~92 % Mg 3s state at Γ (large Mg
+marker), but away from Γ it hybridizes — the Mg weight drops to ~82-84 % while the O weight
+grows to ~16-18 %, and within Mg the character shifts from pure s to strongly p-mixed at M.
+A shrinking marker of one element is always compensated by a growing marker of another.
+
+Reading guide:
+
+- **Sum rule.** The weights of one state over *all* atoms add up to 1. If your selected
+  buckets cover the whole cell (e.g. the *total* buckets of all elements), their marker
+  areas at any point represent fractions of one; a small marker of one bucket implies a
+  large one of another. With a partial selection (a single atom, one l channel) the areas
+  simply show that fraction of the state.
+- **Overlapping circles.** Buckets are drawn in the order of the legend, semi-transparent,
+  on top of the band line. A large circle with a small differently-colored dot at its
+  center is a state dominated by the first bucket with a small admixture of the second -
+  the layering is not a separate encoding.
+- **Band crossings and degeneracies.** Where bands touch (degenerate multiplets, e.g. at
+  high-symmetry points), the weights of the *individual* partner bands are arbitrary - only
+  their sum over the touching bands is well defined. Erratic marker sizes right at a
+  crossing are therefore not meaningful; a fraction of an eV away from the crossing they
+  are.
+- **Mulliken caveat.** Weights are Mulliken populations: basis-set dependent, and single
+  shells can be slightly negative (such values are clipped to zero for drawing).
+""")
+
 # ----------------------------------------------------------------------------------------
 # 3. Plot appearance (same spirit as the RT-TDDFT spectrum plotter)
 # ----------------------------------------------------------------------------------------
