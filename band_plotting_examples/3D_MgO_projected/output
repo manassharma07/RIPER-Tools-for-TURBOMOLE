@@ -1,0 +1,730 @@
+
+   OpenMP run-time library returned nthreads =  8
+
+ riper (unknown host) : TURBOMOLE rev. V8-0-initial-1356-g27eac8ce7d compiled 1 Aug 2026 at 19:53:19
+ Copyright (C) 2026 TURBOMOLE GmbH, Karlsruhe
+
+
+    2026-08-01 20:50:41.847 
+
+    
+    *************************************************************************
+    *************************************************************************
+    ***            _            _                   _     _               ***
+    ***           | |_ _  _ _ _| |__  ___ _ __  ___| |___( )___           ***
+    ***           |  _| || | '_| '_ \/ _ \ '  \/ _ \ / -_)/(_-<           ***
+    ***            \__|\_,_|_| |_.__/\___/_|_|_\___/_\___| /__/           ***
+    ***                      ___   ___                                    ***
+    ***             //   ) )    / /    //   ) ) //   / /  //   ) )        ***
+    ***            //___/ /    / /    //___/ / //____    //___/ /         ***
+    ***           / ___ (     / /    / ____ / / ____    / ___ (           ***
+    ***          //   | |    / /    //       //        //   | |           ***
+    ***         //    | | __/ /___ //       //____/ / //    | |           ***
+    ***                                                                   ***
+    *************************************************************************
+    *************************************************************************
+    *************************** PROGRAM RIPER *******************************
+    ****** Density Functional Theory with periodic boundary conditions ******
+    ******                                                             ******
+    ****** Developed by the groups in Jena   (M. Sierka)               ******
+    ******                        and Munich (A. Burow)                ******
+    *************************************************************************
+    
+    
+                               References:                                  
+    
+         Review about RIPER:                                                
+         M. Sharma, Y. J. Franzke, C. Holzer, F. Pauly, M. Sierka           
+         Density Functional Theory for Molecular and Periodic Systems in    
+         TURBOMOLE: Theory, Implementation, and Applications                
+         J. Phys. Chem. A 2025, 129, 9062-9083.                             
+    (1)  General implementation:                                            
+         R. Lazarski, A. M. Burow, M. Sierka                                
+         Density Functional Theory for Molecular and Periodic Systems Using 
+         Density Fitting and Continuous Fast Multipole Methods              
+         J. Chem. Theory Comput. 2015, 11, 3029-3041.                       
+         R. Lazarski, A. M. Burow, L. Grajciar, M. Sierka                   
+         Density Functional Theory for Molecular and Periodic Systems Using 
+         Density Fitting and Continuous Fast Multipole Methods: Analytical  
+         Gradients                                                          
+         J. Comput. Chem. 2016, 57, 2518-2526.                              
+    (2)  Resolution of the identity and density fitting approximation:      
+         A. M. Burow, M. Sierka, F. Mohamed                                 
+         Resolution of Identity Approximation for the Coulomb Term in       
+         Molecular and Periodic Systems                                     
+         J. Chem. Phys. 2009, 131, 214101.                                  
+    (3)  Low-Memory Iterative Density Fitting (LMIDF) method:               
+         L. Grajciar                                                        
+         Low-Memory Iterative Density Fitting                               
+         J. Comput. Chem. 2015, 36, 1521-1535.                              
+    (4)  DFT implementation:                                                
+         A. M. Burow, M. Sierka                                             
+         Linear Scaling Hierarchical Integration Scheme For the             
+         Exchange-Correlation Term in Molecular and Periodic Systems        
+         J. Chem. Theory Comput. 2011, 7, 3097-3104.                        
+    (5)  Hartree-Fock theory and exact exchange for hybrids:                
+         A. Irmler, A. M. Burow, F. Pauly                                   
+         Robust Periodic Fock Exchange with Atom-Centered Gaussian          
+         Basis Sets                                                         
+         J. Chem. Theory Comput. 2018, 14, 4567-4580.                       
+    (6)  Stress tensor and optimization of lattice vectors:                 
+         M. Becker, M. Sierka                                               
+         Density functional theory for molecular and periodic systems       
+         using density fitting and continuous fast multipole method: Stress 
+         tensor                                                             
+         J. Comput. Chem. 2019, 40, 2563-2570.                              
+    (7)  Relativistic two-component ECP-based DFT implementation:           
+         Y. J. Franzke, W. M. Schosser, F. Pauly                            
+         Efficient Treatment of Relativistic Effects with Periodic Density  
+         Functional Methods: Energies, Gradients, and Stress Tensors        
+         Phys. Rev. B. 2024, 109, 165144.                                   
+    (8)  Current-dependent DFT implementation (CDFT):                       
+         Y. J. Franzke, C. Holzer                                           
+         Current density functional framework for spin-orbit coupling:      
+         Extension to periodic systems                                      
+         J. Chem. Phys. 2024, 160, 184101.                                  
+         Y. J. Franzke, A. Pausch, C. Holzer                                
+         Application of the noncollinear Scalmani-Frisch formalism to       
+         current density functional theory                                  
+         J. Chem. Phys. 2025, 162, 084104.                                  
+    (9)  Real-time time-dependent DFT (RT-TDDFT):                           
+         C. Muller, M. Sharma, M. Sierka                                    
+         Real-time time-dependent density functional theory using density   
+         fitting and the continuous fast multipole method                   
+         J. Comput. Chem. 2020, 41, 2573-2582.                              
+    (10) Real-time time-dependent DFT with current-dependent functionals:   
+         Y. J. Franzke, C. Holzer                                           
+         Published as part of the RIPER review                              
+         J. Phys. Chem. A 2025, 129, 9062-9083.                             
+    (11) DFT-based Embedding Methods:                                       
+         M. Sharma, M. Sierka                                               
+         Efficient Implementation of Density Functional Theory Based        
+         Embedding for Molecular and Periodic Systems Using Gaussian Basis  
+         Functions                                                          
+         J. Chem. Theory Comput. 2022, 18, 6892-6904.                       
+         M. Sharma, M. Sierka                                               
+         Optical Gaps of Ionic Materials from GW/BSE-in-DFT and CC2-in-DFT  
+         J. Chem. Theory Comput. 2024, 20, 9592-9605.                       
+    
+ Number of MKL threads:      8
+
+   *************************************************************************
+   title                                                                    
+   *************************************************************************
+
+
+
+
+              +--------------------------------------------------+
+              | Atomic coordinate, charge and isotop information |
+              +--------------------------------------------------+
+
+                    atomic coordinates            atom    charge  isotop
+          0.00000000    0.00000000    0.00000000    mg    12.000     0
+         -0.00000000    3.97976322    3.97976322    mg    12.000     0
+          3.97976322   -0.00000000    3.97976322    mg    12.000     0
+          3.97976322    3.97976322    0.00000000    mg    12.000     0
+          3.97976322    0.00000000    0.00000000    o      8.000     0
+         -0.00000000    3.97976322    0.00000000    o      8.000     0
+         -0.00000000   -0.00000000    3.97976322    o      8.000     0
+          3.97976322    3.97976322    3.97976322    o      8.000     0
+ 
+       center of nuclear mass  :    1.98988161    1.98988161    1.98988161
+       center of nuclear charge:    1.98988161    1.98988161    1.98988161
+
+
+              +--------------------------------------------------+
+              | Periodic system found: PBC structure information |
+              +--------------------------------------------------+
+
+                           Cell parameters (au,deg.)
+   +-------------------------------------------------------------------------
+   |      |a|           |b|           |c|       alpha     beta    gamma      |
+   +-------------------------------------------------------------------------
+       7.95952644    7.95952644    7.95952644   90.000   90.000   90.000
+   +-------------------------------------------------------------------------
+
+       Volume of the unit cell (au):         504.2683
+
+       Shortest interatomic distance (bohr):           3.9798
+
+       Periodicity in 3 dimensions
+
+       Direct space cell vectors (au):
+               a      7.95952644      0.00000000      0.00000000
+               b      0.00000000      7.95952644      0.00000000
+               c      0.00000000      0.00000000      7.95952644
+
+       Reciprocal space cell vectors (au):
+               a      0.78939185     -0.00000000     -0.00000000
+               b      0.00000000      0.78939185     -0.00000000
+               c      0.00000000      0.00000000      0.78939185
+
+              +--------------------------------------------------+
+              |        Fractional crystal coordinates            |
+              +--------------------------------------------------+
+
+                atom            fractional coordinates
+                  mg    0.00000000    0.00000000    0.00000000
+                  mg   -0.00000000    0.50000000    0.50000000
+                  mg    0.50000000   -0.00000000    0.50000000
+                  mg    0.50000000    0.50000000    0.00000000
+                  o     0.50000000    0.00000000    0.00000000
+                  o    -0.00000000    0.50000000    0.00000000
+                  o    -0.00000000   -0.00000000    0.50000000
+                  o     0.50000000    0.50000000    0.50000000
+
+   * BASIS SET information:
+
+              +--------------------------------------------------+
+              |               basis set information              |
+              +--------------------------------------------------+
+
+              we will work with the 1s 3p 5d 7f 9g ... basis set
+              ...i.e. with spherical basis functions...
+
+   type   atoms  prim   cont   basis
+   ---------------------------------------------------------------------------
+    mg       4     33     15   pob-DZVP-rev2   [4s2p1d|10s6p1d]
+    o        4     24     14   pob-DZVP-rev2   [3s2p1d|7s4p1d]
+   ---------------------------------------------------------------------------
+   total:    8    228    116
+   ---------------------------------------------------------------------------
+
+   total number of primitive shells          :   29
+   total number of contracted shells         :   52
+   total number of cartesian basis functions :  124
+   total number of SCF-basis functions       :  116
+
+
+   * AUXILIARY RI-J BASIS SET information:
+
+              +--------------------------------------------------+
+              |               basis set information              |
+              +--------------------------------------------------+
+
+              we will work with the 1s 3p 5d 7f 9g ... basis set
+              ...i.e. with spherical basis functions...
+
+   type   atoms  prim   cont   basis
+   ---------------------------------------------------------------------------
+    mg       4     77     56   universal   [8s4p4d1f1g|14s5p5d2f1g]
+    o        4     70     49   universal   [6s4p3d1f1g|12s5p4d2f1g]
+   ---------------------------------------------------------------------------
+   total:    8    588    420
+   ---------------------------------------------------------------------------
+
+   total number of primitive shells          :   51
+   total number of contracted shells         :  132
+   total number of cartesian basis functions :  520
+   total number of SCF-basis functions       :  420
+
+               
+              +--------------------------------------------------+
+              |                 K-POINT MESH                     |
+              +--------------------------------------------------+
+               
+       Total number of k points used for density integration:     64
+       Number of symmetry distinct k points used:                 32
+
+       Reciprocal space cell vector (au):
+               a      0.78939185     -0.00000000     -0.00000000
+       Number of k-points along this vector:     4
+       Fractional coordinates:
+         -0.3750  -0.1250   0.1250   0.3750
+
+       Reciprocal space cell vector (au):
+               b      0.00000000      0.78939185     -0.00000000
+       Number of k-points along this vector:     4
+       Fractional coordinates:
+         -0.3750  -0.1250   0.1250   0.3750
+
+       Reciprocal space cell vector (au):
+               c      0.00000000      0.00000000      0.78939185
+       Number of k-points along this vector:     4
+       Fractional coordinates:
+         -0.3750  -0.1250   0.1250   0.3750
+               
+ PBE functional
+ exchange:    LDA + PBE
+ correlation: LDA (PW) + PBE
+               
+              +--------------------------------------------------+
+              |       Summary of SCF and related options         |
+              +--------------------------------------------------+
+               
+       Energy calculation only 
+       Diagonalization of overlap matrices 
+       Threshold for neglect of eigenvalues of overlap matrices:   0.1000E-05
+       Diagonalization method set to:                                2
+       Maximum number of SCF iterations included in the DIIS:        4
+       Automatic orbital shift for HOMO-LUMO gap below:           0.1000E+00
+               
+              +--------------------------------------------------+
+              |      SCREENING OF BASIS FUNCTION PRODUCTS        |
+              +--------------------------------------------------+
+               
+         Threshold for shell products neglect:          0.3E-11
+         Tolerance for shell products extents:          0.1E-07
+         The biggest integral is expected to be:        0.3E+01
+         Number of {mu,nu,L} shell products:              19588
+         Number of direct lattice vectors:                  105
+        
+               
+              +--------------------------------------------------+
+              |             INITIAL ORBITALS/BANDS               |
+              +--------------------------------------------------+
+               
+
+ reading orbital data $scfmo  from file mos
+ orbital characterization : scfconv=7
+
+  Diagonalization of the overlap matrix requested 
+    Threshold for eigenvalues:    0.1000E-05
+    Total number of vectors:         116
+    Largest eigenvalue:          0.4169E+01
+    - for the k-point:                1
+    Smallest eigenvalue:         0.4294E-02
+    - for the k-point:               22
+    Largest number of vectors:      116
+    - for the k-point:                1
+    Smallest number of vectors:     116
+    - for the k-point:                1
+
+  BANDS have been orthonormalized
+               
+              +--------------------------------------------------+
+              |             CHARGE AND SPIN SUMMARY              |
+              +--------------------------------------------------+
+               
+       Mode:                                 RKS (closed shell)
+       Total charge:                                     0.0000
+       Total electrons (Ne):                            80.0000
+       Ne/2 (per spin):                                 40.0000
+       Closed-shell occupied bands:                          40
+       Occupations taken from:                     control file
+       Start orbitals:            input orbitals (control file)
+        
+               
+              +--------------------------------------------------+
+              |           DENSITY FUNCTIONAL THEORY              |
+              +--------------------------------------------------+
+               
+       DFT calculation will be performed
+        
+ PBE functional
+ exchange:    LDA + PBE
+ correlation: LDA (PW) + PBE
+               
+              +--------------------------------------------------+
+              |              NUMERICAL INTEGRATION               |
+              +--------------------------------------------------+
+               
+       Will use a grid of size 3.
+        
+       Integration of exchange-correlation term is performed with
+       Stratmann/Scuseria renormalization.
+       Specified sharpness parameter is .64000D+00.
+       Calculation of weight derivatives is switched OFF
+       Maximum number of grid points per atom:             7148
+       Total number of grid points of the system:          40008
+               
+              +--------------------------------------------------+
+              |        CONTINUOUS FAST MULTIPOLE METHOD          |
+              +--------------------------------------------------+
+               
+   Continuous Fast Multipole Method for the Coulomb term
+     order of multipole expansions:         20
+     well-separateness criterion:         4.0000
+     local multipole expansions switched on
+     local expansions incremented by:        2
+     total number of centers:            19728
+     number of octree levels:                7
+     number of boxes at all levels:       1058
+     max. number of NF boxes per box:      669
+     length of the lowest level box:      2.1875
+     length of the highest level box:   140.0002
+ 
+   Periodic boundary conditions - crystal field construction:
+     extent of the nuclei:              3.9798
+     extent of dipole correction:       3.9798
+     extent of electron density:       21.1154
+     extent of auxiliary density:      18.6122
+     final crystal field radius:       59.3286
+     number of lattice vectors:         1743
+ 
+   RI core memory information
+     core memory allocated for RI integrals:         450 MB
+     maximum memory needed for RI integrals:         450 MB
+ 
+               
+              +--------------------------------------------------+
+              |                SCF iteration    1                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    80.00000000000026
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00450650979252
+           
+          SCF energy change             = -1.100D+03
+          new damping factor            =      0.300
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1095.7025467190    |
+              | COULOMB ENERGY       =       -2095.5416848248    |
+              | EXCH. & CORR. ENERGY =        -100.6254524590    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.4645905648    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    2                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999925
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00467787208106
+           
+          Norm of current diis error    =  5.080D-01
+          RMS of difference density     =  1.403D-03
+          SCF energy change             = -1.933D-01
+          new damping factor            =      0.250
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1091.4757724520    |
+              | COULOMB ENERGY       =       -2092.1870340717    |
+              | EXCH. & CORR. ENERGY =         -99.9465984119    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6578600316    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    3                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    80.00000000000064
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00463296573973
+           
+          Norm of current diis error    =  2.947D-01
+          RMS of difference density     =  1.443D-05
+          SCF energy change             = -2.846D-02
+          new damping factor            =      0.150
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1092.1989494691    |
+              | COULOMB ENERGY       =       -2092.8592784196    |
+              | EXCH. & CORR. ENERGY =        -100.0259870247    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6863159752    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    4                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999979
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00460829054839
+           
+          Norm of current diis error    =  1.663D-01
+          RMS of difference density     =  4.112D-06
+          SCF energy change             = -7.391D-03
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1092.7823775284    |
+              | COULOMB ENERGY       =       -2093.3740715925    |
+              | EXCH. & CORR. ENERGY =        -100.1020133929    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6937074570    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    5                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999972
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00459071618072
+           
+          Norm of current diis error    =  7.015D-02
+          RMS of difference density     =  2.677D-06
+          SCF energy change             = -3.050D-03
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.2769682959    |
+              | COULOMB ENERGY       =       -2093.8039359955    |
+              | EXCH. & CORR. ENERGY =        -100.1697897555    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6967574551    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    6                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    80.00000000000034
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457470749475
+           
+          Norm of current diis error    =  1.935D-02
+          RMS of difference density     =  2.564D-06
+          SCF energy change             = -6.302D-04
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.7486116028    |
+              | COULOMB ENERGY       =       -2094.2104535819    |
+              | EXCH. & CORR. ENERGY =        -100.2355457105    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6973876897    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    7                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999943
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457841853827
+           
+          Norm of current diis error    =  2.602D-03
+          RMS of difference density     =  6.571D-07
+          SCF energy change             = -5.280D-05
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.6517669359    |
+              | COULOMB ENERGY       =       -2094.1278263250    |
+              | EXCH. & CORR. ENERGY =        -100.2213811012    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6974404903    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    8                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999987
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457832545032
+           
+          Norm of current diis error    =  1.030D-03
+          RMS of difference density     =  9.816D-08
+          SCF energy change             = -6.331D-07
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.6518781834    |
+              | COULOMB ENERGY       =       -2094.1277055531    |
+              | EXCH. & CORR. ENERGY =        -100.2216137536    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6974411234    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration    9                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999895
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457827809007
+           
+          Norm of current diis error    =  6.217D-05
+          RMS of difference density     =  2.689D-08
+          SCF energy change             = -1.072D-07
+          new damping factor            =      0.100
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.6533880686    |
+              | COULOMB ENERGY       =       -2094.1290198243    |
+              | EXCH. & CORR. ENERGY =        -100.2218094749    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6974412306    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |                SCF iteration   10                |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999895
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457828591293
+           
+          Norm of current diis error    =  1.525D-05
+          RMS of difference density     =  3.186D-09
+          SCF energy change             = -7.594D-10
+          new damping factor            =      0.150
+  
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.6534479061    |
+              | COULOMB ENERGY       =       -2094.1290944623    |
+              | EXCH. & CORR. ENERGY =        -100.2217946752    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6974412314    |
+              +--------------------------------------------------+
+  
+               
+              +--------------------------------------------------+
+              |       SCF converged - final SCF iteration        |
+              +--------------------------------------------------+
+  
+          Number of electrons from P*S  =    79.99999999999878
+           
+          Numerical integration of the XC term:
+          Number of electrons          =    80.00457828486856
+           
+  
+              SCF converged within     10 cycles.
+  
+              +--------------------------------------------------+
+              |                FINAL ENERGIES                    |
+              +--------------------------------------------------+
+              | KINETIC ENERGY       =        1093.6534052753    |
+              | COULOMB ENERGY       =       -2094.1290516181    |
+              | EXCH. & CORR. ENERGY =        -100.2217948886    |
+              |==================================================|
+              | TOTAL ENERGY         =       -1100.6974412314    |
+              +--------------------------------------------------+
+  
+  
+         ---------------- Fermi Level Statistics (au) ----------------
+             Lowest unoccupied band =        0.476680
+                         at k-point =         1
+             Highest occupied band  =        0.291331
+                         at k-point =         1
+             Band gap               =        0.185349
+             Band gap middle        =        0.384005
+             Fermi level            =        0.384005
+         -------------------------------------------------------------
+          
+         ---------------- Fermi Level Statistics (eV) ----------------
+             Lowest unoccupied band =       12.971111
+                         at k-point =         1
+             Highest occupied band  =        7.927513
+                         at k-point =         1
+             Band gap               =        5.043598
+             Band gap middle        =       10.449312
+             Fermi level            =       10.449312
+         -------------------------------------------------------------
+               
+              +--------------------------------------------------+
+              |              XYZ plot file for bands             |
+              +--------------------------------------------------+
+                Number of lines       =     3
+                Total no. of k-points =    61
+                XYZ output file       = bands.xyz                                                                       
+                Format: k(x) k(y) k(z) |k| energy 
+                Projected bands file  = bands_proj.xyz
+                Projected shells      =    52
+                Projection weights    =       2.8 MB
+              +--------------------------------------------------+
+               Projected bands normalization, max |1 - sum(w)| =   2.2504E-13
+
+ <geterg> : there is no data group $energy 
+
+
+ <skperg> : $end is missing 
+
+
+ orbitals $scfmo  will be written to file mos
+              
+              +--------------------------------------------------+
+              |               Calculation of DOS                 |
+              +--------------------------------------------------+
+              
+               Energies referenced to the Fermi level 
+              
+              +--------------------------------------------------+
+              |          Projected density of states             |
+              +--------------------------------------------------+
+                Resolution            = l (total, s, p, d, ...)
+                Selected atoms        =     0
+                Selected elements     =     2
+                Projected bands       = on (file bands_proj.xyz)
+                Projection            = Mulliken
+                Output files          = pdos_at<i>_<sym>, pdos_el_<sym>
+              
+               Calculating values on points
+               Writing DOS to files
+               PDOS sum rule, max |sum of shells - total DOS| =   1.6556E-12
+               Writing projected DOS to files
+                Number of PDOS files  =     2
+              
+
+    ------------------------------------------------------------------------
+    RIPER profiling                cpu                    wall         ratio
+    ------------------------------------------------------------------------
+    module                         sec     %               sec     %
+    ------------------------------------------------------------------------
+    RIPER                       165.1  100.00           21.1   99.99   7.8
+    Preliminaries                 0.6    0.34            0.1    0.42   6.4
+    preescrening                  0.3    0.19            0.0    0.18   8.0
+    BANDS init                    0.5    0.31            0.1    0.31   8.0
+    DFT grid setup               14.3    8.69            2.1    9.99   6.8
+    DFT system grid              14.3    8.65            2.1    9.90   6.8
+    CFMM preliminaries            1.8    1.10            0.3    1.22   7.0
+    RI core setup                 1.5    0.94            0.2    0.92   8.0
+    PQ matrix                     0.4    0.23            0.0    0.23   8.0
+    PQ CNF                        0.3    0.17            0.0    0.17   8.0
+    SCF                         146.9   88.97           18.4   87.49   8.0
+    nuclear energy                0.2    0.11            0.0    0.11   8.0
+    jmat nuclear                  1.3    0.78            0.2    0.77   8.0
+    SCF looop                   144.4   87.46           18.1   86.01   8.0
+    XC matrix                    38.9   23.56            4.9   23.08   8.0
+    Coulomb total               103.4   62.63           13.0   61.69   8.0
+    gamma vector                 68.7   41.63            8.7   41.11   7.9
+    gamma CFF                     2.1    1.29            0.3    1.28   7.9
+    gamma CNF FF                 23.1   14.02            2.9   13.76   8.0
+    gamma CNF FF mom              2.4    1.45            0.3    1.42   8.0
+    gamma CNF FF p. 1             0.2    0.14            0.0    0.14   8.1
+    gamma CNF FF p. 2            20.3   12.30            2.5   12.08   8.0
+    gamma CNF NF                 43.4   26.28            5.5   26.04   7.9
+    gamma CNF NF p. 1            37.6   22.75            4.8   22.59   7.9
+    gamma CNF NF p. 2             5.8    3.53            0.7    3.45   8.0
+    Coulomb matrix               34.6   20.94            4.3   20.52   8.0
+    jmat CFF                      2.1    1.26            0.3    1.24   8.0
+    jmat CNF FF                  22.3   13.52            2.8   13.24   8.0
+    jmat CNF FF p. 2             20.1   12.20            2.5   11.95   8.0
+    jmat CNF FF p. 3              0.2    0.09            0.0    0.10   7.1
+    jmat CNF NF                   2.4    1.44            0.3    1.44   7.8
+    elec. en. aux                 7.7    4.65            1.0    4.55   8.0
+    SCF solve                     1.4    0.86            0.2    0.85   8.0
+    D build                       0.4    0.25            0.1    0.25   8.0
+    Properties                    0.6    0.34            0.1    0.33   8.0
+    DOS                           0.6    0.34            0.1    0.33   8.0
+    ------------------------------------------------------------------------
+
+
+    ------------------------------------------------------------------------
+         total  cpu-time :  2 minutes and 45 seconds
+         total wall-time :  21.12 seconds
+    ------------------------------------------------------------------------
+
+   ****  riper : all done  ****
+
+
+    2026-08-01 20:51:02.944 
+
+  riper ended normally

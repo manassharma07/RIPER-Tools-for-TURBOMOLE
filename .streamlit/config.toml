@@ -13,6 +13,10 @@ enableCORS = true
 enableXsrfProtection = false
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
+# 50 MB accommodates bands.xyz / bands_proj.xyz of large systems (hundreds of bands x
+# hundreds of k points) while still protecting the Streamlit Cloud instance; the band
+# structure plotter additionally accepts .gz compressed files, which are typically
+# 5-8x smaller.
 
 # Default: 200
-maxUploadSize = 3
+maxUploadSize = 50
